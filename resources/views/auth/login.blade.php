@@ -1,5 +1,29 @@
+@section('title', __('Login'))
+
 <x-guest-layout>
-	<div>{{ session('status') }}</div>
+	@if(session('destroyed'))
+		<div x-data="{ open: true }" :class="{ 'block': open, 'hidden': !open }" class="p-4 text-center w-full text-muted relative inline-block rounded-lg bg-gray-300 dark:bg-gray-700">
+			<div class="absolute group top-0 right-0 cursor-pointer p-1 " @click="open = false">X</div>
+			{{ __('You have been logged out!') }}
+		</div>
+	@endif
+
+	{{-- 
+		.wrapper {
+  position: relative;
+  display: inline-block;
+}
+.close:before {
+  content: '✕';
+}
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+		--}}
+
 	<form method="POST" class="p-1">
 		@csrf
 		{{-- Info --}}

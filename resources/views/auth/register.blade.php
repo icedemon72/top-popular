@@ -1,3 +1,5 @@
+@section('title', __('Register'))
+
 <x-guest-layout>
     <form method="POST" class="p-1" action="{{ route('register') }}">
 		@csrf
@@ -53,7 +55,7 @@
 			<span class="text-muted text-sm">
 				{{ __('Already registered?') }}
 			</span>
-			<a class="underline text-sm text-link rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('auth.register') }}">
+			<a class="underline text-sm text-link rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('auth.login') }}">
 				{{ __('Log in') }}
 			</a>
 		</div>		

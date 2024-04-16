@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form;
+namespace App\View\Components\nav;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Error extends Component
+class Dropdown extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class Error extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.error');
+        return view('components.nav.dropdown');
     }
 }

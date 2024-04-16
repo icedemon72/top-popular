@@ -29,4 +29,7 @@
 	/* .card-container {
 		@apply bg-gray-100 dark:bg-gray-900;
 	} */
+	.bg-main {
+		@apply bg-gray-100 dark:bg-gray-900;
+	}
 }
