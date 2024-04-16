@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	/* TEXT COLOURS */
+	
+	.text-muted {
+		@apply text-gray-600 dark:text-gray-400;
+	}
+
+	.text-label {
+		@apply text-gray-700 dark:text-gray-300;
+	}
+
+	.text-main {
+		@apply text-gray-800 dark:text-gray-200;
+	}
+
+	.text-error {
+		@apply text-red-600 dark:text-red-400;
+	}
+
+	.text-link {
+		@apply text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer;
+	}
+
+	/* BG COLOURS */
+	/* .card-container {
+		@apply bg-gray-100 dark:bg-gray-900;
+	} */
+}
