@@ -2,6 +2,7 @@
 	$myProfile = Auth::user()->username == $user->username;
 @endphp
 
+@section('title', $myProfile ? 'My profile' : "{$user->username}")
 
 <x-master-layout>
 	<x-slot name="header">
