@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(['auth', 'owner'], only: ['edit', 'update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -40,6 +52,8 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::where('username', $id)->firstOrFail();
+
+        return view('profile.edit', ['user' => $user]);
         
     }
 
@@ -48,7 +62,53 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $fields = $request->only([
+            'email',
+            'name',
+            'desc',
+            'github',
+            'instagram',
+            'facebook',
+            'x',
+            'password',
+            'new_password'
+        ]);
+
+        $request->validate([
+            'email' => 'sometimes|email|unique:users',
+            'password' => 'min:4|nullable',
+            'new_password' => 'min:4|nullable'
+        ]);
+        
+        $user = User::findOrFail($id);
+
+
+        if($request->email == $user->email) {
+            $fields['email'] = null;
+        }
+
+        if($fields['password'] != null && $fields['new_password'] != null) {
+            if($request->password != $request->new_password) {
+                return redirect("/user/{$user->username}/edit")->withErrors([
+                    'password' => '',
+                    'new_password' => 'Passwords do not match' 
+                ]);
+            }
+            if(Hash::make($request->password) != $user->password) {
+                return redirect("/user/{$user->username}/edit")->withErrors([
+                    'password' => 'Password is not correct'
+                ]);
+            }
+        }
+        
+        $body = array_filter($fields);
+
+        if(!sizeof($body)) {
+            return view('profile.edit', ['user' => $user, 'id' => $id, 'username' => $user->username]);
+        }
+
+        User::where('id', $id)->update($body);
+        return redirect("/user/{$user->username}/edit")->with(['edited'=>true]);
     }
 
     /**

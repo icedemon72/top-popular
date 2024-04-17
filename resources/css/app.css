@@ -26,10 +26,15 @@
 	}
 
 	/* BG COLOURS */
-	/* .card-container {
-		@apply bg-gray-100 dark:bg-gray-900;
-	} */
 	.bg-main {
 		@apply bg-gray-100 dark:bg-gray-900;
+	}
+
+	.bg-card {
+		@apply bg-white dark:bg-gray-800;
+	}
+	
+	.bg-button {
+		@apply  bg-gray-800 dark:bg-gray-200;
 	}
 }
