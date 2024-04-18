@@ -1,5 +1,10 @@
 @php
-	$myProfile = Auth::user()->username == $user->username;
+	$myProfile = false;
+	$isAdmin = false; 
+	if(Auth::check()) {
+		$myProfile = Auth::user()->username == $user->username;
+		$isAdmin = Auth::user()->role == 'admin';
+	}
 @endphp
 
 @section('title', $myProfile ? 'My profile' : "{$user->username}")
@@ -17,7 +22,7 @@
 				</div>
 
 				<x-profile.badge :role="$user->role"/>
-				@if ($myProfile || Auth::user()->role == 'admin')
+				@if ($myProfile || $isAdmin)
 					<div class="flex-grow-0">
 						<a href="{{ route('user.edit', $user->username) }}">Edit</a>
 					</div>

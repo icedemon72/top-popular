@@ -8,7 +8,7 @@
 @endphp
 
 <a {{ $attributes->merge([ 'class' => $baseClass.$classes ]) }}>
-	<div class="relative flex justify-between p-2 rounded-md dark:text-gray-300">
+	<div class="relative flex justify-start gap-2 p-2 rounded-md dark:text-gray-300">
 		{{ $slot }}
 	</div>
 </a>

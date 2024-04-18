@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Tag;
 
 class CategoryController extends Controller
 {
@@ -13,7 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::get();
+        return view('admin.categories.index', ['categories' => $categories]);
     }
 
     /**
@@ -21,7 +23,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $tags = Tag::get();
+        return view('admin.categories.create', ['tags' => $tags]);
     }
 
     /**
@@ -29,7 +32,11 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        //
+        $request->validate([
+            'name' => 'string|unique:categories'
+
+        ]);
+        dd($request);
     }
 
     /**

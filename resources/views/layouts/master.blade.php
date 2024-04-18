@@ -15,6 +15,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js' ])
+
+        @yield('head')
     </head>
     <body class="font-sans text-gray-900 antialiased h-[calc(screen - 64px)] bg-main">
         <x-nav-layout />
