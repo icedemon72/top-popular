@@ -16,7 +16,7 @@
             {{ __('Categories') }}
          </x-admin.sidebar-item>
 
-         <x-admin.sidebar-item>
+         <x-admin.sidebar-item :href="route('tag.index')" :active="request()->routeIs('tag.index') || request()->routeIs('tag.create')">
             <x-lucide-tag />
             {{ __('Tags') }}
          </x-admin.sidebar-item>

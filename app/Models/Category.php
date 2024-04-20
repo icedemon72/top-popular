@@ -9,7 +9,13 @@ class Category extends Model
 {
     use HasFactory;
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
     protected $fillable = [
-        'name'
+        'name',
+        'icon'
     ];
 }

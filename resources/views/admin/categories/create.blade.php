@@ -17,22 +17,51 @@
 	</x-slot>
 
 	<div class="w-full flex justify-center">
-		<form class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-5" method="POST" action="{{ route('category.store') }}">
+		<form class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-5" method="POST" action="{{ route('category.store') }}" enctype="multipart/form-data">
 			@csrf
+			
+			@if(session('success'))
+				<x-form.success>
+					{{ __('Category successfully added!') }}
+				</x-form.success>
+			@endif
+
+			@if(count($errors))
+				<x-form.error>
+					<ul>
+							@foreach ($errors->all() as $error)
+									<li>{{ $error }}</li>
+							@endforeach
+					</ul>
+				</x-form.error>
+			@endif
 
 			<x-form.label text="{{ __('Category name') }}" for="name"/>
-			<x-form.input class="w-full mt-1" field="name" type="text" placeholder="Gaming"  /> 
+			<x-form.input class="w-full mt-1 mb-5" field="name" type="text" placeholder="{{ __('Gaming, cooking, gardening...') }}" required :value="old('name')" :error="$errors->has('name')" /> 
 
-			<x-form.label class="mt-5 mb-1" :text="__('Tags')" for="tags" />
-			<x-bladewind::select
-				id="tags"
-				name="tags"
-				searchable="true"
-				label_key="name"
-				value_key="id"
-				multiple="true"
-				:data="$tags" /> 
-			<x-form.submit>{{ __('Create new category') }}</x-form.submit>
+			<span class="block text-sm text-label font-bold mb-1">Icon</span>
+			<x-form.image-input field="icon" accept=".svg" text="Maximum file size: 1KB .svg" />
+
+			@if(count($tags) > 0) 
+				<x-form.label class="mt-5 mb-1" :text="__('Tags')" for="tags" />
+				<x-bladewind::select
+					id="tags"
+					name="tags"
+					searchable="true"
+					label_key="name"
+					value_key="id"
+					multiple="true"
+					:placeholder="__('Select tags')"
+					modular="true"
+					:data="$tags" /> 
+				@endif
+
+				<div class="flex justify-end gap-2">
+				<a href="{{ route('category.index') }}">
+					<button type="button">{{ __('Go back') }}</button>
+				</a>
+				<x-form.submit>{{ __('Create new category') }}</x-form.submit>
+			</div>
 		</form>
 	</div>
 </x-admin-layout>

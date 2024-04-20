@@ -32,11 +32,50 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
+        $request->only(['name', 'tags', 'icon']);
         $request->validate([
-            'name' => 'string|unique:categories'
-
+            'name' => 'required|string|unique:categories',
+            'icon' => 'sometimes|mimes:svg|max:1024',
+            'tags' => 'sometimes'
         ]);
-        dd($request);
+
+        $categoryExists = Category::where(['name' => $request->name])->exists();
+
+        if($categoryExists) {
+            return redirect('/admin/category/create')->withErrors([
+                'name' => 'Category with this name already exists!'
+            ]);
+        }
+
+        $iconName = '';
+
+        if(isset($request->icon)) {
+            $iconName = time().'.svg';
+            $request->icon->storeAs('public/images/category/'.$request->name, $iconName);
+        }
+
+        $tags = array();
+
+        if(isset($request->tags)) {
+            $tags = array_values(array_unique(explode(',', $request->tags)));
+        }
+
+        $tagIds = Tag::findMany($tags);
+
+        if(sizeof($tagIds) !== sizeof($tags)) {
+            abort(400);
+        }
+
+        $category = Category::create([
+            'name' => $request->name,
+            'icon' => 'images/category/'.$request->name.'/'.$iconName
+        ]);
+
+        if(sizeof($tagIds)) {
+            $category->tags()->attach($tags);
+        }
+
+        return redirect('/admin/category/create')->with('success', true);
     }
 
     /**

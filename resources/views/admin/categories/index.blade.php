@@ -35,15 +35,12 @@
 
 		<div class="w-full md:w-4/5 lg:w-4/5 mt-7">
 			<x-admin.table 
-				:cols="[__('ID'), __('Name'), __('Created At'), __('Updated At'), __('Actions')]" 
-				:types="['id' => 'string', 'name' => 'string', 'created_at' => 'date', 'updated_at' => 'date']"
+				:cols="[__('ID'), __('Name'), __('Icon'), __('Created At'), __('Updated At'), __('Actions')]" 
+				:types="['id' => 'string', 'name' => 'string', 'created_at' => 'date', 'updated_at' => 'date', 'icon' => 'icon']"
 				:actions="['edit']"
 				route="category"
 				:data="$categories"
 			/>
 		</div>
 	</div>
-
-
-	
 </x-admin-layout>

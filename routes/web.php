@@ -3,8 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\RoleGuard;
 use Illuminate\Support\Facades\Route;
 
 /* Pages */
@@ -23,6 +24,7 @@ Route::get('/about', function () {
 
 
 Route::resource('user', UserController::class)->except('create');
+Route::resource('category/{category}/post', PostController::class);
 
 /* AUTH */
 /* Not logged in users */
@@ -45,5 +47,6 @@ Route::middleware('auth')->group(function () {
         })->name('admin.index');
 
         Route::resource('admin/category', CategoryController::class);
+        Route::resource('admin/tag', TagController::class);
     });
 });

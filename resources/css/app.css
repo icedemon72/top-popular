@@ -35,6 +35,11 @@
 	}
 	
 	.bg-button {
-		@apply  bg-gray-800 dark:bg-gray-200;
+		@apply bg-gray-800 dark:bg-gray-200;
+	}
+
+	/* Change this later */
+	.icon {
+		filter: invert(87%) sepia(6%) saturate(111%) hue-rotate(182deg) brightness(110%) contrast(87%);
 	}
 }

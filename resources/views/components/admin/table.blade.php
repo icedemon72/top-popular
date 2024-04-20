@@ -1,5 +1,7 @@
 @props(['cols' => [], 'data', 'types', 'actions' => [], 'route'])
 
+{{-- TODO: iterate only through provided types --}}
+
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 	<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -20,6 +22,8 @@
 							@else
 								-
 							@endif
+						@elseif ($types[$key] == 'icon')
+							<img src="{{ asset("/storage/$value") }}" width="24" height="24"/>
 						@else
 							{{ $value }}
 						@endif
@@ -38,8 +42,6 @@
 					@endif
 				</tr>
 			@endforeach
-
-
 			{{ $slot }}
 		</tbody>
 	</table>
