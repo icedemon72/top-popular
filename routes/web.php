@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -24,7 +25,8 @@ Route::get('/about', function () {
 
 
 Route::resource('user', UserController::class)->except('create');
-Route::resource('category/{category}/post', PostController::class);
+Route::resource('category/{category}/post', PostController::class)->except('store');
+Route::resource('post/{post}/comment', CommentController::class)->except('index');
 
 /* AUTH */
 /* Not logged in users */
@@ -40,6 +42,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     
+    Route::post('/post', [PostController::class, 'store'])->name('post.store');
+
     /* Only admins */
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin', function () {

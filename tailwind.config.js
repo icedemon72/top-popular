@@ -6,6 +6,11 @@ export default {
     './resources/views/**/*.blade.php',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'main-gray-light': '#f3f4f6',
+        'main-gray-dark': '#111827'
+      }
+    },
   },
 }

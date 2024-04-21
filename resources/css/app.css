@@ -1,6 +1,9 @@
+@import 'quill/dist/quill.snow.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 @layer components {
 	/* TEXT COLOURS */
@@ -39,7 +42,24 @@
 	}
 
 	/* Change this later */
-	.icon {
-		filter: invert(87%) sepia(6%) saturate(111%) hue-rotate(182deg) brightness(110%) contrast(87%);
-	}
+}
+
+.icon {
+	filter: invert(87%) sepia(6%) saturate(111%) hue-rotate(182deg) brightness(110%) contrast(87%);
+}
+
+.ql-toolbar span {
+	@apply text-muted;
+}
+
+.ql-toolbar .ql-stroke {
+	@apply  stroke-main-gray-dark dark:stroke-main-gray-light;
+}
+
+.ql-editor.ql-blank::before {
+	@apply text-main;
+}
+
+#ql-picker-options-0.ql-picker-options {
+	@apply bg-main text-main;
 }

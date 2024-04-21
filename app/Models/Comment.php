@@ -7,32 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Post extends Model
+class Comment extends Model
 {
     use HasFactory;
 
-    public function tags(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->BelongsTo(User::class);
     }
 
-    public function poster(): BelongsTo 
+    public function post(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->BelongsTo(Post::class);
     }
 
-
-    // TODO: add likes, comments etc.
+    public function parent(): BelongsTo
+    {
+        return $this->BelongsTo(Comment::class);
+    }
 
     protected $fillable = [
-        'title',
         'body',
+        'post_id',
         'user_id',
-        'category_id'
+        'parent',
     ];
 
     protected $hidden = [
-        'archived'
+        'deleted'
     ];
-
 }

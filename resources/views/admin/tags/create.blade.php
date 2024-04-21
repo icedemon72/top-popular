@@ -17,7 +17,7 @@
 	</x-slot>
 
 	<div class="w-full flex justify-center">
-		<form class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-5" method="POST" action="{{ route('category.store') }}">
+		<form class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-5" method="POST" action="{{ route('tag.store') }}">
 			@csrf
 			
 			@if(session('success'))

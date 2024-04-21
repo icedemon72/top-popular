@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TagController extends Controller
@@ -61,7 +62,8 @@ class TagController extends Controller
         }
 
         $tag = Tag::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'created_by' => Auth::user()->id
         ]);
 
         if(sizeof($categoryIds)) {
