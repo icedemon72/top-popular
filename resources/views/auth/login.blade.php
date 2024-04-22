@@ -55,9 +55,12 @@
 				</a>
 			</div>
 			<x-form.input tabindex="2" type="password" class="w-full block mt-1" :field="('password')" placeholder="Enter your password" required :value="old('password')" />
+			<div class="mt-3">
+				<x-form.checkbox  field="remember_me" text="{{ __('Remember me?') }}" />
+			</div>
 		</div>
 
-		<div class="mt-7">
+		<div class="mt-3">
 			<x-form.submit tabindex="3" class="w-full flex justify-center">
 				{{ __('Log in') }}
 			</x-form.submit>
