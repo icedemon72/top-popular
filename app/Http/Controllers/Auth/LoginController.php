@@ -14,11 +14,12 @@ class LoginController extends Controller
     }
 
     public function login(Request $request): RedirectResponse {
-        $request->only('login', 'password');
+        $request->only('login', 'password', 'remember_me');
 
         $request->validate([
             'login' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'remember_me' => 'nullable'
         ]);
 
         // $user = User::where('email', $creds['login'])->orWhere('username', $creds['login'])->first();        
@@ -31,8 +32,7 @@ class LoginController extends Controller
             'password' => $request->password
         ];
 
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials,  $request->remember_me == true)) {
             $request->session()->regenerate();
  
             return redirect()->intended('/');
