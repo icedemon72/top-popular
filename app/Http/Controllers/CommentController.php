@@ -17,8 +17,8 @@ class CommentController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(['auth'], only: ['create']),
-            new Middleware(['auth', 'owner'], only: ['edit', 'update', 'destroy'])
+            new Middleware(['auth'], only: ['create', 'store']),
+            new Middleware(['auth', 'owner:comment'], only: ['edit', 'update', 'destroy'])
         ];
     }
     /**

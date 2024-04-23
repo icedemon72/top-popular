@@ -1,4 +1,4 @@
-@section('title', )
+@section('title', 'Post')
 
 @php
 	$edited = $data->created_at !== $data->updated_at;
@@ -117,7 +117,11 @@
 				</div>
 			</div>
 			@foreach($comments as $comment) 
-				<x-posts.comment :comment="$comment" :op="$data->user_id"/>
+				@if($comment->parent === null)
+					<div x-data="{ open: false }" class="{{ count($comment->replies) > 0 ? 'border-l-gray-200 border-l-2 p-2' : '' }}">
+						<x-posts.comment :comment="$comment" :op="$data->user_id"/>
+					</div>
+				@endif
 			@endforeach
 		</div>
 

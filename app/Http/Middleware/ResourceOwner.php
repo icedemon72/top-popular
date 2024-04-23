@@ -28,7 +28,6 @@ class ResourceOwner
 
         if ($resource == 'post') {
             $post = $request->route('post');
-
             $created = DB::table('posts')
                 ->where([
                     'id' => $post, 
@@ -41,7 +40,6 @@ class ResourceOwner
                 return $next($request);
             }
         }
-
         abort(403);
 
     }

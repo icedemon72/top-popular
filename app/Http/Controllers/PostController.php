@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Comment;
 use League\HTMLToMarkdown\HtmlConverter;
 use App\Models\Post;
 use App\Models\Tag;
@@ -11,6 +11,17 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
+function displayComments($comments)
+{
+    $result = array();
+    foreach ($comments as $comment) {
+        echo $comment->body;
+        if ($comment->replies->count() > 0) {
+            displayComments($comment->replies);
+        }
+    }
+}
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -146,15 +157,17 @@ class PostController extends Controller implements HasMiddleware
             ->get()
             ->first();
 
-        $comments = DB::table('comments')
-            ->select([
-                'comments.*',
-                'users.username AS username'
-            ])
-            ->join('users', 'users.id', '=', 'comments.user_id')
-            ->where('post_id', $id)
-            ->orderBy('created_at', 'asc')
-            ->get();
+        // $comments = DB::table('comments')
+        //     ->select([
+        //         'comments.*',
+        //         'users.username AS username'
+        //     ])
+        //     ->join('users', 'users.id', '=', 'comments.user_id')
+        //     ->where('post_id', $id)
+        //     ->orderBy('created_at', 'asc')
+        //     ->get();
+
+        $comments = Comment::where(['post_id' => $id])->with('replies', 'user')->get();
 
         return view('posts.show', [
             'data' => $data,
@@ -166,23 +179,39 @@ class PostController extends Controller implements HasMiddleware
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $category, string $id)
     {
         $post = DB::table('posts')
             ->select(['posts.*', 'categories.name AS category'])
             ->join('categories', 'categories.id', '=', 'posts.category_id')
-            ->where('posts.id', $id)
+            ->where(['posts.id' => $id, 'posts.category_id' => $category])
             ->get()
             ->first();
+
+        if(!$post) {
+            abort(404);
+        }
 
         $categories = DB::table('categories')->get();
 
         $tags = DB::table('tags')->get();
 
+        $selectedTags = DB::table('post_tag')
+            ->select('id')
+            ->where(['post_id' => $post->id])
+            ->get();
+
+        $selected = array();
+
+        foreach($selectedTags as $tag) {
+            array_push($selected, $tag->id);
+        }
+        
         return view('posts.edit', [
             'post'=> $post,
             'categories'=> $categories,
-            'tags' => $tags
+            'tags' => $tags,
+            'selected' => join(', ', $selected)
         ]);
     }
 
@@ -192,7 +221,7 @@ class PostController extends Controller implements HasMiddleware
     public function update(Request $request, string $id)
     {
         $request->only('title', 'body', 'category', 'tags');
-
+        
         $request->validate([
             'title' => 'required|string',
             'body' => 'required|string',
@@ -218,18 +247,23 @@ class PostController extends Controller implements HasMiddleware
         $tagIds = Tag::findMany($tags);
 
         if(sizeof($tagIds) !== sizeof($tags)) {
-            abort(400);
+            abort(403);
         }
 
-        $post = Post::findOrFail($id)
-            ->update([
+        $post = Post::find($id);
+        
+        if($post->category_id != $request->category && (Auth::user()->role != 'admin' || Auth::user()->role != 'moderator')) {
+            abort(403);
+        }
+
+        $post->save([
                 'title' => $request->title,
                 'body'=> $request->body,
                 'category_id' => $request->category
             ]);
 
         if(sizeof($tagIds)) {
-            $post->tags()->attach($tags);
+            $post->tags()->sync($tags);
         }
         
         return redirect(route('post.show', [

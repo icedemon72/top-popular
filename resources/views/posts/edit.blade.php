@@ -18,7 +18,7 @@
 
 	<div class="flex w-full justify-center mt-5">
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card p-4">
-			<form method="POST" action={{ route('post.update', ['post' => $post->id]) }}>
+			<form action="{{ route('post.update', $post->id) }}" method="POST">
         @method('PATCH')
 				@csrf
         <x-form.label class="mb-1" for="title" text="{{ __('Title') }}" />
@@ -26,23 +26,19 @@
         
         <x-form.label class="mt-5 mb-1" for="body" text="{{ __('Post body') }}" />
         {{-- <x-form.quill-editor field="body"/> --}}
-        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'moderator')
-          <x-form.textarea class="w-full"  field="body" placeholder="Say what's on your mind...">{{ $post->body }}</x-form.textarea>
-          <x-form.label class="mt-5 mb-1" for="category" text="{{ __('Category') }}" />
-          <x-bladewind::select 
-            id="category"
-            required="true"
-            name="category"
-            selected_value="{{ request('category') }}"
-            searchable="true"
-            label_key="name"
-            value_key="id"
-            :placeholder="__('Select a category')"
-            :data="$categories" />
-        @else 
-          <p class="mt-5 mb-1">{{ __('Category') }}</p>  
-          <p class="border-2">{{ $post->category }}</p>
-        @endif
+        <x-form.textarea class="w-full"  field="body" placeholder="Say what's on your mind...">{{ $post->body }}</x-form.textarea>
+        <x-form.label class="mt-5 mb-1" for="category" text="{{ __('Category') }}" />
+        <x-bladewind::select 
+          id="category"
+          :required="(Auth::user()->role == 'admin' || Auth::user()->role == 'moderator') "
+          name="category"
+          selected_value="{{ request('category') }}"
+          searchable="true"
+          readonly="{{ !(Auth::user()->role == 'admin' || Auth::user()->role == 'moderator') }}"
+          label_key="name"
+          value_key="id"
+          :placeholder="__('Select a category')"
+          :data="$categories" />
 
         @if(count($tags) > 0)
           <x-form.label class="mt-5 mb-1" for="tags" text="{{ __('Tags') }}" />
@@ -52,6 +48,7 @@
             name="tags"
             searchable="true"
             multiple="true"
+            selected_value="{{ $selected }}"
             modular="true"
             label_key="name"
             value_key="id"

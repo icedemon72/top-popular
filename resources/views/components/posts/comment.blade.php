@@ -1,4 +1,4 @@
-@props(['comment', 'op'])
+@props(['comment', 'op', 'post'])
 {{-- Add pill xD --}}
 @php
 	$edited = $comment->created_at != $comment->updated_at;
@@ -7,7 +7,7 @@
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg", 'id' => $comment->id]) }}>
     <div class="flex items-center gap-1">
 		{{-- Image goes here... --}}
-		<a href="{{ route('user.show', $comment->username) }}" class="text-xs text-main font-bold hover:underline">{{ $comment->username }}</a> 
+		<a href="{{ route('user.show', $comment->user->username) }}" class="text-xs text-main font-bold hover:underline">{{ $comment->user->username }}</a> 
         @if ($op == $comment->user_id)
            <x-lucide-pickaxe class="w-4 h-4" title="{{ __('Original poster') }}" />
         @endif
@@ -34,7 +34,7 @@
             </div>        
             <p class="lg:text-xs font-bold">0</p>
     
-            <div class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2">
+            <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2">
                 <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
                 <p class="text-sm">Reply</p>
             </div>
@@ -42,7 +42,33 @@
             <div class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer">
                 <svg rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
             </div>
+            
+            {{-- Implement comments dropdown here... --}}
+            <div class="absolute hidden">
+
+            </div>
         </div>    
     </div>
+
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden">
+        <form method="POST" action="{{ route('comment.store', ['post' => $comment->post_id]) }}">
+            @csrf
+            <input type="text" name="parent" class="hidden" value="{{ $comment->id }}" />
+            <x-form.label class="mb-1" for="body" text="{{ __('Reply to '.$comment->user->username) }}" />
+            <x-form.textarea required class="w-full shadow-sm" placeholder="I agree!" field="body"></x-form.textarea>
+            <div class="flex justify-end items-center gap-2 mt-2">
+                <div x-on:click="open = false" class="cursor-pointer p-2">{{ __('Cancel') }}</div>
+                <x-form.submit>{{ __('Post a reply') }}</x-form.submit>
+            </div>
+        </form>
+    </div>
+
+    @if ($comment->replies->count() > 0)
+        @foreach ($comment->replies as $reply)
+            <div x-data="{open: false}" class="ml-1 lg:ml-5 border-l-gray-200 border-l-2 p-2" >
+                <x-posts.comment :comment="$reply" :op="$op"/>
+            </div>
+        @endforeach
+    @endif
 
 </div>
