@@ -63,7 +63,7 @@ class CategoryController extends Controller
         $tagIds = Tag::findMany($tags);
 
         if(sizeof($tagIds) !== sizeof($tags)) {
-            abort(400);
+            abort(403);
         }
 
         $category = Category::create([

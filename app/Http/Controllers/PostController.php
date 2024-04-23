@@ -168,7 +168,22 @@ class PostController extends Controller implements HasMiddleware
      */
     public function edit(string $id)
     {
-        //
+        $post = DB::table('posts')
+            ->select(['posts.*', 'categories.name AS category'])
+            ->join('categories', 'categories.id', '=', 'posts.category_id')
+            ->where('posts.id', $id)
+            ->get()
+            ->first();
+
+        $categories = DB::table('categories')->get();
+
+        $tags = DB::table('tags')->get();
+
+        return view('posts.edit', [
+            'post'=> $post,
+            'categories'=> $categories,
+            'tags' => $tags
+        ]);
     }
 
     /**
@@ -176,10 +191,53 @@ class PostController extends Controller implements HasMiddleware
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->only('title', 'body', 'category', 'tags');
+
+        $request->validate([
+            'title' => 'required|string',
+            'body' => 'required|string',
+            'category' => 'required',
+            'tags' => 'nullable'
+        ]);
+
+        $category = DB::table('categories')
+            ->where('id', $request->category)
+            ->get()
+            ->first();
+
+        if(!$category) {
+            abort(403);
+        }
+
+        $tags = array();
+
+        if(isset($request->tags)) {
+            $tags = array_values(array_unique(explode(',', $request->tags)));
+        }
+
+        $tagIds = Tag::findMany($tags);
+
+        if(sizeof($tagIds) !== sizeof($tags)) {
+            abort(400);
+        }
+
+        $post = Post::findOrFail($id)
+            ->update([
+                'title' => $request->title,
+                'body'=> $request->body,
+                'category_id' => $request->category
+            ]);
+
+        if(sizeof($tagIds)) {
+            $post->tags()->attach($tags);
+        }
+        
+        return redirect(route('post.show', [
+            'post' => $id, 'category' => $request->category
+        ]))->with('edited', true);
     }
 
-    /**
+    /** 
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)

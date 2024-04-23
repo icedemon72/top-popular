@@ -22,7 +22,7 @@
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
 			<h2 class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-1 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-gray-400 dark:bg-gray-800 p-4 rounded-lg">
-				<img src="{{ asset("/storage/{$category->icon}") }}" />
+				<img class="w-5 h-5" src="{{ asset("/storage/{$category->icon}") }}" />
 				{{ $category->name }}
 			</h2>
 		</div>

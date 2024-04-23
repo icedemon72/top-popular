@@ -122,5 +122,4 @@
 		</div>
 
 	</div>
-
 </x-master-layout>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Post;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,12 +16,17 @@ class ResourceOwner
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $resource = 'profile'): Response
     {
-        if (Auth::user()->role == 'admin' || Auth::user()->username == $request->user) {
-			return $next($request);
-		}
+        if(Auth::user()->role == 'admin') {
+            return $next($request);
+        }
 
-       abort(403);
+        if ($resource == 'profile' && Auth::user()->username == $request->user) {
+            return $next($request);
+        }
+
+        abort(403);
+
     }
 }
