@@ -1,5 +1,5 @@
 @props(['comment', 'op'])
-
+{{-- Add pill xD --}}
 @php
 	$edited = $comment->created_at != $comment->updated_at;
 @endphp
@@ -34,7 +34,7 @@
             </div>        
             <p class="lg:text-xs font-bold">0</p>
     
-            <div class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer">
+            <div class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2">
                 <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
                 <p class="text-sm">Reply</p>
             </div>

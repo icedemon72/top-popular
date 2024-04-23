@@ -6,7 +6,7 @@ use App\Models\Post;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResourceOwner
@@ -24,6 +24,22 @@ class ResourceOwner
 
         if ($resource == 'profile' && Auth::user()->username == $request->user) {
             return $next($request);
+        }
+
+        if ($resource == 'post') {
+            $post = $request->route('post');
+
+            $created = DB::table('posts')
+                ->where([
+                    'id' => $post, 
+                    'user_id' => Auth::user()->id
+                    ])
+                ->get()
+                ->first();
+            
+            if ($created) {
+                return $next($request);
+            }
         }
 
         abort(403);

@@ -21,7 +21,7 @@ class PostController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(['auth'], only: ['create']),
-            new Middleware(['auth', 'owner'], only: ['edit', 'update', 'destroy'])
+            new Middleware(['auth', 'owner:post'], only: ['edit', 'update', 'destroy'])
         ];
     }
     /**

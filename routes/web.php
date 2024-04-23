@@ -25,7 +25,7 @@ Route::get('/about', function () {
 
 
 Route::resource('user', UserController::class)->except('create');
-Route::resource('category/{category}/post', PostController::class)->except('store');
+Route::resource('category/{category}/post', PostController::class)->except(['store', 'update']);
 Route::resource('post/{post}/comment', CommentController::class)->except('index');
 
 /* AUTH */
@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     
     Route::post('/post', [PostController::class, 'store'])->name('post.store');
 
+    Route::patch('/post/{post}', [PostController::class,'update'])->name('post.update');
     /* Only admins */
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin', function () {

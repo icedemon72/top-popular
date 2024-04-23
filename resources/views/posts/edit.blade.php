@@ -18,7 +18,7 @@
 
 	<div class="flex w-full justify-center mt-5">
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card p-4">
-			<form method="POST" action={{ route('post.update', ['id' => $post->id]) }}>
+			<form method="POST" action={{ route('post.update', ['post' => $post->id]) }}>
         @method('PATCH')
 				@csrf
         <x-form.label class="mb-1" for="title" text="{{ __('Title') }}" />

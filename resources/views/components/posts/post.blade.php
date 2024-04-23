@@ -26,7 +26,6 @@
 
 @php
 	$edited = $post->created_at != $post->updated_at;
-
 	if(strlen($post->body) > 256) {
 		$post->body = substr($post->body, 0, 253).'...';
 	}
@@ -43,9 +42,11 @@
 		@endif
 	</div>
 
-	<div class="mt-2">
+	<div class="mt-2 h-auto">
 		<p class="font-bold">{{ $post->title }}</p>
-		<div class="text-muted text-sm">{!! $post->body ?? '' !!}</div>
+		<div class="text-muted text-sm">
+			<p class="text-wrap break-words">{{ $post->body }}</p>
+		</div>
 	</div>
 
 	<div class="mt-2 flex justify-between lg:justify-start items-center gap-8">
