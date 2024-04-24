@@ -23,7 +23,7 @@
 
 
          <x-admin.sidebar-title>{{ __('Users') }}</x-admin.sidebar-title>
-         <x-admin.sidebar-item>
+         <x-admin.sidebar-item :href="route('user.index')" :active="request()->routeIs('user.index')">
             <x-lucide-users />
             {{ __('Users') }}
          </x-admin.sidebar-item>

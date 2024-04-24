@@ -2,25 +2,38 @@
 
 namespace App\View\Components\posts;
 
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Comment extends Component
 {
+    // public mixed $createdAt;
+    // public mixed $timeAgo;
+    public mixed $op;
+    public mixed $comment;
+
+    
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct($comment, $op)
     {
-        //
+        // $this->createdAt = $createdAt;
+        $this->op = $op;
+        $this->comment = $comment;
+        // $this->$timeAgo = Carbon::parse($comment->created_at)->diffForHumans();
     }
+
 
     /**
      * Get the view / contents that represent the component.
      */
     public function render(): View|Closure|string
     {
-        return view('components.posts.comment');
+        $timeAgo = Carbon::parse($this->comment->created_at)->diffForHumans();
+        $edited = $this->comment->created_at != $this->comment->updated_at;
+        return view('components.posts.comment', compact('timeAgo', 'edited'));
     }
 }

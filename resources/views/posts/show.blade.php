@@ -8,7 +8,7 @@
 	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-cente items-center">
 		{{-- POST --}}
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4">
-			<div class="flex items-center justify-between">
+			<div  x-data="{open: false}" class="flex items-center justify-between">
 				<div class="flex items-center gap-1">
 					<a href="{{ route('post.index', $data->category_id) }}">
 						<x-lucide-arrow-left />
@@ -23,9 +23,13 @@
 						<p class="text-xs text-muted cursor-default" title="{{ $data->updated_at }}">(Edited)</p>
 					@endif
 				</div>
-				<div class="flex items-center hover:bg-main p-2 rounded-xl text-main">
-					<svg rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
+				<div class="">
+					<div x-on:click="{open: !open}" x-on:click.outside="{open: false}" class="flex items-center hover:bg-main p-2 rounded-xl text-main">
+						<svg rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
+					</div>
+					<p x-show="open">Hello</p>					
 				</div>
+
 				
 			</div>
 

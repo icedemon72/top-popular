@@ -73,18 +73,29 @@
 			<x-form.input class="w-full lg:w-2/3 block mt-1" type="url" field="facebook" :value="$user->facebook" placeholder="https://www.facebook.com/your.account" />
 			<x-form.label class="mt-2" for="x">Twitter/X</x-form.label>
 			<x-form.input class="w-full lg:w-2/3 block mt-1" type="url" field="x" :value="$user->x" placeholder="https://www.twitter.com/your.handle" />
+		
+			@if(Auth::user()->id != $user->id)
+				<div class="w-full flex justify-end mt-5 gap-2">
+					<x-form.cancel>{{ __('Cancel') }}</x-form.cancel>		
+					<x-form.submit>{{ __('Update Profile') }}</x-form.submit>		
+				</div>
+			@endif
 		</x-profile.card>
 
-		<x-profile.card color="text-red-500" title="Danger Area">
-			<x-form.label class="mt-2" for="password">New password</x-form.label>
-			<x-form.input class="w-full lg:w-2/3 block mt-1" type="password" field="password" :error="$errors->has('password')"/>
-			<x-form.label class="mt-2" for="new_password">Confirm new password</x-form.label>
-			<x-form.input class="w-full lg:w-2/3 block mt-1" type="password" field="new_password" :error="$errors->has('new_password')"/>
+		@if(Auth::user()->id == $user->id)
+			<x-profile.card color="text-red-500" title="Danger Area">
+				<x-form.label class="mt-2" for="password">New password</x-form.label>
+				<x-form.input class="w-full lg:w-2/3 block mt-1" type="password" field="password" :error="$errors->has('password')"/>
+				<x-form.label class="mt-2" for="new_password">Confirm new password</x-form.label>
+				<x-form.input class="w-full lg:w-2/3 block mt-1" type="password" field="new_password" :error="$errors->has('new_password')"/>
+				
+				<div class="w-full flex justify-end mt-5 gap-2">
+					<x-form.cancel>{{ __('Cancel') }}</x-form.cancel>		
+					<x-form.submit>{{ __('Update Profile') }}</x-form.submit>		
+				</div>
+			</x-profile.card>
+		@else
 			
-			<div class="w-full flex justify-end mt-5 gap-2">
-				<x-form.cancel>{{ __('Cancel') }}</x-form.cancel>		
-				<x-form.submit>{{ __('Update Profile') }}</x-form.submit>		
-			</div>
-		</x-profile.card>
+		@endif
 	</form>
 </x-master-layout>

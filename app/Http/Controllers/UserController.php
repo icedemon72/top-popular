@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller implements HasMiddleware
@@ -17,6 +18,7 @@ class UserController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(['auth', 'owner'], only: ['edit', 'update']),
+            new Middleware(['role:admin'], only: ['index'])
         ];
     }
     /**
@@ -24,7 +26,14 @@ class UserController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return view('profile.index');
+        $users = DB::table('users')
+            ->select('id', 'email', 'username', 'role')
+            ->get();
+            
+        // dd($users);
+        return view('admin.users.index', [
+            'users' => $users
+        ]);
     }
 
     /**

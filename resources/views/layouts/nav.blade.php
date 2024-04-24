@@ -50,23 +50,22 @@
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <x-nav.dropdown-link :href="route('user.show', Auth::user()->username)" >
-                                {{ __('Profile') }}
+                            <x-nav.dropdown-link class="flex items-center gap-2" :href="route('user.show', Auth::user()->username)" >
+                                <x-lucide-user /> {{ __('Profile') }}
                             </x-nav.dropdown-link>
 
                             <!-- Authentication -->
                             @if (Auth::user()->role == 'admin')
-                                <x-nav.dropdown-link :href="route('admin.index')" class="text-green-500">
-                                    {{ __('Admin Dashboard') }}
+                                <x-nav.dropdown-link class="flex items-center gap-2 text-green-500" :href="route('admin.index')">
+                                    <x-lucide-layout-dashboard /> {{ __('Admin Dashboard') }}
                                 </x-nav.dropdown-link>
                             @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
 
-                                <x-nav.dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                <x-nav.dropdown-link class="flex items-center gap-2" :href="route('logout')"
+                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                    <x-lucide-log-out /> {{ __('Log Out') }}
                                 </x-nav.dropdown-link>
                             </form>
                         </x-slot>

@@ -12,17 +12,6 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-function displayComments($comments)
-{
-    $result = array();
-    foreach ($comments as $comment) {
-        echo $comment->body;
-        if ($comment->replies->count() > 0) {
-            displayComments($comment->replies);
-        }
-    }
-}
-
 class PostController extends Controller implements HasMiddleware
 {
     /**
@@ -156,16 +145,6 @@ class PostController extends Controller implements HasMiddleware
             ->where('posts.id', $id)
             ->get()
             ->first();
-
-        // $comments = DB::table('comments')
-        //     ->select([
-        //         'comments.*',
-        //         'users.username AS username'
-        //     ])
-        //     ->join('users', 'users.id', '=', 'comments.user_id')
-        //     ->where('post_id', $id)
-        //     ->orderBy('created_at', 'asc')
-        //     ->get();
 
         $comments = Comment::where(['post_id' => $id])->with('replies', 'user')->get();
 

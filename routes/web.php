@@ -24,7 +24,7 @@ Route::get('/about', function () {
 })->name('about');
 
 
-Route::resource('user', UserController::class)->except('create');
+Route::resource('user', UserController::class)->except(['create', 'index']);
 Route::resource('category/{category}/post', PostController::class)->except(['store', 'update']);
 Route::resource('post/{post}/comment', CommentController::class)->except('index');
 
@@ -53,5 +53,6 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('admin/category', CategoryController::class);
         Route::resource('admin/tag', TagController::class);
-    });
+        Route::resource('admin/user', UserController::class)->only('index');
+    }); 
 });
