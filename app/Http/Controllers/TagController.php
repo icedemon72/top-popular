@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +17,13 @@ class TagController extends Controller
      */
     public function index()
     {
+        $tags = DB::table('tags')
+            ->select([
+                'tags.*',
+                'users.username AS username'
+            ])
+            ->join('users', 'users.id', '=', 'tags.created_by')
+            ->get();
         return view('admin.tags.index', [
             'tags' => Tag::get()
         ]);
@@ -44,7 +52,7 @@ class TagController extends Controller
         $tagExists = Tag::where(['name' => $request->name])->exists();
 
         if($tagExists) {
-            return redirect('/admin/tag/create')->withErrors([
+            return redirect(route('tag.create'))->withErrors([
                 'name' => 'Tag with this name already exists!'
             ]);
         }
@@ -58,7 +66,7 @@ class TagController extends Controller
         $categoryIds = Category::findMany($categories);
 
         if(sizeof($categoryIds) !== sizeof($categories)) {
-            abort(400);
+            abort(404);
         }
 
         $tag = Tag::create([
@@ -70,7 +78,7 @@ class TagController extends Controller
             $tag->categories()->attach($categories);
         }
 
-        return redirect('/admin/tag/create')->with('success', true);
+        return redirect(route('tag.create'))->with('success', true);
     }
 
     /**
@@ -84,7 +92,7 @@ class TagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tag $tag)
+    public function edit(string $id)
     {
         // $categories = Category::where("id", "=", function($query){
         //     $query->from("category_tag")
@@ -92,14 +100,70 @@ class TagController extends Controller
         // })
         // ->get();
         //
+        $tag = Tag::where(['id' => $id])->with('categories')->first();
+        
+        if(!$tag) {
+            abort(404);
+        }
+        
+        $categories = DB::table('categories')->get();
+
+        $selectedCategories = array();
+
+        foreach($tag->categories as $category) {
+            array_push($selectedCategories, $category->id);
+        }
+
+        return view('admin.tags.edit', [
+            'tag' => $tag,
+            'categories' => $categories,
+            'selected' => join(', ', $selectedCategories)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTagRequest $request, Tag $tag)
+    public function update(Request $request, string $id)
     {
-        //
+        $request->only(['name', 'categories']);
+        $request->validate([
+            'name' => 'required|string',
+            'categories' => 'required'
+        ]);
+
+        $tagExists = DB::table('tags')
+            ->where(['id' => $id])
+            ->get()
+            ->first();
+
+        if(!$tagExists) {
+            abort(404);
+        }
+
+        $categories = explode(',', $request->categories);
+
+        $categoryIds = Category::findMany($categories);
+
+        if(sizeof($categoryIds) !== sizeof($categories)) {
+            return redirect(route('tag.edit', [
+                'tag' => $id
+            ]))->withErrors([
+                'category' => __('Wrong category ID provided.')
+            ]);
+        }
+        
+        DB::table('tags')->where(['id' => $id])->update([
+            'name' => $request->name,
+        ]);
+
+        $tag = Tag::find($id);
+        
+        $tag->categories()->sync($categoryIds);
+
+        return redirect(route('tag.edit', [
+            'tag' => $id
+        ]))->with('edited', true);
     }
 
     /**

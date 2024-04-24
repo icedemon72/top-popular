@@ -6,8 +6,9 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Tag;
+use Illuminate\Support\Facades\DB;
 
-class CategoryController extends Controller
+class CategoryController extends Controller 
 {
     /**
      * Display a listing of the resource.
@@ -89,9 +90,26 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(string $id)
     {
-        //
+        $category = Category::where(['id' => $id])->with('tags')->first();
+        
+        if(!$category) {
+            abort(404);
+        }
+        
+        $tags = DB::table('tags')->get();
+        $selectedTags = array();
+
+        foreach($category->tags as $tag) {
+            array_push($selectedTags, $tag->id);
+        }
+
+        return view('admin.categories.edit', [
+            'category' => $category,
+            'tags' => $tags,
+            'selected' => join(', ', $selectedTags)
+        ]);
     }
 
     /**

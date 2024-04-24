@@ -9,7 +9,7 @@
 <x-master-layout>
   <x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-2 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-gray-400 dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-2 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
 				<x-lucide-pen />
 				{{ __('Edit a post') }}
 			</h2>
@@ -17,7 +17,7 @@
 	</x-slot>
 
 	<div class="flex w-full justify-center mt-5">
-		<div class="w-full md:w-4/5 lg:w-3/5 bg-card p-4">
+		<div class="w-full md:w-4/5 lg:w-3/5 bg-card p-4 rounded-lg">
 			<form action="{{ route('post.update', $post->id) }}" method="POST">
         @method('PATCH')
 				@csrf

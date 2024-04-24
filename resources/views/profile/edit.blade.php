@@ -7,7 +7,7 @@
 <x-master-layout>
 	<x-slot name="header">
 		<div class="w-full flex justify-center">
-			<h2 class="w-full lg:w-1/2 font-semibold text-gray-800 dark:text-gray-200 leading-tight bg-gray-400 dark:bg-gray-800 p-4 rounded-lg flex justify-between gap-2 items-center">
+			<h2 class="w-full lg:w-1/2 font-semibold text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg flex justify-between gap-2 items-center">
 				<div class="text-xl">
 					@if($myProfile)
 						{{ __('Edit my profile') }}

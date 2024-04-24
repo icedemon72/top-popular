@@ -7,7 +7,7 @@
          </x-admin.sidebar-item>
 
          <x-admin.sidebar-title>{{ __('Forum') }}</x-admin.sidebar-title>
-         <x-admin.sidebar-item>
+         <x-admin.sidebar-item :href="route('admin.post.index')" :active="request()->routeIs('admin.post.index')">
             <x-lucide-dock />
             {{ __('Posts') }}
          </x-admin.sidebar-item>
@@ -16,7 +16,7 @@
             {{ __('Categories') }}
          </x-admin.sidebar-item>
 
-         <x-admin.sidebar-item :href="route('tag.index')" :active="request()->routeIs('tag.index') || request()->routeIs('tag.create')">
+         <x-admin.sidebar-item :href="route('tag.index')" :active="request()->routeIs('tag.index') || request()->routeIs('tag.create') || request()->routeIs('tag.edit')">
             <x-lucide-tag />
             {{ __('Tags') }}
          </x-admin.sidebar-item>
@@ -27,9 +27,13 @@
             <x-lucide-users />
             {{ __('Users') }}
          </x-admin.sidebar-item>
-         <x-admin.sidebar-item>
+         <x-admin.sidebar-item :href="route('mod.index')" :active="request()->routeIs('mod.index')">
             <x-lucide-shield-plus />
             {{ __('Moderators') }}
+         </x-admin.sidebar-item>
+         <x-admin.sidebar-item>
+            <x-lucide-ban />
+            {{ __('Bans') }}
          </x-admin.sidebar-item>
 
          <x-admin.sidebar-title>{{ __('Support') }}</x-admin.sidebar-title>

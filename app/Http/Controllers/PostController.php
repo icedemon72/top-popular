@@ -6,6 +6,7 @@ use App\Models\Comment;
 use League\HTMLToMarkdown\HtmlConverter;
 use App\Models\Post;
 use App\Models\Tag;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -229,21 +230,26 @@ class PostController extends Controller implements HasMiddleware
             abort(403);
         }
 
-        $post = Post::find($id);
-        
-        if($post->category_id != $request->category && (Auth::user()->role != 'admin' || Auth::user()->role != 'moderator')) {
-            abort(403);
-        }
+        try {
+            $post = Post::find($id);
 
-        $post->save([
+            if($post->category_id != $request->category && (Auth::user()->role != 'admin' || Auth::user()->role != 'moderator')) {
+                abort(403);
+            }
+
+            Post::find($id)->update([
                 'title' => $request->title,
                 'body'=> $request->body,
                 'category_id' => $request->category
             ]);
 
-        if(sizeof($tagIds)) {
-            $post->tags()->sync($tags);
+            if(sizeof($tagIds)) {
+                $post->tags()->sync($tags);
+            }
+        } catch (Error $e) {
+            abort(404);
         }
+        
         
         return redirect(route('post.show', [
             'post' => $id, 'category' => $request->category
@@ -256,5 +262,25 @@ class PostController extends Controller implements HasMiddleware
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getAll()
+    {
+        $posts = DB::table('posts')
+            ->select([
+                'posts.*',
+                'users.username AS username',
+                'categories.name AS category',
+                DB::raw('COUNT(comments.id) AS comments')
+            ])
+            ->join('users', 'users.id', '=', 'posts.user_id')
+            ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
+            ->leftJoin('categories', 'categories.id', '=', 'posts.category_id')
+            ->groupBy(DB::raw('1, 2'))
+            ->get();
+        
+        return view('admin.posts.index', [
+            'posts' => $posts
+        ]);
     }
 }

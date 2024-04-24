@@ -1,6 +1,6 @@
 {{-- Add pill xD --}}
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg", 'id' => $comment->id]) }}>
-    <div x-data="{ open: false, expanded: true }">
+    <div x-data="{ open: false, expanded: true, commentOpen: false }">
         <div x-show="!expanded" class="flex text-muted text-xs gap-2 items-center">
             <button x-on:click="expanded = !expanded">
                 <x-lucide-chevron-right class="w-4 h-4" />
@@ -46,14 +46,35 @@
                         <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
                         <p class="text-sm select-none">Reply</p>
                     </div>
-        
-                    <div class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer">
-                        <svg rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
-                    </div>
                     
-                    {{-- Implement comments dropdown here... --}}
-                    <div class="absolute hidden">
-        
+                    <div class="select-none">
+
+                        <div x-on:click="commentOpen = !commentOpen" x-on:click.outside="commentOpen = false" class="flex items-center hover:bg-main p-2 rounded-xl text-main cursor-pointer">
+                            <svg  x-show="!commentOpen" class="w-4 h-4" rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
+                            <x-lucide-circle-x x-show="commentOpen" class="w-4 h-4" />
+                        </div>
+                        
+                        <x-animation.pop-in class="relative" open="commentOpen">
+                            <x-posts.dropdown>
+                                @if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $comment->user_id)
+                                    <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                        <x-lucide-pencil />
+                                        {{ __('Edit') }}
+                                    </x-nav.dropdown-link>
+                                    <x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="#">
+                                        <x-lucide-trash-2 />
+                                        {{ __('Delete') }}
+                                    </x-nav.dropdown-link>
+                                @endif
+                                @if(Auth::user()->id != $comment->user_id)
+                                    <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                        <x-lucide-flag />
+                                        {{ __('Report') }}
+                                    </x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
+                                @endif
+                            </x-posts.dropdown>		
+                        </x-animation.pop-in>
+
                     </div>
                 </div>    
             </div>
@@ -73,7 +94,7 @@
         
             @if ($comment->replies->count() > 0)
                 @foreach ($comment->replies as $reply)
-                    <div x-data="{open: false}" class="ml-1 lg:ml-5 border-l-gray-200 border-l-2 p-2" >
+                    <div x-data="{open: false}" class="ml-1 lg:ml-5 border-l-gray-400 border-l-2 p-2" >
                         <x-posts.comment :comment="$reply" :op="$op"/>
                     </div>
                 @endforeach

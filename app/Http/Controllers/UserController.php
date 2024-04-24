@@ -17,8 +17,7 @@ class UserController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(['auth', 'owner'], only: ['edit', 'update']),
-            new Middleware(['role:admin'], only: ['index'])
+            new Middleware(['auth', 'owner'], only: ['edit', 'update'])
         ];
     }
     /**
@@ -26,9 +25,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $users = DB::table('users')
-            ->select('id', 'email', 'username', 'role')
-            ->get();
+        $users = DB::table('users')->get();
             
         // dd($users);
         return view('admin.users.index', [
@@ -124,6 +121,33 @@ class UserController extends Controller implements HasMiddleware
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
+    {
+        //
+    }
+
+    public function modIndex()
+    {
+        $users = DB::table('users')
+            ->where(['role' => 'moderator'])
+            ->get();
+
+        return view('admin.mods.index', [
+            'users' => $users
+        ]);
+    }
+
+    /**
+     * Bans the specified user.
+     */
+    public function ban(string $id) 
+    {
+        //
+    }
+
+    /**
+     * Unbans the specified user.
+     */
+    public function unban(string $id) 
     {
         //
     }

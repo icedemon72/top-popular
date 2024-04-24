@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -54,5 +55,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('admin/category', CategoryController::class);
         Route::resource('admin/tag', TagController::class);
         Route::resource('admin/user', UserController::class)->only('index');
+        
+        Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
+        Route::get('admin/post', [PostController::class, 'getAll'])->name('admin.post.index');
     }); 
 });
