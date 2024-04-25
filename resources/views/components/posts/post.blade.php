@@ -31,21 +31,25 @@
 	}
 @endphp
 
-<div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer"]) }} onClick="window.location.href='{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}'">
-	<div class="flex items-center gap-1">
-		{{-- Image goes here... --}}
-		<a href="{{ route('user.show', $post->username) }}" class="text-xs text-main font-bold hover:underline">{{ $post->username }}</a> 
-		<p class="text-xs text-muted">•</p>
-		<p class="text-xs text-muted cursor-default" title="{{ $post->created_at }}">5 days ago</p>
-		@if($edited)
-			<p class="text-xs text-muted cursor-default" title="{{ $post->updated_at }}">(Edited)</p>
-		@endif
-	</div>
+ {{-- onClick="window.location.href='{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}'" --}}
 
-	<div class="mt-2 h-auto">
-		<p class="font-bold">{{ $post->title }}</p>
-		<div class="text-muted text-sm">
-			<p class="text-wrap break-words">{{ $post->body }}</p>
+<div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer"]) }} >
+	<div>
+		<div class="flex items-center gap-1">
+			{{-- Image goes here... --}}
+			<a href="{{ route('user.show', $post->username) }}" class="text-xs text-main font-bold hover:underline">{{ $post->username }}</a> 
+			<p class="text-xs text-muted">•</p>
+			<p class="text-xs text-muted cursor-default" title="{{ $post->created_at }}">5 days ago</p>
+			@if($edited)	
+				<p class="text-xs text-muted cursor-default" title="{{ $post->updated_at }}">(Edited)</p>
+			@endif
+		</div>
+	
+		<div class="mt-2 h-auto">
+			<p class="font-bold">{{ $post->title }}</p>
+			<div class="text-muted text-sm">
+				<p class="text-wrap break-words">{{ $post->body }}</p>
+			</div>
 		</div>
 	</div>
 
@@ -63,14 +67,52 @@
 			<p class="lg:text-xs font-bold">0</p>
 		</div>
 
-		<div class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
+		<a href="{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}" class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
 			<x-lucide-message-square-text class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5" />
 			<p class="text-xs font-bold">{{ $post->comments }}</p>
-		</div>
+		</a>
 
-		<div class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
-			<x-lucide-square-arrow-out-up-right class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5" />
-			<p class="lg:text-xs">{{ __('Share') }}</p>
+		<div x-data="{
+			link: '{{ route('post.show', ['post' => $post->id, 'category' => $post->category_id]) }}',
+			timeout: null,
+			copied: false,
+			open: false,    
+			copy () {
+				$clipboard(this.link);
+				this.copied = true;
+				clearTimeout(this.timeout);
+
+				this.timeout = setTimeout(() => {
+					this.copied = false;
+				}, 2000)
+			}
+		}" x-on:click.outside="open = false" >
+			<div x-on:click="open = !open" class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
+				<x-lucide-square-arrow-out-up-right class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5" />
+				<p class="lg:text-xs">{{ __('Share') }}</p>
+			</div>
+
+			<x-animation.pop-in class="relative" open="open">
+				<x-posts.dropdown open="open" class="absolute w-72">
+					<div>
+						<h2 class="text-md text-main text-center font-semibold mb-2">{{ __('Share the post') }}</h2>
+						<div x-on:click="copy" class="flex items-center justify-between relative w-full border-b-2 text-main dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm p-2 ">
+							<div class="flex gap-1 items-center select-none">
+								<x-lucide-link-2 class="w-3 h-3" />
+								<p class="text-xs flex items-center overflow-x-auto">
+									{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}
+								</p>
+							</div>
+							<x-lucide-copy x-show="!copied" class="w-4 h-4 cursor-pointer" />
+							<x-lucide-circle-check-big x-show="copied" class="w-4 h-4 cursor-pointer text-green-500" />
+						</div>
+
+						<div class="mt-2 p-2">
+							<p class="text-xs text-muted">{{ __('You can copy the link by clicking the button above or by doing it manually.') }}</p>
+						</div>
+					</div>
+				</x-posts.dropdown>
+			</x-animation.pop-in>
 		</div>
 	</div>
 </div>

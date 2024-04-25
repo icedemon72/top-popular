@@ -10,8 +10,18 @@
 		</div>
 	</x-slot>
 
-	<div class="w-full flex justify-center mt-7">
-		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-7 overflow-x-auto shadow-md sm:rounded-lg">
+	<div class="w-full flex flex-col items-center justify-center mt-7">
+		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
+			<div class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
+				<x-lucide-filter />
+				{{ __('Filters') }}
+			</div>
+			<form class="flex" method="GET">
+				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" />
+			</form>
+		</div>
+
+		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
 			<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 					<tr>

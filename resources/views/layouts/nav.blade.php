@@ -26,8 +26,9 @@
             </div>
 
             <div class="flex align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
-                <x-form.input field="search" placeholder="Search Top Popular" class="w-full rounded-xl my-3"
-                    type="text" />
+                <form  class="w-full rounded-xl my-3" method="GET" action="{{ route('post.search', '1') }}">
+                    <x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular"/>
+                </form>
             </div>
 
             {{-- Right side --}}

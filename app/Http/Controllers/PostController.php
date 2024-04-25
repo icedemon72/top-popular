@@ -79,9 +79,6 @@ class PostController extends Controller implements HasMiddleware
             'category' => 'required',
             'tags' => 'sometimes'
         ]);
-        $converter = new HtmlConverter(array('preserve_comments' => true, 'header_style' => 'atx'));
-
-        $converted = $converter->convert($request->body);
 
         $category = DB::table('categories')->where('id', $request->category)->exists();
 
@@ -94,8 +91,6 @@ class PostController extends Controller implements HasMiddleware
         if(isset($request->tags)) {
             $tags = array_values(array_unique(explode(',', $request->tags)));
         }
-
-
 
         $tagIds = Tag::findMany($tags);
 
@@ -281,6 +276,41 @@ class PostController extends Controller implements HasMiddleware
         
         return view('admin.posts.index', [
             'posts' => $posts
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->query('search');
+        $category = $request->query('category');
+
+        $categoryData = DB::table('categories')
+        ->where('id', $category)
+        ->get()
+        ->first();
+
+        
+        if(!$categoryData) {
+            abort(404);
+        }
+        
+        $posts = DB::table('posts')
+            ->select([
+                'posts.*',
+                'users.username',
+                DB::raw('COUNT(comments.id) AS comments')
+            ])
+            ->join('users', 'users.id', '=', 'posts.user_id')
+            ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
+            ->where('posts.category_id', $category)
+            ->where('title', 'like', "%$search%")
+            ->where('category_id', $category)
+            ->groupBy(DB::raw('1, 2'))
+            ->get();
+
+        return view('posts.index', [
+            'posts' => $posts, 
+            'category' => $categoryData
         ]);
     }
 }

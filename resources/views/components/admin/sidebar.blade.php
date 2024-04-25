@@ -37,7 +37,7 @@
          </x-admin.sidebar-item>
 
          <x-admin.sidebar-title>{{ __('Support') }}</x-admin.sidebar-title>
-         <x-admin.sidebar-item>
+         <x-admin.sidebar-item :href="route('message.index')" :active="request()->routeIs('message.index')">
             <x-lucide-mails />
             {{ __('Messages') }}
          </x-admin.sidebar-item>
