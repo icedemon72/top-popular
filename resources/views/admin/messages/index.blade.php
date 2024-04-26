@@ -12,9 +12,26 @@
 
 	<div class="w-full flex flex-col items-center justify-center mt-7">
 		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
-			@foreach ($messages as $message)
-				{{ $message->body }}
-			@endforeach
+			<div class="flex flex-grow flex-col bg-card p-2 rounded-lg">
+				@if (count($messages) > 0)
+					@foreach ($messages as $message)
+						<a href="{{ route('message.show', $message->id) }}" class="flex flex-grow jusitfy-between items-center gap-2 hover:bg-main hover:shadow-sm p-2 cursor-pointer">
+							<div class="">
+								<span class="font-black text-main text-xs">{{ $message->user->username }}</span>
+							</div>
+							<div class="flex-1">
+								<span class="font-bold text-main">{{ substr($message->title, 0, 16) }} -</span>
+								<span class="text-muted">{{ substr($message->body, 0, 16) }}</span>
+							</div>
+							<div class="text-main font-bold">
+								{{ $message->created_at }}
+							</div>
+						</a>	
+					@endforeach	
+				@else
+					Hello
+				@endif
+			</div>
 		</div>
 	</div>
 </x-admin-layout>

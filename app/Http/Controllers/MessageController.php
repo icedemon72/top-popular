@@ -26,7 +26,7 @@ class MessageController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $messages = DB::table('messages')->get();
+        $messages = Message::with('user')->orderByDesc('created_at')->get();
         
         return view('admin.messages.index', [
             'messages' => $messages
@@ -77,7 +77,11 @@ class MessageController extends Controller implements HasMiddleware
      */
     public function show(string $id)
     {
-        //
+        $message = Message::where('id', $id)->with('user')->firstOrFail();
+
+        return view('admin.messages.show', [
+            'message' => $message
+        ]);
     }
 
     /**
@@ -102,5 +106,13 @@ class MessageController extends Controller implements HasMiddleware
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Sets message's status.
+     */
+    public function updateStatus(Request $request, string $id) 
+    {
+
     }
 }

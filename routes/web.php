@@ -59,5 +59,6 @@ Route::middleware('auth')->group(function () {
         
         Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
         Route::get('admin/post', [PostController::class, 'getAll'])->name('admin.post.index');
+        Route::patch('admin/', [MessageController::class, 'updateStatus'])->name('message.updateStatus');
     }); 
 });

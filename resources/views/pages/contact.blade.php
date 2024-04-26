@@ -44,6 +44,12 @@
 					</x-form.error>
 				@endif
 
+				@if(session('success'))
+					<x-form.success>
+						{{__('Message successfully sent!')}}
+					</x-form.success>
+				@endif
+
 				<x-form.label text="{{ __('Title') }}" />
 				<x-form.input class="w-full block mt-1 mb-3" field="title" value="{{ old('title') }}" :error="$errors->has('title')" placeholder="{{ __('This function needs to be changed') }}" required />
 

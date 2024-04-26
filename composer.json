@@ -9,7 +9,7 @@
         "laravel/framework": "^11.0",
         "league/html-to-markdown": "^5.1",
         "mallardduck/blade-lucide-icons": "^1.21",
-        "mkocansey/bladewind": "^2.5"
+        "mkocansey/bladewind": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
