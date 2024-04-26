@@ -34,11 +34,21 @@
 					<p class="">{{ __('We\'d appreciate your feedback.') }}</p>
 				</div>
 
+				@if ($errors->any())
+					<x-form.error>
+						<ul>
+								@foreach ($errors->all() as $error)
+										<li>{{ $error }}</li>
+								@endforeach
+						</ul>
+					</x-form.error>
+				@endif
+
 				<x-form.label text="{{ __('Title') }}" />
-				<x-form.input class="w-full block mt-1 mb-3" field="title" value="{{ old('title') }}" placeholder="{{ __('This function needs to be changed') }}" required />
+				<x-form.input class="w-full block mt-1 mb-3" field="title" value="{{ old('title') }}" :error="$errors->has('title')" placeholder="{{ __('This function needs to be changed') }}" required />
 
 				<x-form.label text="{{ __('Message') }}" />
-				<x-form.textarea class="w-full block mt-1 mb-5" field="body" placeholder="{{ __('I noticed something off on your site') }}" required />
+				<x-form.textarea class="w-full block mt-1 mb-5" field="body" :error="$errors->has('body')" placeholder="{{ __('I noticed something off on your site') }}">{{ old('body') }}</x-form.textarea>
 
 				<x-form.label class="mb-1" text="{{ __('Category') }}" />
 				<x-bladewind::select 

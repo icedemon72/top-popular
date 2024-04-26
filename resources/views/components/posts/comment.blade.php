@@ -56,21 +56,23 @@
                         
                         <x-animation.pop-in class="relative" open="commentOpen">
                             <x-posts.dropdown>
-                                @if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $comment->user_id)
-                                    <x-nav.dropdown-link class="flex items-center gap-2" href="#">
-                                        <x-lucide-pencil />
-                                        {{ __('Edit') }}
-                                    </x-nav.dropdown-link>
-                                    <x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="#">
-                                        <x-lucide-trash-2 />
-                                        {{ __('Delete') }}
-                                    </x-nav.dropdown-link>
-                                @endif
-                                @if(Auth::user()->id != $comment->user_id)
-                                    <x-nav.dropdown-link class="flex items-center gap-2" href="#">
-                                        <x-lucide-flag />
-                                        {{ __('Report') }}
-                                    </x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
+                                @if(Auth::check())
+                                    @if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $comment->user_id)
+                                        <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                            <x-lucide-pencil />
+                                            {{ __('Edit') }}
+                                        </x-nav.dropdown-link>
+                                        <x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="#">
+                                            <x-lucide-trash-2 />
+                                            {{ __('Delete') }}
+                                        </x-nav.dropdown-link>
+                                    @endif
+                                    @if(Auth::user()->id != $comment->user_id)
+                                        <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                            <x-lucide-flag />
+                                            {{ __('Report') }}
+                                        </x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
+                                    @endif
                                 @endif
                             </x-posts.dropdown>		
                         </x-animation.pop-in>

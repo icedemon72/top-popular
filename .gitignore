@@ -3,6 +3,8 @@
 /public/build
 /public/hot
 /public/storage
+/public/vendor/bladewind
+/resources/views/components/bladewind
 /storage/*.key
 /vendor
 .env

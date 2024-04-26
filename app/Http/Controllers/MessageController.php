@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -50,7 +51,7 @@ class MessageController extends Controller implements HasMiddleware
         $request->validate([
             'title' => 'required|string',
             'body' => 'required|string',
-            'category' => 'required|string|in'
+            'category' => 'required|string'
         ]);
 
         $allowedCategories = [
@@ -61,7 +62,7 @@ class MessageController extends Controller implements HasMiddleware
             $request['category'] = 'Other';
         }
 
-        DB::table('messages')->insert([
+        Message::create([
             'title' => $request->title,
             'body' => $request->body,
             'category' => $request->category,

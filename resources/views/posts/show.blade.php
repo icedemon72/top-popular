@@ -36,24 +36,26 @@
 						<x-lucide-circle-x x-show="open" class="w-4 h-4" />
 					</div>
 					<x-animation.pop-in class="relative" open="open">
-						<x-posts.dropdown>
-							@if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $data->user_id)
-								<x-nav.dropdown-link class="flex items-center gap-2" href="{{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }}">
-									<x-lucide-pencil />
-									{{ __('Edit') }}
-								</x-nav.dropdown-link>
-								<x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="{{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }}">
-									<x-lucide-trash-2 />
-									{{ __('Delete') }}
-								</x-nav.dropdown-link>
-							@endif
-							@if(Auth::user()->id != $data->id)
-								<x-nav.dropdown-link class="flex items-center gap-2" href="#">
-									<x-lucide-flag />
-									{{ __('Report') }}
-								</x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
-							@endif
-						</x-posts.dropdown>		
+						@if(Auth::check())
+							<x-posts.dropdown>
+								@if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $data->user_id)
+									<x-nav.dropdown-link class="flex items-center gap-2" href="{{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }}">
+										<x-lucide-pencil />
+										{{ __('Edit') }}
+									</x-nav.dropdown-link>
+									<x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="{{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }}">
+										<x-lucide-trash-2 />
+										{{ __('Delete') }}
+									</x-nav.dropdown-link>
+								@endif
+								@if(Auth::check() && Auth::user()->id != $data->id)
+									<x-nav.dropdown-link class="flex items-center gap-2" href="#">
+										<x-lucide-flag />
+										{{ __('Report') }}
+									</x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
+								@endif
+							</x-posts.dropdown>		
+						@endif
 					</x-animation.pop-in>
 				</div>
 

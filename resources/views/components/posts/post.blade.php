@@ -93,7 +93,7 @@
 			</div>
 
 			<x-animation.pop-in class="relative" open="open">
-				<x-posts.dropdown open="open" class="absolute w-72">
+				<x-posts.dropdown open="open" class="absolute w-96">
 					<div>
 						<h2 class="text-md text-main text-center font-semibold mb-2">{{ __('Share the post') }}</h2>
 						<div x-on:click="copy" class="flex items-center justify-between relative w-full border-b-2 text-main dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm p-2 ">
