@@ -5,7 +5,7 @@
 @endphp
 
 
-<x-master-layout>
+<x-admin-layout>
   <x-slot name="header">
 		<div class="flex w-full justify-center">
 			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
@@ -23,28 +23,37 @@
       <h1 class="flex items-center gap-3 text-3xl text-main">
         {{ $message->title }}
         <span class="bg-main px-2 py-1 rounded-lg text-sm cursor-pointer">{{ $message->category }}</span>
+        @if($message->status)
+          <span class="bg-main px-2 py-1 rounded-lg text-sm cursor-pointer">{{ $message->status }}</span>
+        @endif
       </h1>
       <div class="flex w-full justify-between gap-2 items-center border-b-2 pb-3">
         <div>
           <a href="{{ route('user.show', $message->user->username) }}" class="text-main text-sm font-bold">{{ $message->user->username }}</a>
           <span class="text-muted text-xs">&lt;{{ $message->user->email }}&gt;</span>
         </div>
-        <span class="text-sm text-muted">{{ $message->created_at }}</span>
+        <span class="text-sm text-muted">{{ date_format(date_create($message->created_at), 'd.m.Y. H.i')}}</span>
       </div>
       <div class="mt-3 text-muted">
         {{ $message->body }}
       </div>
 
-      <form class="flex w-full justify-end mt-5 gap-2" method="POST" action="{{ route('message.updateStatus', $message->id) }}">
+      <form class="flex w-full justify-end mt-5 gap-2" method="POST" action="{{ route('message.updateStatus', ['message' => $message->id]) }}">
         @method('PATCH')
         @csrf
         <select class='dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm p-2 cursor-pointer' name="status">
           @foreach($status as $option)
-            <option :value="$option">{{ $option }}</option>
+            <option value="{{ $option }}">{{ $option }}</option>
           @endforeach
         </select>
-        <x-form.submit>{{ __('Set status') }}</x-form.submit>
+        <x-form.submit>
+          @if($message->status)
+            {{ __('Update status') }}
+          @else
+            {{ __('Set status') }}
+          @endif
+        </x-form.submit>
       </form>
     </div>
   </div>
-</x-master-layout>
+</x-admin-layout>

@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller implements HasMiddleware
@@ -25,7 +24,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $users = DB::table('users')->get();
+        $users = User::get();
             
         // dd($users);
         return view('admin.users.index', [
@@ -127,9 +126,7 @@ class UserController extends Controller implements HasMiddleware
 
     public function modIndex()
     {
-        $users = DB::table('users')
-            ->where(['role' => 'moderator'])
-            ->get();
+        $users = User::where(['role' => 'moderator'])->get();
 
         return view('admin.mods.index', [
             'users' => $users

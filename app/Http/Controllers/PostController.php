@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Utils\Utils;
+use App\Models\Category;
 use App\Models\Comment;
-use League\HTMLToMarkdown\HtmlConverter;
+use App\Models\Like;
 use App\Models\Post;
 use App\Models\Tag;
 use Error;
@@ -11,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -21,7 +23,7 @@ class PostController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(['auth'], only: ['create']),
+            new Middleware(['auth'], only: ['create', 'like']),
             new Middleware(['auth', 'owner:post'], only: ['edit', 'update', 'destroy'])
         ];
     }
@@ -30,23 +32,21 @@ class PostController extends Controller implements HasMiddleware
      */
     public function index($category)
     {   
-        $categoryData = DB::table('categories')->where('id', $category)->first();
+        $categoryData = Category::where('id', $category)->first();
         
-        $posts = DB::table('posts')
-                    ->select([
-                        'posts.*',
-                        'users.username',
-                        DB::raw('COUNT(comments.id) AS comments')
-                    ])
-                    ->join('users', 'users.id', '=', 'posts.user_id')
-                    ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
-                    ->where('posts.category_id', $category)
-                    ->groupBy(DB::raw('1, 2'))
-                    ->get();
-
         if(!$categoryData) {
             abort(404);
         }
+        
+        $posts = Post::filter()
+            ->sort()
+            ->where('category_id', $category)
+            ->with('poster', 'likes')
+            ->withCount('comments')
+            ->get();
+
+        $posts = Utils::GetLikes($posts);
+
         return view('posts.index', [
             'posts' => $posts,
             'category' => $categoryData
@@ -58,8 +58,8 @@ class PostController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        $categories = DB::table('categories')->orderBy('name')->get();
-        $tags = DB::table('tags')->get();
+        $categories = Category::orderBy('name')->get();
+        $tags = Tag::get();
 
         return view('posts.create', [
             'categories' => $categories,
@@ -80,9 +80,7 @@ class PostController extends Controller implements HasMiddleware
             'tags' => 'sometimes'
         ]);
 
-        $category = DB::table('categories')->where('id', $request->category)->exists();
-
-        if(!$category) {
+        if(!Category::where('id', $request->category)->exists()) {
             abort(404, 'Bad request');
         }
 
@@ -117,37 +115,50 @@ class PostController extends Controller implements HasMiddleware
      */
     public function show(string $category, string $id)
     {
-        $post = DB::table('posts')->where(['id' => $id, 'category_id' => $category])->get()->first();
+        $post = Post::where(['id' => $id, 'category_id' => $category])->get()->first();
 
         if(!$post) {
             abort(404);
         }
 
-        $tags = DB::table('post_tag')
-            ->select(['tags.name', 'tags.id'])
-            ->join('tags', 'tags.id', '=', 'post_tag.tag_id')
-            ->where('post_id', $id)
-            ->get();
-
-        $data = DB::table('posts')
-            ->select([
-                'posts.*',
-                'categories.name AS category',
-                'users.username AS username',
-                'users.role AS role'
-            ])
-            ->join('categories', 'categories.id', '=', 'posts.category_id')
-            ->join('users', 'users.id', '=', 'posts.user_id')
-            ->where('posts.id', $id)
+        $data = Post::where('id', $id)
+            ->with('tags:id,name', 'category:id,name', 'poster:id,username,role')
             ->get()
             ->first();
 
-        $comments = Comment::where(['post_id' => $id])->with('replies', 'user')->get();
+        $comments = Comment::sort()
+            ->where(['post_id' => $id])
+            ->with('replies', 'user', 'likes')
+            ->get();
+        
+        $comments = Utils::GetLikes($comments); 
+
+        $count = Like::whereHasMorph('likeable', Post::class)
+            ->toBase()
+            ->selectRaw('count(IF(type = "like", 0, null)) as likes')
+            ->selectRaw('count(IF(type = "dislike", 0, null)) as dislikes')
+            ->where('likeable_id', $id)
+            ->get()
+            ->first();
+
+        $likeObj = null;
+
+        if(Auth::check()) {
+            $likeObj = Like::whereHasMorph('likeable', Post::class)
+                ->where([
+                    'user_id' => Auth::user()->id,  
+                    'likeable_id' => $post->id
+                ])
+                ->get()
+                ->first();
+        }
 
         return view('posts.show', [
             'data' => $data,
-            'tags' => $tags,
-            'comments' => $comments
+            'comments' => $comments,
+            'likes' => $count->likes,
+            'dislikes' => $count->dislikes,
+            'likeObj' => $likeObj ?? null
         ]);
     }
 
@@ -156,32 +167,27 @@ class PostController extends Controller implements HasMiddleware
      */
     public function edit(string $category, string $id)
     {
-        $post = DB::table('posts')
-            ->select(['posts.*', 'categories.name AS category'])
-            ->join('categories', 'categories.id', '=', 'posts.category_id')
-            ->where(['posts.id' => $id, 'posts.category_id' => $category])
+        $post = Post::where(['id' => $id, 'category_id' => $category])
+            ->with('category:id,name', 'tags:id,name')
             ->get()
             ->first();
-
+        
         if(!$post) {
             abort(404);
         }
 
-        $categories = DB::table('categories')->get();
+        $categories = Category::get();
 
-        $tags = DB::table('tags')->get();
-
-        $selectedTags = DB::table('post_tag')
-            ->select('id')
-            ->where(['post_id' => $post->id])
-            ->get();
+        $tags = Tag::get();
 
         $selected = array();
 
-        foreach($selectedTags as $tag) {
+        foreach($post->tags as $tag) {
             array_push($selected, $tag->id);
         }
         
+        unset($post['tags']);
+
         return view('posts.edit', [
             'post'=> $post,
             'categories'=> $categories,
@@ -204,8 +210,7 @@ class PostController extends Controller implements HasMiddleware
             'tags' => 'nullable'
         ]);
 
-        $category = DB::table('categories')
-            ->where('id', $request->category)
+        $category = Category::where('id', $request->category)
             ->get()
             ->first();
 
@@ -245,10 +250,60 @@ class PostController extends Controller implements HasMiddleware
             abort(404);
         }
         
-        
         return redirect(route('post.show', [
             'post' => $id, 'category' => $request->category
         ]))->with('edited', true);
+    }
+
+    public function like(Request $request, string $post) 
+    {
+        $type = $request->type ?? 'like';
+
+        $postObj = Post::findOrFail($post);
+
+        if($postObj->archived) {
+            abort(403, 'Cannot like archived post...');
+        }
+
+        $alreadyLiked = Like::whereHasMorph('likeable', Post::class)->where([
+            'user_id' => Auth::user()->id,  
+            'likeable_id' => $post
+        ])
+            ->get()
+            ->first();
+
+        $switched = false;
+        if(!$alreadyLiked) {
+            $like = new Like([
+                'user_id' => Auth::user()->id,
+                'type' => $type
+            ]);
+
+            $like->likeable()->associate($postObj);
+            $like->save();
+        }  else {
+            $switched = $alreadyLiked->type != $type;
+
+            (!$switched) 
+                ? Like::find($alreadyLiked->id)->delete()
+                : Like::find($alreadyLiked->id)->update(['type' => $type]);
+        }
+        
+        $count = Like::whereHasMorph('likeable', Post::class)->toBase()
+            ->selectRaw('count(IF(type = "like", 0, null)) as likes')
+            ->selectRaw('count(IF(type = "dislike", 0, null)) as dislikes')
+            ->where('likeable_id', $post)
+            ->get()
+            ->first();
+
+        return Response::json([
+            'likes' => $count->likes,
+            'dislikes' => $count->dislikes,
+            'type' => $type,
+            'alreadyLiked' => !$alreadyLiked,
+            'post' => $post,
+            'switched' => $switched
+        ]);        
     }
 
     /** 
@@ -261,17 +316,8 @@ class PostController extends Controller implements HasMiddleware
 
     public function getAll()
     {
-        $posts = DB::table('posts')
-            ->select([
-                'posts.*',
-                'users.username AS username',
-                'categories.name AS category',
-                DB::raw('COUNT(comments.id) AS comments')
-            ])
-            ->join('users', 'users.id', '=', 'posts.user_id')
-            ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
-            ->leftJoin('categories', 'categories.id', '=', 'posts.category_id')
-            ->groupBy(DB::raw('1, 2'))
+        $posts = Post::with('category:id,name', 'poster:id,username')
+            ->withCount('comments')
             ->get();
         
         return view('admin.posts.index', [
@@ -279,38 +325,51 @@ class PostController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function search(Request $request)
+    // public function search(Request $request)
+    // {
+    //     $search = $request->query('search');
+    //     $category = $request->query('category');
+
+    //     $categoryData = Category::where('id', $category)
+    //         ->get()
+    //         ->first();
+
+        
+    //     if(!$categoryData) {
+    //         abort(404);
+    //     }
+        
+    //     $posts = DB::table('posts')
+    //         ->select([
+    //             'posts.*',
+    //             'users.username',
+    //             DB::raw('COUNT(comments.id) AS comments')
+    //         ])
+    //         ->join('users', 'users.id', '=', 'posts.user_id')
+    //         ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
+    //         ->where('posts.category_id', $category)
+    //         ->where('title', 'like', "%$search%")
+    //         ->where('category_id', $category)
+    //         ->groupBy(DB::raw('1, 2'))
+    //         ->get();
+        
+    //     $posts
+
+    //     return view('posts.index', [
+    //         'posts' => $posts, 
+    //         'category' => $categoryData
+    //     ]);
+    // }
+
+    public function archive(Request $request, string $post, bool $status)
     {
-        $search = $request->query('search');
-        $category = $request->query('category');
 
-        $categoryData = DB::table('categories')
-        ->where('id', $category)
-        ->get()
-        ->first();
-
-        
-        if(!$categoryData) {
-            abort(404);
-        }
-        
-        $posts = DB::table('posts')
-            ->select([
-                'posts.*',
-                'users.username',
-                DB::raw('COUNT(comments.id) AS comments')
-            ])
-            ->join('users', 'users.id', '=', 'posts.user_id')
-            ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
-            ->where('posts.category_id', $category)
-            ->where('title', 'like', "%$search%")
-            ->where('category_id', $category)
-            ->groupBy(DB::raw('1, 2'))
-            ->get();
-
-        return view('posts.index', [
-            'posts' => $posts, 
-            'category' => $categoryData
+        $post = Post::findOrFail($post);
+        $post->timestamps = false;
+        $post->update([
+            'archived' => $status
         ]);
+
+        return redirect(route('post.show', ['category' => $post->category_id, 'post' => $post]));
     }
 }

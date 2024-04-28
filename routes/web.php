@@ -30,6 +30,7 @@ Route::get('post/filter', [PostController::class, 'search'])->name('post.search'
 Route::resource('user', UserController::class)->except(['create', 'index']);
 Route::resource('category/{category}/post', PostController::class)->except(['store', 'update']);
 Route::resource('post/{post}/comment', CommentController::class)->except('index');
+
 /* AUTH */
 /* Not logged in users */
 Route::middleware('guest')->group(function () {
@@ -46,7 +47,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/post', [PostController::class, 'store'])->name('post.store');
     Route::patch('/post/{post}', [PostController::class,'update'])->name('post.update');
     Route::resource('message', MessageController::class)->except(['create']);
-    
+    Route::post('/post/{post}/like', [PostController::class, 'like'])->name('post.like');
+    Route::post('/comment/{comment}/like', [CommentController::class, 'like'])->name('comment.like');
+    Route::middleware('role:moderator')->group(function() {
+        Route::patch('/post/{post}/archive/{status}', [PostController::class, 'archive'])->name('post.archive');
+    });
+
     /* Only admins */
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin', function () {
@@ -59,6 +65,6 @@ Route::middleware('auth')->group(function () {
         
         Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
         Route::get('admin/post', [PostController::class, 'getAll'])->name('admin.post.index');
-        Route::patch('admin/', [MessageController::class, 'updateStatus'])->name('message.updateStatus');
+        Route::patch('/message/{message}', [MessageController::class, 'updateStatus'])->name('message.updateStatus');
     }); 
 });

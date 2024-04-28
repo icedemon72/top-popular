@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Tag;
-use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller 
 {
@@ -98,7 +97,7 @@ class CategoryController extends Controller
             abort(404);
         }
         
-        $tags = DB::table('tags')->get();
+        $tags = Tag::get();
         $selectedTags = array();
 
         foreach($category->tags as $tag) {

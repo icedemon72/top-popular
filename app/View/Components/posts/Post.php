@@ -2,6 +2,7 @@
 
 namespace App\View\Components\posts;
 
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -11,9 +12,10 @@ class Post extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public mixed $post;
+    public function __construct($post)
     {
-        //
+        $this->post = $post;
     }
 
     /**
@@ -21,6 +23,8 @@ class Post extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.posts.post');
+        $timeAgo = Carbon::parse($this->post->created_at)->diffForHumans();
+        $edited = $this->post->created_at != $this->post->updated_at;
+        return view('components.posts.post', compact('timeAgo', 'edited'));
     }
 }

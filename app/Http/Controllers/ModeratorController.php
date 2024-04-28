@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -24,9 +25,7 @@ class ModeratorController extends Controller // implements HasMiddleware
      */
     public function index()
     {
-        $users = DB::table('users')
-            ->where(['role' => 'moderator'])
-            ->get();
+        $users = User::where(['role' => 'moderator'])->get();
 
         return view('admin.mods.index', [
             'users' => $users

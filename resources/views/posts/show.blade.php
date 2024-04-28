@@ -1,8 +1,13 @@
-@section('title', 'Post')
+
 
 @php
-	$edited = $data->created_at !== $data->updated_at;
+	use Carbon\Carbon;
+	$edited = $data->created_at != $data->updated_at;
+	$type = $likeObj->type ?? null;
+	$categoryName = $data->category->name;
 @endphp
+
+@section('title', "$data->title: $categoryName")
 
 <x-master-layout>
 	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-cente items-center">
@@ -19,21 +24,21 @@
 						<x-lucide-arrow-left />
 					</a>
 					<div class="flex items-center gap-2">
-						<a href="{{ route('user.show', $data->username) }}" class="text-xs text-main font-bold hover:underline underline-offset-1 cursor-pointer">
-							{{ $data->username }}
+						<a href="{{ route('user.show', $data->poster->username) }}" class="text-xs text-main font-bold hover:underline underline-offset-1 cursor-pointer">
+							{{ $data->poster->username }}
 						</a> 
-						<x-profile.badge role="{{ $data->role }}" />
+						<x-profile.badge role="{{ $data->poster->role }}" />
 					</div>
 					<p class="text-xs text-muted">•</p>
-					<p class="text-xs text-muted cursor-default" title="{{ $data->created_at }}">5 days ago</p>
+					<p class="text-xs text-muted cursor-default" title="{{ $data->created_at }}">{{ Carbon::parse($data->created_at)->diffForHumans() }}</p>
 					@if($edited)
 						<p class="text-xs text-muted cursor-default" title="{{ $data->updated_at }}">(Edited)</p>
 					@endif
 				</div>
 				<div class="select-none">
 					<div x-on:click="open = !open" x-on:click.outside="open = false" class="flex items-center hover:bg-main p-2 rounded-xl text-main cursor-pointer">
-						<svg x-show="!open" class="w-4 h-4" rpl="" fill="currentColor" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
-						<x-lucide-circle-x x-show="open" class="w-4 h-4" />
+						<svg x-cloak x-show="!open" class="w-4 h-4" rpl="" fill="currentColor" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
+						<x-lucide-circle-x x-cloak x-show="open" class="w-4 h-4" />
 					</div>
 					<x-animation.pop-in class="relative" open="open">
 						@if(Auth::check())
@@ -48,6 +53,31 @@
 										{{ __('Delete') }}
 									</x-nav.dropdown-link>
 								@endif
+								@if(in_array(Auth::user()->role, ['admin', 'moderator']))
+									@if($data->archived)
+									<form method="POST" action="{{ route('post.archive', ['post' => $data->id, 'status' => 0]) }}">
+										@method('PATCH')
+										@csrf
+										<x-nav.dropdown-link class="flex items-center gap-2 cursor-pointer">
+											<x-lucide-archive-x />
+											<button type="submit">
+												{{ __('Re-publish') }}
+											</button>
+										</x-nav.dropdown-link>
+									</form>
+									@else
+										<x-nav.dropdown-link class="cursor-pointer">
+											<form class="flex items-center gap-2" method="POST" action="{{ route('post.archive', ['post' => $data->id, 'status' => 1]) }}">
+												@method('PATCH')
+												@csrf
+												<x-lucide-archive-restore />
+												<button type="submit">
+													{{ __('Archive') }}
+												</button>
+											</form>
+										</x-nav.dropdown-link>
+									@endif
+								@endif
 								@if(Auth::check() && Auth::user()->id != $data->id)
 									<x-nav.dropdown-link class="flex items-center gap-2" href="#">
 										<x-lucide-flag />
@@ -57,15 +87,13 @@
 							</x-posts.dropdown>		
 						@endif
 					</x-animation.pop-in>
-				</div>
-
-				
+				</div>	
 			</div>
 
 			<div class="mt-2">
 				<h1 class="text-xl text-main font-bold">{{ $data->title }}</h1>
 				<div class="flex mt-1 items-center">
-					@foreach($tags as $tag)
+					@foreach($data->tags as $tag)
 					<a href="#" class="flex items-center gap-1 p-2 rounded-full text-xs text-main bg-main hover:bg-card hover:underline">
 							<x-lucide-tag class="w-3 h-3"/>
 							{{ $tag->name }}
@@ -76,17 +104,17 @@
 			</div>
 
 			<div class="mt-2 flex justify-between lg:justify-start items-center gap-8 text-main">
-				<div class="flex gap-5 md:gap-3 lg:gap-1 items-center">
-					<div class="p-1 hover:bg-main rounded-lg cursor-pointer">
+				<div id="post_{{ $data->id }}" class="flex gap-5 md:gap-3 lg:gap-1 items-center">
+					<div id="post_likes" class="p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $data->id }}', '{{ route('post.like', ['post' => $data->id]) }}', '{{ csrf_token() }}')">
 						<x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
 					</div>
-					<p class="lg:text-xs font-bold mr-1">0</p>
+					<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $likes }}</p>
 		
-					<div class="p-1 hover:bg-main rounded-lg cursor-pointer">
+					<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $data->id }}', '{{ route('post.like', ['post' => $data->id]) }}', '{{ csrf_token() }}')">
 						<x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
 					</div>
 					
-					<p class="lg:text-xs font-bold">0</p>
+					<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $dislikes }}</p>
 				</div>
 		
 				<a class="flex items-center gap-1 hover:bg-main rounded-lg p-2" href="#comments">
@@ -125,8 +153,9 @@
 													{{ route('post.show', ['category' => $data->category_id, 'post' => $data->id]) }}
 											</p>
 										</div>
-										<x-lucide-copy x-show="!copied" class="w-4 h-4 cursor-pointer" />
-										<x-lucide-circle-check-big x-show="copied" class="w-4 h-4 cursor-pointer text-green-500" />									</div>
+										<x-lucide-copy x-cloak x-show="!copied" class="w-4 h-4 cursor-pointer" />
+										<x-lucide-circle-check-big x-cloak x-show="copied" class="w-4 h-4 cursor-pointer text-green-500" />									
+									</div>
 	
 									<div class="mt-2 p-2">
 										<p class="text-xs text-muted">{{ __('You can copy the link by clicking the button above or by doing it manually.') }}</p>
@@ -143,12 +172,16 @@
 		{{-- COMMENTS --}}
 		<div class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-3 bg-card rounded-lg p-4 mt-5 font-bold text-main">
 			COMMENTS ({{ count($comments) }})
-			@if(Auth::check())
-				<button x-on:click="commentOpen = !commentOpen" class="text-xs uppercase bg-main rounded-lg p-2 text-main hover:bg-card">
-					{{ __('Add a comment') }}
-				</button>
-			@else
-				<span class="text-muted"><a href="{{ route('login') }}" class="underline hover:text-main">Login</a> to post a comment...</span>
+			@if(!$data->archived)
+				@if(Auth::check())
+					<button x-on:click="commentOpen = !commentOpen" class="text-xs uppercase bg-main rounded-lg p-2 text-main hover:bg-card">
+						{{ __('Add a comment') }}
+					</button>
+				@else
+					<span class="text-muted"><a href="{{ route('login') }}" class="underline hover:text-main">Login</a> to post a comment...</span>
+				@endif
+			@else 
+				<span class="text-muted text-sm">{{ __('This post has been archived, new comments cannot be made.') }}</span>
 			@endif
 		</div>
 
@@ -187,7 +220,7 @@
 			@foreach($comments as $comment) 
 				@if($comment->parent === null)
 					<div x-data="{ open: false }" class="{{ count($comment->replies) > 0 ? 'border-l-gray-400 border-l-2 p-2' : '' }}">
-						<x-posts.comment :comment="$comment" :op="$data->user_id"/>
+						<x-posts.comment :comment="$comment" :op="$data->user_id" :archived="$data->archived"/>
 					</div>
 				@endif
 			@endforeach

@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
-use App\Http\Requests\UpdateTagRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class TagController extends Controller
 {
@@ -17,15 +15,10 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags = DB::table('tags')
-            ->select([
-                'tags.*',
-                'users.username AS username'
-            ])
-            ->join('users', 'users.id', '=', 'tags.created_by')
-            ->get();
+        $tags = Tag::with('user:id,name')->get();
+
         return view('admin.tags.index', [
-            'tags' => Tag::get()
+            'tags' => $tags
         ]);
     }
 
@@ -106,7 +99,7 @@ class TagController extends Controller
             abort(404);
         }
         
-        $categories = DB::table('categories')->get();
+        $categories = Category::get();
 
         $selectedCategories = array();
 
@@ -132,8 +125,7 @@ class TagController extends Controller
             'categories' => 'required'
         ]);
 
-        $tagExists = DB::table('tags')
-            ->where(['id' => $id])
+        $tagExists = Tag::where('id', $id)
             ->get()
             ->first();
 
@@ -153,7 +145,7 @@ class TagController extends Controller
             ]);
         }
         
-        DB::table('tags')->where(['id' => $id])->update([
+        Tag::where('id', $id)->update([
             'name' => $request->name,
         ]);
 

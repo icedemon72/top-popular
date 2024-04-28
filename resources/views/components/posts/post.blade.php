@@ -20,28 +20,34 @@
 
 
 {{-- User, posted before x + timestamp, edit status, tags, 50char desc, likes, comments, share, (options if author) --}}
-@props(['post'])
+{{-- @props(['post']) --}}
 
 {{--  'edited' => false, 'tags' => array(), 'comments' => 0, 'author' => false --}}
 
 @php
-	$edited = $post->created_at != $post->updated_at;
 	if(strlen($post->body) > 256) {
 		$post->body = substr($post->body, 0, 253).'...';
 	}
+	$type = $post->likeType ?? null;
 @endphp
 
  {{-- onClick="window.location.href='{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}'" --}}
 
-<div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer"]) }} >
+<div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer shadow-sm"]) }} >
 	<div>
 		<div class="flex items-center gap-1">
 			{{-- Image goes here... --}}
-			<a href="{{ route('user.show', $post->username) }}" class="text-xs text-main font-bold hover:underline">{{ $post->username }}</a> 
+			<a href="{{ route('user.show', $post->poster->username) }}" class="text-xs text-main font-bold hover:underline">{{ $post->poster->username }}</a> 
 			<p class="text-xs text-muted">•</p>
-			<p class="text-xs text-muted cursor-default" title="{{ $post->created_at }}">5 days ago</p>
+			<p class="text-xs text-muted cursor-default" title="{{ $post->created_at }}">{{ $timeAgo }}</p>
 			@if($edited)	
 				<p class="text-xs text-muted cursor-default" title="{{ $post->updated_at }}">(Edited)</p>
+			@endif
+			@if($post->archived)
+				<div class="flex gap-1 items-center p-1 rounded-lg bg-main">
+					<x-lucide-archive class="w-4 h-4"/>
+					<span class="text-xs uppercase">{{ __('Archived') }}</span>
+				</div>
 			@endif
 		</div>
 	
@@ -54,22 +60,22 @@
 	</div>
 
 	<div class="mt-2 flex justify-between lg:justify-start items-center gap-8">
-		<div class="flex gap-5 md:gap-3 lg:gap-1 items-center">
-			<div class="p-1 hover:bg-main rounded-lg">
+		<div id="post_{{ $post->id }}" class="flex gap-5 md:gap-3 lg:gap-1 items-center">
+			<div id="post_likes" class="p-1 hover:bg-main rounded-lg {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}',  {{ $post->archived }})">
 				<x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
 			</div>
-			<p class="lg:text-xs font-bold mr-1">0</p>
+			<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $post->count->likes }}</p>
 
-			<div class="p-1 hover:bg-main rounded-lg">
+			<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}', {{ $post->archived }})">
 				<x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
 			</div>
 			
-			<p class="lg:text-xs font-bold">0</p>
+			<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $post->count->dislikes }}</p>
 		</div>
 
 		<a href="{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}" class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
 			<x-lucide-message-square-text class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5" />
-			<p class="text-xs font-bold">{{ $post->comments }}</p>
+			<p class="text-xs font-bold">{{ $post->comments_count }}</p>
 		</a>
 
 		<div x-data="{
@@ -103,8 +109,8 @@
 									{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}
 								</p>
 							</div>
-							<x-lucide-copy x-show="!copied" class="w-4 h-4 cursor-pointer" />
-							<x-lucide-circle-check-big x-show="copied" class="w-4 h-4 cursor-pointer text-green-500" />
+							<x-lucide-copy x-show="!copied" x-cloak class="w-4 h-4 cursor-pointer" />
+							<x-lucide-circle-check-big x-show="copied" x-cloak class="w-4 h-4 cursor-pointer text-green-500" />
 						</div>
 
 						<div class="mt-2 p-2">

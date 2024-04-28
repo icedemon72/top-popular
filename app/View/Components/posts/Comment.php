@@ -13,16 +13,18 @@ class Comment extends Component
     // public mixed $timeAgo;
     public mixed $op;
     public mixed $comment;
+    public mixed $archived;
 
     
     /**
      * Create a new component instance.
      */
-    public function __construct($comment, $op)
+    public function __construct($comment, $op, $archived)
     {
         // $this->createdAt = $createdAt;
         $this->op = $op;
         $this->comment = $comment;
+        $this->archived = $archived;
         // $this->$timeAgo = Carbon::parse($comment->created_at)->diffForHumans();
     }
 

@@ -15,16 +15,29 @@
 			<div class="flex flex-grow flex-col bg-card p-2 rounded-lg">
 				@if (count($messages) > 0)
 					@foreach ($messages as $message)
-						<a href="{{ route('message.show', $message->id) }}" class="flex flex-grow jusitfy-between items-center gap-2 hover:bg-main hover:shadow-sm p-2 cursor-pointer">
-							<div class="">
+						@php
+							$dayPassed = time() - strtotime($message->created_at) > 86400;
+						@endphp
+						<a href="{{ route('message.show', $message->id) }}" class="flex flex-grow jusitfy-between items-center gap-2 rounded-sm py-5 md:py-3 lg:py-2 p-2 cursor-pointer hover:bg-main hover:shadow-sm hover:border-l-4 border-blue-700 transition-all">
+							<div class="flex items-center gap-2">
+								<div class="uppercase text-main text-xs font-bold bg-main rounded-lg p-1">
+									{{ $message->category }}
+								</div>
 								<span class="font-black text-main text-xs">{{ $message->user->username }}</span>
 							</div>
 							<div class="flex-1">
 								<span class="font-bold text-main">{{ substr($message->title, 0, 16) }} -</span>
 								<span class="text-muted">{{ substr($message->body, 0, 16) }}</span>
 							</div>
-							<div class="text-main font-bold">
-								{{ $message->created_at }}
+							<div class="text-main font-bold flex items-center gap-2">
+								@if($message->status)
+									<div class="text-xs p-1 bg-main rounded-lg">{{ $message->status }}</div>
+								@endif
+								@if($dayPassed)
+									{{ date_format(date_create($message->created_at), 'd.m.Y') }}
+								@else
+									{{ date_format(date_create($message->created_at), 'H:i') }}
+								@endif
 							</div>
 						</a>	
 					@endforeach	

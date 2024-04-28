@@ -111,8 +111,17 @@ class MessageController extends Controller implements HasMiddleware
     /**
      * Sets message's status.
      */
-    public function updateStatus(Request $request, string $id) 
+    public function updateStatus(Request $request, string $message) 
     {
+        $request->validate([
+            'status' => 'required'
+        ]);
 
+        $messageObj = Message::where('id', $message)
+            ->update([
+                'status' => $request->status
+            ]); 
+
+        return redirect(route('message.show', $message))->with('success', true);
     }
 }

@@ -4,8 +4,67 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f36e1ad9c547db7f65a0ccc9795d6700",
+    "content-hash": "167ba9fc6fe87f47cd62c7d4c4172ba1",
     "packages": [
+        {
+            "name": "abbasudo/laravel-purity",
+            "version": "v3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abbasudo/laravel-purity.git",
+                "reference": "e5a7319a6b292b8241b0b3ed8099ff4025b899f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abbasudo/laravel-purity/zipball/e5a7319a6b292b8241b0b3ed8099ff4025b899f0",
+                "reference": "e5a7319a6b292b8241b0b3ed8099ff4025b899f0",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^11.0|^10.0|^9.0|^8.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "8.*",
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Abbasudo\\Purity\\PurityServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Abbasudo\\Purity\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "abbas mkhzomi",
+                    "email": "llabbasmkhll@gmail.com",
+                    "role": "developer"
+                }
+            ],
+            "description": "elegant way to add filter and sort in laravel",
+            "support": {
+                "issues": "https://github.com/abbasudo/laravel-purity/issues",
+                "source": "https://github.com/abbasudo/laravel-purity/tree/v3.3.1"
+            },
+            "funding": [
+                {
+                    "url": "https://www.patreon.com/abbasudo",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2024-04-23T12:08:03+00:00"
+        },
         {
             "name": "blade-ui-kit/blade-icons",
             "version": "1.6.0",

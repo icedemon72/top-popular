@@ -1,7 +1,11 @@
 {{-- Add pill xD --}}
+@php
+   $type = $comment->likeType ?? null;
+@endphp
+
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg", 'id' => $comment->id]) }}>
     <div x-data="{ open: false, expanded: true, commentOpen: false }">
-        <div x-show="!expanded" class="flex text-muted text-xs gap-2 items-center">
+        <div x-cloak x-show="!expanded" class="flex text-muted text-xs gap-2 items-center">
             <button x-on:click="expanded = !expanded">
                 <x-lucide-chevron-right class="w-4 h-4" />
             </button>
@@ -9,7 +13,7 @@
             <p class="text-xs text-muted">•</p>
             <p x-on:click="expanded = !expanded">{{ substr($comment->body, 0, 20) }}</p>
         </div>
-        <div x-show="expanded" x-collapse>
+        <div x-cloak x-show="expanded" x-collapse>
             <div class="flex items-center gap-1">
                 {{-- Image goes here... --}}
                 <button x-show="expanded" x-on:click="expanded = !expanded">
@@ -31,27 +35,29 @@
             </p>
         
             <div class="flex justify-between items-center">
-                <div class="flex justify-between flex-grow  lg:justify-start gap-5 md:gap-3 lg:gap-1 items-center">
-                    <div class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer">
+                <div id="comment_{{ $comment->id }}" class="flex justify-between flex-grow  lg:justify-start gap-5 md:gap-3 lg:gap-1 items-center">
+                    <div id="comment_likes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
                         <x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
                     </div>
-                    <p class="lg:text-xs font-bold mr-1">0</p>
+                    <p id="comment_likes_count" class="lg:text-xs font-bold mr-1">{{ $comment->count->likes ?? 0 }}</p>
             
-                    <div class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer">
+                    <div  id="comment_dislikes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
                         <x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
                     </div>        
-                    <p class="lg:text-xs font-bold">0</p>
+                    <p id="comment_dislikes_count" class="lg:text-xs font-bold">{{ $comment->count->dislikes ?? 0 }}</p>
             
-                    <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2 gap-2">
-                        <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
-                        <p class="text-sm select-none">Reply</p>
-                    </div>
+                    @if(!$archived)
+                        <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2 gap-2">
+                            <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
+                            <p class="text-sm select-none">Reply</p>
+                        </div>
+                    @endif
                     
                     <div class="select-none">
 
                         <div x-on:click="commentOpen = !commentOpen" x-on:click.outside="commentOpen = false" class="flex items-center hover:bg-main p-2 rounded-xl text-main cursor-pointer">
-                            <svg  x-show="!commentOpen" class="w-4 h-4" rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
-                            <x-lucide-circle-x x-show="commentOpen" class="w-4 h-4" />
+                            <svg x-cloak x-show="!commentOpen" class="w-4 h-4" rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
+                            <x-lucide-circle-x x-cloak x-show="commentOpen" class="w-4 h-4" />
                         </div>
                         
                         <x-animation.pop-in class="relative" open="commentOpen">
@@ -97,7 +103,7 @@
             @if ($comment->replies->count() > 0)
                 @foreach ($comment->replies as $reply)
                     <div x-data="{open: false}" class="ml-1 lg:ml-5 border-l-gray-400 border-l-2 p-2" >
-                        <x-posts.comment :comment="$reply" :op="$op"/>
+                        <x-posts.comment :comment="$reply" :op="$op" :archived="$archived"/>
                     </div>
                 @endforeach
             @endif

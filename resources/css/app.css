@@ -63,3 +63,7 @@
 #ql-picker-options-0.ql-picker-options {
 	@apply bg-main text-main;
 }
+
+[x-cloak] {
+	display: none !important;
+}

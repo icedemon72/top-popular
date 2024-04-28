@@ -45,10 +45,10 @@
 								@endif
 							</td>
               <td class="px-6 py-4 underline">
-								<a href="{{ route('user.show', $post->username) }}">{{ $post->username }}</a>
+								<a href="{{ route('user.show', $post->poster->username) }}">{{ $post->poster->username }}</a>
 							</td>
-              <td class="px-6 py-4">{{ $post->category }}</td>
-              <td class="px-6 py-4">{{ $post->comments }}</td>
+              <td class="px-6 py-4">{{ $post->category->name }}</td>
+              <td class="px-6 py-4">{{ $post->comments_count }}</td>
 							<td class="px-6 py-4 flex items-center gap-2">
 								<a href="{{ route('post.edit', ['category' => $post->category_id, 'post' => $post->id]) }}" title="{{ __('Edit') }}">
                   <x-lucide-pencil />

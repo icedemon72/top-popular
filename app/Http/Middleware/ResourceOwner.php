@@ -2,12 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Post;
+
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Post;
+use App\Models\Comment;
 
 class ResourceOwner
 {
@@ -28,15 +29,30 @@ class ResourceOwner
 
         if ($resource == 'post') {
             $post = $request->route('post');
-            $created = DB::table('posts')
-                ->where([
+            $created = Post::where([
                     'id' => $post, 
                     'user_id' => Auth::user()->id
-                    ])
+                ])
                 ->get()
-                ->first();
+                ->first()
+                ->exists();
             
             if ($created) {
+                return $next($request);
+            }
+        }
+
+        if($resource == 'comment') {
+            $comment = $request->route('comment');
+            $created = Comment::where([
+                'id' => $comment,
+                'user_id' => Auth::user()->id
+            ])
+            ->get()
+            ->first()
+            ->exists();
+
+            if($created) {
                 return $next($request);
             }
         }

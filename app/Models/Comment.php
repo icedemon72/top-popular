@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use Abbasudo\Purity\Traits\Filterable;
+use Abbasudo\Purity\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Comment extends Model
 {
     use HasFactory;
+    use Sortable;
+    use Filterable;
 
     public function user(): BelongsTo
     {
@@ -31,6 +36,11 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent');
     }
 
+    public function likes(): MorphMany
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
 
     protected $fillable = [
         'body',
@@ -40,7 +50,8 @@ class Comment extends Model
         'deleted'
     ];
 
-    protected $hidden = [
-        'deleted'
+    protected $sortFields = [
+        'created_at',
+        'likes'
     ];
 }
