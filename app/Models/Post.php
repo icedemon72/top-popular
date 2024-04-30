@@ -52,7 +52,9 @@ class Post extends Model
         'category_id',
         'archived',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'likeCount',
+        'dislikeCount'
     ];
 
     protected $filterFields = [
@@ -60,7 +62,9 @@ class Post extends Model
         'poster',
         'title',
         'body',
-        'created_at'
+        'category',
+        'created_at',
+        'archived'
       ];
           
       protected $sortFields = [

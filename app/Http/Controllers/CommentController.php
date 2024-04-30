@@ -105,7 +105,7 @@ class CommentController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        //
+        dd($id);
     }
 
     public function like(Request $request, string $comment)

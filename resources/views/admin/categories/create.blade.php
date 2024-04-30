@@ -57,9 +57,11 @@
 				@endif
 
 				<div class="flex justify-end gap-2">
-				<a href="{{ route('category.index') }}">
-					<button type="button">{{ __('Go back') }}</button>
-				</a>
+				<x-form.cancel>
+					<a href="{{ route('category.index') }}">
+						{{ __('Go back') }}
+					</a>
+				</x-form.cancel>
 				<x-form.submit>{{ __('Create new category') }}</x-form.submit>
 			</div>
 		</form>

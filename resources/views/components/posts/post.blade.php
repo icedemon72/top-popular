@@ -1,24 +1,3 @@
-{{-- php
-	function timeago($date) {
-	   $timestamp = strtotime($date);	
-	   
-	   $strTime = array("second", "minute", "hour", "day", "month", "year");
-	   $length = array("60", "60", "24", "30" ,"12" ,"10");
-
-	   $currentTime = time();
-	   if($currentTime >= $timestamp) {
-			$diff = time() - $timestamp;
-			for($i = 0; $diff >= $length[$i] && $i < count($length)-1; $i++) {
-			$diff = $diff / $length[$i];
-			}
-
-			$diff = round($diff);
-			return $diff . " " . $strTime[$i] . "(s) ago";
-	   }
-	}
-?> --}}
-
-
 {{-- User, posted before x + timestamp, edit status, tags, 50char desc, likes, comments, share, (options if author) --}}
 {{-- @props(['post']) --}}
 
@@ -36,10 +15,17 @@
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer shadow-sm"]) }} >
 	<div>
 		<div class="flex items-center gap-1">
-			{{-- Image goes here... --}}
-			<a href="{{ route('user.show', $post->poster->username) }}" class="text-xs text-main font-bold hover:underline">{{ $post->poster->username }}</a> 
+			@if($profile)
+			<img class="w-4 h-4 dark:bg-slate-100 rounded-full" src="{{ asset("storage/".$post->category->icon) }}" alt="Category icon">
+			<a href="{{ route('category.index', ['category' => $post->category_id]) }}"class="text-xs text-main font-bold hover:underline">{{ $post->category->name }}</a>
 			<p class="text-xs text-muted">•</p>
 			<p class="text-xs text-muted cursor-default" title="{{ $post->created_at }}">{{ $timeAgo }}</p>
+			@else
+				<img class="w-4 h-4 rounded-full" src="{{ asset("storage/".$post->poster->image) }}" alt="{{ $post->poster->username }}'s profile picture" />
+				<a href="{{ route('user.show', $post->poster->username) }}" class="text-xs text-main font-bold hover:underline">{{ $post->poster->username }}</a> 
+				<p class="text-xs text-muted">•</p>
+				<p class="text-xs text-muted cursor-default" title="{{ $post->created_at }}">{{ $timeAgo }}</p>
+			@endif
 			@if($edited)	
 				<p class="text-xs text-muted cursor-default" title="{{ $post->updated_at }}">(Edited)</p>
 			@endif
@@ -64,13 +50,13 @@
 			<div id="post_likes" class="p-1 hover:bg-main rounded-lg {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}',  {{ $post->archived }})">
 				<x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
 			</div>
-			<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $post->count->likes }}</p>
+			<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $post->likeCount }}</p>
 
 			<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}', {{ $post->archived }})">
 				<x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
 			</div>
 			
-			<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $post->count->dislikes }}</p>
+			<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $post->dislikeCount }}</p>
 		</div>
 
 		<a href="{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}" class="flex items-center gap-1 hover:bg-main rounded-lg p-2">

@@ -28,8 +28,8 @@ Route::get('/about', function () {
 
 Route::get('post/filter', [PostController::class, 'search'])->name('post.search');
 Route::resource('user', UserController::class)->except(['create', 'index']);
-Route::resource('category/{category}/post', PostController::class)->except(['store', 'update']);
-Route::resource('post/{post}/comment', CommentController::class)->except('index');
+Route::resource('category/{category}/post', PostController::class)->except(['store', 'update', 'destroy']);
+Route::resource('post/{post}/comment', CommentController::class)->except(['index', 'destroy']);
 
 /* AUTH */
 /* Not logged in users */
@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/comment/{comment}/like', [CommentController::class, 'like'])->name('comment.like');
     Route::middleware('role:moderator')->group(function() {
         Route::patch('/post/{post}/archive/{status}', [PostController::class, 'archive'])->name('post.archive');
+        Route::delete('/post/{id}', [PostController::class, 'destroy'])->middleware('owner:post')->name('post.destroy');
+        Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('owner:comment')->name('comment.destroy');
+        Route::post('/user/{id}/ban', [PostController::class, 'ban'])->name('user.ban');
     });
 
     /* Only admins */

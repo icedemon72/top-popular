@@ -23,11 +23,15 @@ class ResourceOwner
             return $next($request);
         }
 
-        if ($resource == 'profile' && Auth::user()->username == $request->user) {
+        if ($resource == 'profile' && ($request->route('user') == Auth::user()->username)) {
             return $next($request);
         }
 
         if ($resource == 'post') {
+            if(Auth::user()->role == 'moderator') {
+                return $next($request);
+            }
+
             $post = $request->route('post');
             $created = Post::where([
                     'id' => $post, 

@@ -1,20 +1,11 @@
 <script>
-	const changePopularity = () => {
-			let queryString = window.location.search;  // get url parameters
-			let params = new URLSearchParams(queryString);  // create url search params object
-			params.delete('t');  // delete city parameter if it exists, in case you change the dropdown more then once
-			params.append('t', document.getElementById("select1").value); // add selected city
-			document.location.href = "?" + params.toString(); // refresh the page with new url
+	const changeSort = (query, select) => {
+			let queryString = window.location.search;  
+			let params = new URLSearchParams(queryString);  
+			params.delete(query);  
+			params.append(query, document.getElementById(select).value); 
+			document.location.href = "?" + params.toString(); 
 	}
-
-	const getParamValue = (param, fallback) => {
-		let queryString = window.location.search;  // get url parameters
-		let params = new URLSearchParams(queryString);  
-		return params.get(param) || fallback;
-	}
-
-	document.getElementById('select1').value = getParamValue('t', 'popular');
-
 </script>
 
 @section('title', "Posts in $category->name")
@@ -42,21 +33,20 @@
 	</div>
 	<div class="w-full flex flex-col items-center justify-center mt-3">
 		<div class="w-full md:w-4/5 lg:w-2/3 lg:grid grid-cols-1 md:grid-cols-10 gap-3">
-			@if(count($posts) > 0)
 				<section class="col-span-1 md:col-span-7">
 					<div class="flex items-center border-b-2 border-b-gray-500 mb-2 p-1 gap-2">
 						<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />
 						<div class="flex items-center cursor-pointer bg-main rounded-xl">
-							<select id="select1" onChange="changePopularity()" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
+							<select id="select1" onChange="changeSort('sort', 'select1')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
 								<option value="popular">{{ __('Popular') }}</option>
 								<option value="new">{{ __('New') }}</option>
 								<option value="top">{{ __('Top') }}</option>
 							</select>
-						</div>
+						</div>	
 						<div class="flex items-center cursor-pointer bg-main rounded-xl">
-							<select id="select1" onChange="changePopularity()" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
+							<select id="select2" onChange="changeSort('time', 'select2')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
 								<option value="today">{{ __('Today') }}</option>
-								<opt value="week">{{ __('This week') }}</opt`on>
+								<option value="week">{{ __('This week') }}</option>
 								<option value="month">{{ __('This month') }}</option>
 								<option value="year">{{ __('This year') }}</option>
 								<option value="all">{{ __('All') }}</option>
@@ -68,33 +58,11 @@
 							:post="$post"
 						/>
 					@endforeach
-					<nav class="w-full flex justify-center" aria-label="Navigation">
-						<ul class="inline-flex -space-x-px text-base h-10">
-							<li>
-								<a href="#" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-card  border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
-							</li>
-							<li>
-								<a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border bg-card border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-							</li>
-							<li>
-								<a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-card border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-							</li>
-							<li>
-								<a href="#" aria-current="page" class="flex items-center justify-center px-4 h-10 text-blue-600 bg-card border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-							</li>
-							<li>
-								<a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-card border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-							</li>
-							<li>
-								<a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-card border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-							</li>
-							<li>
-								<a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-card border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
-							</li>
-						</ul>
-					</nav>
+					<div class="mt-2">
+						{{ $posts->withQueryString()->links() }}
+					</div>
 				</section>
-			@else
+				@if(count($posts) == 0)
 				<div class="col-span-1 md:col-span-7 w-full flex p-2 text-muted">
 					<span class="bg-card flex items-center w-full h-12 p-2 rounded-lg text-muted gap-1">
 						{{ __('Huh, there seems to be no posts...') }} 

@@ -15,7 +15,8 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags = Tag::with('user:id,name')->get();
+        // add filters
+        $tags = Tag::with('user:id,name', 'categories:id,name')->paginate(15);
 
         return view('admin.tags.index', [
             'tags' => $tags
@@ -163,6 +164,7 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag)
     {
-        //
+        $tag->deleteOrFail();
+        return redirect(route('tag.index'))->with('deleted', true);
     }
 }

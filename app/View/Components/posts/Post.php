@@ -13,9 +13,11 @@ class Post extends Component
      * Create a new component instance.
      */
     public mixed $post;
-    public function __construct($post)
+    public bool $profile;
+    public function __construct($post, $profile = false)
     {
         $this->post = $post;
+        $this->profile = $profile;
     }
 
     /**

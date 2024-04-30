@@ -56,7 +56,9 @@
             :data="$tags" />
         @endif
         <div class="flex flex-grow justify-end items-center gap-3">
-          <a href="{{ route('post.show', ['post' => $post->id, 'category' => $post->category_id]) }}">Cancel</a>
+          <x-form.cancel>
+            <a href="{{ route('post.show', ['post' => $post->id, 'category' => $post->category_id]) }}">Cancel</a>
+          </x-form.cancel>
           <x-form.submit>{{ __('Edit post') }}</x-form.submit>
         </div>
 			</form>

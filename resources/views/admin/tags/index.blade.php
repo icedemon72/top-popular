@@ -8,7 +8,14 @@
 	}
 @endphp
 
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function() {
+		handleModal("{{ route('tag.destroy', ':id') }}");
+	});
+</script>
+
 <x-admin-layout>
+	<x-modals.delete text="{{ __('Are you sure you want to delete this tag?') }}"  />
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
 			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
@@ -33,14 +40,51 @@
 			</a>
 		</div>
 
-		<div class="w-full md:w-4/5 lg:w-4/5 mt-7">
-			<x-admin.table 
-				:cols="[__('ID'), __('Name'), __('Created By'), __('Created At'), __('Updated At'), __('Actions')]" 
-				:types="['id' => 'string', 'name' => 'string', 'created_at' => 'date', 'updated_at' => 'date', 'created_by' => 'link']"
-				:actions="['edit', 'delete']"
-				route="tag"
-				:data="$tags"
-			/>
+		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
+			<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+					<tr>
+            <th class="px-6 py-4">{{ __('ID') }}</th>
+            <th class="px-6 py-4">{{ __('Name') }}</th>
+            <th class="px-6 py-4">{{ __('Category') }}</th>
+            <th class="px-6 py-4">{{ __('Actions') }}</th>
+          </tr>
+				</thead>
+				<tbody>
+					@foreach($tags as $tag)
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <td class="px-6 py-4">{{ $tag->id }}</td>
+              <td class="px-6 py-4" title="{{ $tag->name }}">
+								@if (strlen($tag->name) > 16)
+									{{ substr($tag->name, 0, 13) }}...
+								@else 
+									{{ $tag->name }}
+								@endif
+							</td>
+              <td class="px-6 py-4">
+								@if(count($tag->categories) <= 3)
+									@foreach($tag->categories as $category)
+										{{ $category->name }}
+									@endforeach
+								@else
+									{{ $tag->categories[0]->name }}, {{ $tag->categories[1]->name }}, {{ $tag->categories[2]->name }}...
+								@endif
+							</td>
+							<td class="px-6 py-4 flex items-center gap-2">
+								<a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('tag.edit', ['tag' => $tag->id]) }}" title="{{ __('Edit') }}">
+                  <x-lucide-pencil class="group-hover:scale-75 group-hover:-rotate-45 transition-all" />
+                </a>
+								<a class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-red-500 group" href="#" title="{{ __('Delete the post') }}" data-trigger="{{ $tag->id }}">
+                  <x-lucide-trash-2 class="group-hover:scale-75 transition-all" />
+                </a>
+							</td>
+            </tr>
+          @endforeach
+				</tbody>
+			</table>
+		</div>
+		<div class="mt-2">
+			{{ $tags->withQueryString()->links() }}
 		</div>
 	</div>
 </x-admin-layout>

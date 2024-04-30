@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Utils\Utils;
+use App\Models\Like;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -16,7 +18,7 @@ class UserController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(['auth', 'owner'], only: ['edit', 'update'])
+            new Middleware(['auth', 'owner:profile'], only: ['edit', 'update'])
         ];
     }
     /**
@@ -24,7 +26,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $users = User::get();
+        $users = User::paginate(15);
             
         // dd($users);
         return view('admin.users.index', [
@@ -45,10 +47,53 @@ class UserController extends Controller implements HasMiddleware
      */
     public function show(string $id)
     {
-        $user = User::where('username', $id)->firstOrFail();
-        // TODO: add posts, comments, etc. here...
+        $user = User::where('username', $id)
+            ->with([
+                'posts' => fn ($query) => $query->orderBy('posts.created_at', 'DESC')->limit(10), 
+                'posts.likes',
+                'comments' => fn ($query) => $query->orderBy('comments.created_at', 'DESC')->limit(10), 
+                'comments.likes'
+            ])
+            ->get()
+            ->first();
 
-        return view('profile.index', ['user' => $user]);
+        if(!$user) {
+            abort(404);
+        }
+
+        $stats = (object) [
+            'likes' => 0,
+            'dislikes' => 0,
+            'liked' => 0,
+            'disliked' => 0,
+            'replies' => 0,
+            'posts' => 0,
+            'comments' => 0
+        ];
+
+        $likes = Like::where('user_id', $user->id)->get();
+        
+        foreach($likes as $like) {
+            ($like->type == 'like') ? $stats->liked++ : $stats->disliked++;
+        }
+
+        $user->posts = Utils::GetLikes($user->posts); 
+        $user->comments = Utils::GetLikes($user->comments);    
+
+        foreach($user->posts as $post) {
+            $stats->likes += $post->likeCount;
+            $stats->dislikes += $post->dislikeCount;
+        }
+
+        foreach($user->comments as $comment) {
+            $stats->likes += $comment->likeCount;
+            $stats->dislikes += $comment->dislikeCount;
+        }
+
+        return view('profile.index', [
+            'user' => $user,
+            'stats' => $stats
+        ]);
     }
 
     /**
@@ -80,27 +125,30 @@ class UserController extends Controller implements HasMiddleware
         ]);
 
         $request->validate([
-            'email' => 'sometimes|email|unique:users',
+            'email' => 'sometimes|email',
             'password' => 'min:4|nullable',
             'new_password' => 'min:4|nullable'
         ]);
         
-        $user = User::findOrFail($id);
+        $user = User::where('username', $id);
 
+        $userData = $user->get()->first();
 
-        if($request->email == $user->email) {
+        if($request->email ?? $user->email == $user->email) {
             $fields['email'] = null;
+        } else {
+            $request->validate(['email' => 'unique:users']);
         }
 
         if($fields['password'] != null && $fields['new_password'] != null) {
             if($request->password != $request->new_password) {
-                return redirect("/user/{$user->username}/edit")->withErrors([
+                return redirect("/user/{$userData->username}/edit")->withErrors([
                     'password' => '',
                     'new_password' => 'Passwords do not match' 
                 ]);
             }
             if(Hash::make($request->password) != $user->password) {
-                return redirect("/user/{$user->username}/edit")->withErrors([
+                return redirect("/user/{$userData->username}/edit")->withErrors([
                     'password' => 'Password is not correct'
                 ]);
             }
@@ -112,8 +160,8 @@ class UserController extends Controller implements HasMiddleware
             return view('profile.edit', ['user' => $user, 'id' => $id, 'username' => $user->username]);
         }
 
-        User::where('id', $id)->update($body);
-        return redirect("/user/{$user->username}/edit")->with(['edited'=>true]);
+        User::where('username', $id)->update($body);
+        return redirect(route('user.edit', ['user' => $userData->username]))->with(['edited'=>true]);
     }
 
     /**

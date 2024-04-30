@@ -20,7 +20,7 @@
 		</div>
 	</x-slot>
 
-	<form class="mt-5 flex flex-col justify-center items-center" action="{{ route('user.update', $user->id) }}" method="POST">
+	<form class="mt-5 flex flex-col justify-center items-center" action="{{ route('user.update', $user->username) }}" method="POST">
 		@method('PATCH')
 		@csrf
 		
@@ -66,7 +66,7 @@
 
 		<x-profile.card title="Socials">
 			<x-form.label class="mt-2" for="github">Github</x-form.label>
-			<x-form.input class="w-full lg:w-2/3 block mt-1" type="url" field="github" :value="$user->github" placeholder="https://www.github.com/your-account" />
+			<x-form.input class="w-full lg:w-2/3 block mt-1" type="url" field="github" :value="$user->github ?? 'https://www.github.com/'" placeholder="https://www.github.com/your-account" />
 			<x-form.label class="mt-2" for="instagram">Instagram</x-form.label>
 			<x-form.input class="w-full lg:w-2/3 block mt-1" type="url" field="instagram" :value="$user->instagram" placeholder="https://www.instagram.com/your.account" />
 			<x-form.label class="mt-2" for="facebook">Facebook</x-form.label>

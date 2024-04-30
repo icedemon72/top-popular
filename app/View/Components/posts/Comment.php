@@ -14,7 +14,6 @@ class Comment extends Component
     public mixed $op;
     public mixed $comment;
     public mixed $archived;
-
     
     /**
      * Create a new component instance.

@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::get();
+        $categories = Category::filter()->sort()->withCount('posts')->paginate(15);
         return view('admin.categories.index', ['categories' => $categories]);
     }
 
@@ -124,6 +124,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->deleteOrFail();
+        return redirect(route('category.index'))->with('deleted', true);
     }
 }

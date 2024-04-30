@@ -32,3 +32,20 @@ export const giveLike = async (type = 'like', id, URL, CSRF, archived = 0, postT
 		dislikesCount.innerHTML = likesObj.dislikes;
 	}
 }
+
+export const handleModal = (url, selectedClass = '.modalTrigger') => {
+	document.querySelectorAll(selectedClass).forEach(function(element) {
+			element.addEventListener('click', function() {
+					let ID = this.dataset.trigger;
+					url = url.replace(':id', ID);
+					document.getElementById('deleteForm').setAttribute('action', url);
+					let deleteModal = document.getElementById('deleteModal');
+					deleteModal.className = deleteModal.className.replace( /(?:^|\s)hidden(?!\S)/g , 'flex' )
+		});
+	});
+}
+
+export const closeModal = () => {
+	deleteModal.className = deleteModal.className.replace
+		( /(?:^|\s)flex(?!\S)/g , 'hidden' )
+}

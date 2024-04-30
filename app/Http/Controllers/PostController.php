@@ -8,8 +8,11 @@ use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Tag;
+use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
@@ -33,20 +36,45 @@ class PostController extends Controller implements HasMiddleware
     public function index($category)
     {   
         $categoryData = Category::where('id', $category)->first();
-        
+        $sort = request()->query('sort') ?? 'popular';
+        $time = request()->query('time') ?? 'today';
+
         if(!$categoryData) {
             abort(404);
         }
         
-        $posts = Post::filter()
-            ->sort()
-            ->where('category_id', $category)
-            ->with('poster', 'likes')
-            ->withCount('comments')
-            ->get();
+        // if(!request()->query('sort')) {
+        //     request()->query('sort') = ['comments' => ['']]
+        // }
 
+        $posts = Post::where('category_id', $category)
+            ->with('poster')
+            ->withCount('comments');
+            
+        // if($time == 'month') {
+        //     $posts = $posts->whereMonth('created_at', Carbon::now()->month);
+        // } else if($time == 'week') {
+        //     $posts = $posts->whereBetween('created_at', [
+        //         Carbon::now()->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+        //         Carbon::now()->endOfWeek()->format('Y-m-d')
+        //     ]);
+        // } else if ($time == 'year') {
+        //     $posts = $posts->whereYear('created_at', Carbon::now()->year);
+        // } else if ($time != 'all') {
+        //     $posts = $posts->whereDate('created_at', Carbon::today());
+        // }
+
+        // if($sort == 'new') {
+        //     $posts = $posts->orderBy('created_at', 'DESC');
+        // } else if ($sort == 'top') {
+        //     $posts = $posts->orderBy('likes_count', 'DESC');
+        // } else {
+        //     $posts = $posts->orderBy('comments_count');
+        // }
+        
+        $posts = $posts->simplePaginate(10);
         $posts = Utils::GetLikes($posts);
-
+        
         return view('posts.index', [
             'posts' => $posts,
             'category' => $categoryData
@@ -132,15 +160,7 @@ class PostController extends Controller implements HasMiddleware
             ->get();
         
         $comments = Utils::GetLikes($comments); 
-
-        $count = Like::whereHasMorph('likeable', Post::class)
-            ->toBase()
-            ->selectRaw('count(IF(type = "like", 0, null)) as likes')
-            ->selectRaw('count(IF(type = "dislike", 0, null)) as dislikes')
-            ->where('likeable_id', $id)
-            ->get()
-            ->first();
-
+        
         $likeObj = null;
 
         if(Auth::check()) {
@@ -156,8 +176,6 @@ class PostController extends Controller implements HasMiddleware
         return view('posts.show', [
             'data' => $data,
             'comments' => $comments,
-            'likes' => $count->likes,
-            'dislikes' => $count->dislikes,
             'likeObj' => $likeObj ?? null
         ]);
     }
@@ -311,17 +329,23 @@ class PostController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        //
+        dd($id);
     }
 
     public function getAll()
     {
-        $posts = Post::with('category:id,name', 'poster:id,username')
+        $posts = Post::filter()
+            ->sort()
+            ->with('category:id,name', 'poster:id,username,image')
             ->withCount('comments')
-            ->get();
+            ->paginate(15);
+                
+
+        $categories = Category::withCount('posts')->having('posts_count', '>', '0')->get();
         
         return view('admin.posts.index', [
-            'posts' => $posts
+            'posts' => $posts,
+            'categories' => $categories
         ]);
     }
 

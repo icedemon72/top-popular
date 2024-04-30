@@ -1,7 +1,15 @@
 {{-- Add pill xD --}}
+@props(['profile' => false])
+
 @php
    $type = $comment->likeType ?? null;
 @endphp
+
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function() {
+		handleModal("{{ route('comment.destroy', ':id') }}", '.commentModalTrigger')
+	});
+</script>
 
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg", 'id' => $comment->id]) }}>
     <div x-data="{ open: false, expanded: true, commentOpen: false }">
@@ -15,10 +23,12 @@
         </div>
         <div x-cloak x-show="expanded" x-collapse>
             <div class="flex items-center gap-1">
-                {{-- Image goes here... --}}
                 <button x-show="expanded" x-on:click="expanded = !expanded">
                     <x-lucide-chevron-down class="w-4 h-4" />
                 </button>
+                @if(!$profile)
+                    <img class="w-4 h-4 rounded-full" src="{{ asset("storage/".$comment->user->image) }}" alt="{{ $comment->user->username }}'s profile picture" />
+                @endif
                 <a href="{{ route('user.show', $comment->user->username) }}" class="text-xs text-main font-bold hover:underline">{{ $comment->user->username }}</a> 
                 @if ($op == $comment->user_id)
                    <x-lucide-pickaxe class="w-4 h-4" title="{{ __('Original poster') }}" />
@@ -39,14 +49,14 @@
                     <div id="comment_likes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
                         <x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
                     </div>
-                    <p id="comment_likes_count" class="lg:text-xs font-bold mr-1">{{ $comment->count->likes ?? 0 }}</p>
+                    <p id="comment_likes_count" class="lg:text-xs font-bold mr-1">{{ $comment->likeCount ?? 0 }}</p>
             
                     <div  id="comment_dislikes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
                         <x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
                     </div>        
-                    <p id="comment_dislikes_count" class="lg:text-xs font-bold">{{ $comment->count->dislikes ?? 0 }}</p>
+                    <p id="comment_dislikes_count" class="lg:text-xs font-bold">{{ $comment->dislikeCount ?? 0 }}</p>
             
-                    @if(!$archived)
+                    @if(!$archived && $profile === false)
                         <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2 gap-2">
                             <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
                             <p class="text-sm select-none">Reply</p>
@@ -68,7 +78,7 @@
                                             <x-lucide-pencil />
                                             {{ __('Edit') }}
                                         </x-nav.dropdown-link>
-                                        <x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="#">
+                                        <x-nav.dropdown-link class="commentModalTrigger flex items-center gap-2 text-red-500" data-trigger="{{ $comment->id }}">
                                             <x-lucide-trash-2 />
                                             {{ __('Delete') }}
                                         </x-nav.dropdown-link>
@@ -100,7 +110,7 @@
                 </form>
             </div>
         
-            @if ($comment->replies->count() > 0)
+            @if ($comment->replies->count() > 0 && $profile === false)
                 @foreach ($comment->replies as $reply)
                     <div x-data="{open: false}" class="ml-1 lg:ml-5 border-l-gray-400 border-l-2 p-2" >
                         <x-posts.comment :comment="$reply" :op="$op" :archived="$archived"/>

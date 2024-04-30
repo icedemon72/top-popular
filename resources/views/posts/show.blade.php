@@ -9,7 +9,14 @@
 
 @section('title', "$data->title: $categoryName")
 
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function() {
+		handleModal("{{ route('post.destroy', ':id') }}");
+	});
+</script>
+
 <x-master-layout>
+	<x-modals.delete text="{{ __('Are you sure you want to delete the post?') }}" />
 	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-cente items-center">
 		{{-- POST --}}
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4">
@@ -48,7 +55,7 @@
 										<x-lucide-pencil />
 										{{ __('Edit') }}
 									</x-nav.dropdown-link>
-									<x-nav.dropdown-link class="flex items-center gap-2 text-red-500" href="{{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }}">
+									<x-nav.dropdown-link class="modalTrigger flex items-center gap-2 text-red-500" data-trigger="{{ $data->id }}">
 										<x-lucide-trash-2 />
 										{{ __('Delete') }}
 									</x-nav.dropdown-link>
@@ -108,13 +115,13 @@
 					<div id="post_likes" class="p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $data->id }}', '{{ route('post.like', ['post' => $data->id]) }}', '{{ csrf_token() }}')">
 						<x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
 					</div>
-					<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $likes }}</p>
+					<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $data->likeCount}}</p>
 		
 					<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $data->id }}', '{{ route('post.like', ['post' => $data->id]) }}', '{{ csrf_token() }}')">
 						<x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
 					</div>
 					
-					<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $dislikes }}</p>
+					<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $data->dislikeCount }}</p>
 				</div>
 		
 				<a class="flex items-center gap-1 hover:bg-main rounded-lg p-2" href="#comments">
