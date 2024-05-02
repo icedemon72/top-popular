@@ -32,7 +32,13 @@ class LoginController extends Controller
             'password' => $request->password
         ];
 
-        if (Auth::attempt($credentials,  $request->remember_me == true)) {
+        if (Auth::attempt($credentials, $request->remember_me == true)) {
+            if(Auth::user()->role == 'banned') {
+                Auth::logout();
+                return redirect('/login')->withErrors([
+                    'login' => 'You have been banned'
+                ]);
+            }
             $request->session()->regenerate();
  
             return redirect()->intended('/');

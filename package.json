@@ -18,7 +18,6 @@
         "@ryangjchandler/alpine-clipboard": "^2.3.0",
         "alpinejs": "^3.13.8",
         "qs": "^6.12.1",
-        "quill": "^2.0.0",
         "quill-markup": "^0.0.38"
     }
 }

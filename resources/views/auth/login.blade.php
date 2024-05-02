@@ -35,7 +35,11 @@
 
 		@if ($errors->any())
     	<x-form.error>
-				{{ __('Invalid credentials!') }}
+				<ul>
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
 			</x-form.error>
 		@endif
 

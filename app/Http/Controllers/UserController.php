@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller implements HasMiddleware
@@ -26,7 +27,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $users = User::paginate(15);
+        $users = User::where('role', '!=', 'banned')->paginate(15);
             
         // dd($users);
         return view('admin.users.index', [
@@ -186,7 +187,16 @@ class UserController extends Controller implements HasMiddleware
      */
     public function ban(string $id) 
     {
-        //
+        $user = User::findOrFail($id);
+
+        if($user->role == 'admin' || (Auth::user()->role == $user->role)) {
+            abort(403);
+        }
+
+        $user->role = 'banned';
+        $user->save();
+
+        return redirect()->back()->with('banned', true);
     }
 
     /**
@@ -194,6 +204,20 @@ class UserController extends Controller implements HasMiddleware
      */
     public function unban(string $id) 
     {
-        //
+        $user = User::where(['id' => $id, 'role' => 'banned'])->get()->first();
+
+        $user->role = 'user';
+        $user->save();
+
+        return redirect()->back()->with('unbanned', true);
+    }
+
+    public function showBanned()
+    {
+        $users = User::where(['role' => 'banned'])->paginate(15);
+
+        return view('admin.bans.index', [
+            'users' => $users
+        ]);
     }
 }

@@ -9,6 +9,7 @@
 </script>
 
 @section('title', "Posts in $category->name")
+@section('search', route('post.index', $category->id))
 
 <x-master-layout>
 	<x-slot name="header">
@@ -21,9 +22,9 @@
 	</x-slot>
 	<div class="w-full flex justify-center mt-2">
 		<div class="w-full md:w-4/5 lg:w-3/5 flex justify-end gap-3">
-			<a href="{{ route('post.create', $category->id) }}" class="flex items-center cursor-pointer p-2">
-				<x-lucide-plus class="w-5 h-5 gap-1" />
-				<p class="font-bold text-main text-xs">{{ __('Create a post') }}</p>
+			<a class="p-1 px-3 border-2 rounded-xl dark:border-slate-200 border-slate-800 flex items-center justify-center hover:shadow-md hover:bg-card transition-all group" href="{{ route('post.create', $category->id) }}" class="flex items-center cursor-pointer p-2">
+				<x-lucide-plus class="w-5 h-5 group-hover:animate-pulse transition-all" />
+				<p class="font-bold text-main text-xs group-hover:animate-pulse">{{ __('Create a post') }}</p>
 			</a>
 			<div class="flex items-center p-2 gap-1">
 				<x-lucide-star class="w-5 h-5" />

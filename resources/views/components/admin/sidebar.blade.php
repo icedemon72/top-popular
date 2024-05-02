@@ -31,7 +31,7 @@
             <x-lucide-shield-plus />
             {{ __('Moderators') }}
          </x-admin.sidebar-item>
-         <x-admin.sidebar-item>
+         <x-admin.sidebar-item :href="route('admin.user.ban')" :active="request()->routeIs('admin.user.ban')">
             <x-lucide-ban />
             {{ __('Bans') }}
          </x-admin.sidebar-item>

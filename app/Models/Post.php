@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Abbasudo\Purity\Traits\Filterable;
-use Abbasudo\Purity\Traits\Sortable;
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,10 +10,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+// use Illuminate\Database\Eloquent\Builder;
+// use App\Filter\PostFilter;
+
 class Post extends Model
 {
     use HasFactory;
-    use Sortable;
     use Filterable;
 
     public function tags(): BelongsToMany
@@ -41,6 +42,11 @@ class Post extends Model
         return $this->morphMany(Like::class, 'likeable');
     }
 
+    // public function scopeFilter(Builder $builder, mixed $request): Builder
+    // {
+    //     return (new PostFilter($request))->filter($builder);
+    // }
+
 
 
     // TODO: add likes, comments etc.
@@ -55,25 +61,14 @@ class Post extends Model
         'updated_at',
         'likeCount',
         'dislikeCount'
-    ];
-
-    protected $filterFields = [
-        'tags',
-        'poster',
-        'title',
-        'body',
-        'category',
-        'created_at',
-        'archived'
-      ];
-          
-      protected $sortFields = [
-        'title',
-        'created_at',
-        'poster',
-        'category',
-        'comment'
-      ];
+    ];         
+    //   protected $sortFields = [
+    //     'title',
+    //     'created_at',
+    //     'poster',
+    //     'category',
+    //     'comment'
+    //   ];
 
     // protected $hidden = [
        

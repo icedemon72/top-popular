@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Abbasudo\Purity\Traits\Filterable;
-use Abbasudo\Purity\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,8 +11,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class Comment extends Model
 {
     use HasFactory;
-    use Sortable;
-    use Filterable;
 
     public function user(): BelongsTo
     {
@@ -48,10 +44,5 @@ class Comment extends Model
         'user_id',
         'parent',
         'deleted'
-    ];
-
-    protected $sortFields = [
-        'created_at',
-        'likes'
     ];
 }

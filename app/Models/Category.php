@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Abbasudo\Purity\Traits\Filterable;
-use Abbasudo\Purity\Traits\Sortable;
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +12,7 @@ class Category extends Model
 {
     use HasFactory;
     use Filterable;
-    use Sortable;
+
 
     public function tags(): BelongsToMany
     {

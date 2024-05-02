@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\CategoryFilter;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
@@ -12,9 +13,9 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(CategoryFilter $filter)
     {
-        $categories = Category::filter()->sort()->withCount('posts')->paginate(15);
+        $categories = Category::filter($filter)->withCount('posts')->paginate(15);
         return view('admin.categories.index', ['categories' => $categories]);
     }
 

@@ -25,10 +25,11 @@
                 </div>
             </div>
 
-            <div class="flex align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
-                <form  class="w-full rounded-xl my-3" method="GET" action="{{ route('post.search', '1') }}">
-                    <x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular"/>
+            <div class="flex items-center gap-2 align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
+                <form  class="w-full rounded-xl my-3" method="GET" action="@yield('search', route('home'))">
+                    <x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular" value="{{ request()->input('search') }}"/>
                 </form>
+                <x-lucide-settings title="{{ __('Advanced search') }}" class="cursor-pointer text-muted hover:bg-main rounded-full hover:rotate-90 transition-all" />
             </div>
 
             {{-- Right side --}}

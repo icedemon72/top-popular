@@ -8,15 +8,14 @@ use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Tag;
-use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use App\Http\Filters\PostFilter;
+use App\Models\User;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -30,10 +29,19 @@ class PostController extends Controller implements HasMiddleware
             new Middleware(['auth', 'owner:post'], only: ['edit', 'update', 'destroy'])
         ];
     }
+    public function home(PostFilter $filter)
+    {
+        $posts = Post::orderBy('created_at', 'asc')->filter($filter)->paginate(15);
+        $categories = Category::get();
+        $users = User::count();
+
+        return view('home', compact('posts', 'categories'));
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index($category)
+    public function index($category, PostFilter $filter)
     {   
         $categoryData = Category::where('id', $category)->first();
         $sort = request()->query('sort') ?? 'popular';
@@ -47,7 +55,7 @@ class PostController extends Controller implements HasMiddleware
         //     request()->query('sort') = ['comments' => ['']]
         // }
 
-        $posts = Post::where('category_id', $category)
+        $posts = Post::filter($filter)->where('category_id', $category)
             ->with('poster')
             ->withCount('comments');
             
@@ -332,10 +340,9 @@ class PostController extends Controller implements HasMiddleware
         dd($id);
     }
 
-    public function getAll()
+    public function getAll(PostFilter $filter)
     {
-        $posts = Post::filter()
-            ->sort()
+        $posts = Post::filter($filter)
             ->with('category:id,name', 'poster:id,username,image')
             ->withCount('comments')
             ->paginate(15);
@@ -348,43 +355,6 @@ class PostController extends Controller implements HasMiddleware
             'categories' => $categories
         ]);
     }
-
-    // public function search(Request $request)
-    // {
-    //     $search = $request->query('search');
-    //     $category = $request->query('category');
-
-    //     $categoryData = Category::where('id', $category)
-    //         ->get()
-    //         ->first();
-
-        
-    //     if(!$categoryData) {
-    //         abort(404);
-    //     }
-        
-    //     $posts = DB::table('posts')
-    //         ->select([
-    //             'posts.*',
-    //             'users.username',
-    //             DB::raw('COUNT(comments.id) AS comments')
-    //         ])
-    //         ->join('users', 'users.id', '=', 'posts.user_id')
-    //         ->leftJoin('comments', 'comments.post_id', '=', 'posts.id')
-    //         ->where('posts.category_id', $category)
-    //         ->where('title', 'like', "%$search%")
-    //         ->where('category_id', $category)
-    //         ->groupBy(DB::raw('1, 2'))
-    //         ->get();
-        
-    //     $posts
-
-    //     return view('posts.index', [
-    //         'posts' => $posts, 
-    //         'category' => $categoryData
-    //     ]);
-    // }
-
     public function archive(Request $request, string $post, bool $status)
     {
 

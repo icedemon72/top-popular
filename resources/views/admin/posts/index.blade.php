@@ -24,7 +24,7 @@
 				{{ __('Filters') }}
 			</div>
 			<form class="flex" method="GET">
-				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" />
+				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" value="{{ request()->input('search') }}" />
 			</form>
 		</div>
 

@@ -10,6 +10,9 @@
     else if ($role == 'user') {
         $roleClass = 'bg-gray-500';
     }
+    else if ($role == 'banned') {
+        $roleClass = 'bg-red-500';
+    }
         
 @endphp
 

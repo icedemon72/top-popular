@@ -1,25 +1,25 @@
-@section('title', __('Users'))
+@section('title', 'Banned users')
 
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
-		handleModal("{{ route('user.ban', ':id') }}")
+		handleModal("{{ route('user.unban', ':id') }}");
 	});
 </script>
 
 <x-admin-layout>
-  <x-modals.delete text="Are you sure you want to ban this user?" method="POST">
-    <x-lucide-ban class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" />
+  <x-modals.delete text="{{ __('Are you sure you want to unban this user?') }}" method="POST">
+    <x-lucide-circle-off class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" />
   </x-modals.delete>
-  <x-slot name="header">
+	<x-slot name="header">
 		<div class="flex w-full justify-center">
 			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
-				<x-lucide-users />
-				{{ __('Users') }}
+				<x-lucide-ban />
+				{{ __('Banned Users') }}
 			</h2>
 		</div>
 	</x-slot>
 
-  <div class="w-full flex justify-center mt-7">
+	<div class="w-full flex flex-col items-center justify-center mt-7">
     <div class="relative w-full md:w-4/5 lg:w-4/5 mt-7 overflow-x-auto shadow-md sm:rounded-lg">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -28,7 +28,7 @@
             <th class="px-6 py-4">{{ __('Username') }}</th>
             <th class="px-6 py-4">{{ __('E-mail') }}</th>
             <th class="px-6 py-4">{{ __('Name') }}</th>
-            <th class="px-6 py-4">{{ __('Role') }}</th>
+            <th class="px-6 py-4">{{ __('Status') }}</th>
             <th class="px-6 py-4">{{ __('Actions') }}</th>
           </tr>
         </thead>
@@ -50,21 +50,22 @@
                 <a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('user.show', $user->username) }}" title="{{ __('Profile') }}">
                   <x-lucide-user class="group-hover:scale-75 transition-all" />
                 </a>
-                @if($user->role != 'admin')
-                  <div class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-red-500 group" title="{{ __('Ban user') }}" data-trigger="{{ $user->id }}">
-                    <x-lucide-ban class="group-hover:scale-75 transition-all" />
-                  </div>
-								@endif
+                <div class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-green-500 group" title="{{ __('Unban user') }}" data-trigger="{{ $user->id }}">
+                  <x-lucide-circle-off class="group-hover:scale-75 transition-all" />
+                </div>
               </td>
             </tr>
           @endforeach
         </tbody>
     </table>
   </div>
-
+  @if(count($users) == 0)
+    <p class="text-muted p-2">
+      {{ __('There are no banned users, that\'s good... right?') }}
+    </p>
+  @endif
   <div class="mt-2">
     {{ $users->withQueryString()->links() }}
   </div>
-  
 
 </x-admin-layout>
