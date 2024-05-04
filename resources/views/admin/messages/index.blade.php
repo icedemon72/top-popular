@@ -9,6 +9,34 @@
 			</h2>
 		</div>
 	</x-slot>
+	{{--  --}}
+
+	<div x-data="{ open: false }" class="w-full flex flex-col items-center justify-center mt-7">
+    <div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
+			<div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
+				<x-lucide-filter />
+				{{ __('Filters') }}
+			</div>
+			<form class="flex" method="GET">
+				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search users...') }}" value="{{ request()->input('search') }}" />
+			</form>
+    </div>
+    <div x-collapse x-cloak x-show="open" class="w-full flex md:w-4/5 lg:w-4/5 mt-2">
+      <form id="filters" class="w-full">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+          <div class="col-span-1">
+            <p class="text-muted">{{ __('Status') }}</p>
+
+            <x-form.checkbox  field="status[]" value="admin" text="{{ __('Admin') }}" />
+            <x-form.checkbox  field="status[]" value="moderator" text="{{ __('Moderator') }}" />
+            <x-form.checkbox  field="role[]" value="user" text="{{ __('User') }}" />
+          </div>
+        </div>
+        
+        <x-form.submit class="mt-1">{{ __('Apply filters') }}</x-form.submit>
+      </form>
+    </div>
+  </div>
 
 	<div class="w-full flex flex-col items-center justify-center mt-7">
 		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">

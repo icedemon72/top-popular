@@ -3,6 +3,8 @@
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
 		handleModal("{{ route('user.unban', ':id') }}");
+    sortTable();
+		showChevron();
 	});
 </script>
 
@@ -18,16 +20,22 @@
 			</h2>
 		</div>
 	</x-slot>
+  
 
 	<div class="w-full flex flex-col items-center justify-center mt-7">
-    <div class="relative w-full md:w-4/5 lg:w-4/5 mt-7 overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="flex w-full md:w-4/5 lg:w-4/5 justify-end items-center">
+      <form class="flex items-center" method="GET">
+        <x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search users...') }}" value="{{ request()->input('search') }}" />
+      </form>
+    </div>
+    <div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th class="px-6 py-4">{{ __('ID') }}</th>
-            <th class="px-6 py-4">{{ __('Username') }}</th>
-            <th class="px-6 py-4">{{ __('E-mail') }}</th>
-            <th class="px-6 py-4">{{ __('Name') }}</th>
+          <tr x-data="{ sort: false, field: '', asc: false }">
+            <x-admin.th query="id">{{ __('ID') }}</x-admin.th>
+            <x-admin.th query="username">{{ __('Username') }}</x-admin.th>
+            <x-admin.th query="email">{{ __('E-mail') }}</x-admin.th>
+            <x-admin.th query="name">{{ __('Name') }}</x-admin.th>
             <th class="px-6 py-4">{{ __('Status') }}</th>
             <th class="px-6 py-4">{{ __('Actions') }}</th>
           </tr>

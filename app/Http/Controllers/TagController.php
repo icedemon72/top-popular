@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\TagFilter;
 use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
 use App\Models\Category;
@@ -13,10 +14,10 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(TagFilter $filter)
     {
         // add filters
-        $tags = Tag::with('user:id,name', 'categories:id,name')->paginate(15);
+        $tags = Tag::filter($filter)->with('user:id,name', 'categories:id,name')->paginate(15);
 
         return view('admin.tags.index', [
             'tags' => $tags

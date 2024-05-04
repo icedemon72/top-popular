@@ -2,7 +2,9 @@
 
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
-		handleModal("{{ route('user.ban', ':id') }}")
+		handleModal("{{ route('user.ban', ':id') }}");
+    sortTable();
+		showChevron();
 	});
 </script>
 
@@ -19,16 +21,42 @@
 		</div>
 	</x-slot>
 
-  <div class="w-full flex justify-center mt-7">
-    <div class="relative w-full md:w-4/5 lg:w-4/5 mt-7 overflow-x-auto shadow-md sm:rounded-lg">
+  <div x-data="{ open: false }" class="w-full flex flex-col items-center justify-center mt-7">
+    <div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
+			<div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
+				<x-lucide-filter />
+				{{ __('Filters') }}
+			</div>
+			<form class="flex" method="GET">
+				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search users...') }}" value="{{ request()->input('search') }}" />
+			</form>
+    </div>
+    <div x-collapse x-cloak x-show="open" class="w-full flex md:w-4/5 lg:w-4/5 mt-2">
+      <form id="filters" class="w-full">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+          <div class="col-span-1">
+            <p class="text-muted">{{ __('Role') }}</p>
+            <x-form.checkbox  field="role[]" value="admin" text="{{ __('Admin') }}" />
+            <x-form.checkbox  field="role[]" value="moderator" text="{{ __('Moderator') }}" />
+            <x-form.checkbox  field="role[]" value="user" text="{{ __('User') }}" />
+          </div>
+        </div>
+        
+        <x-form.submit class="mt-1">{{ __('Apply filters') }}</x-form.submit>
+      </form>
+    </div>
+  </div>
+
+  <div class="w-full flex justify-center mt-2">
+    <div class="relative w-full md:w-4/5 lg:w-4/5 overflow-x-auto shadow-md sm:rounded-lg">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th class="px-6 py-4">{{ __('ID') }}</th>
-            <th class="px-6 py-4">{{ __('Username') }}</th>
-            <th class="px-6 py-4">{{ __('E-mail') }}</th>
-            <th class="px-6 py-4">{{ __('Name') }}</th>
-            <th class="px-6 py-4">{{ __('Role') }}</th>
+          <tr x-data="{ sort: false, field: '', asc: false }">
+            <x-admin.th query="id">{{ __('ID') }}</x-admin.th>
+            <x-admin.th query="username">{{ __('Username') }}</x-admin.th>
+            <x-admin.th query="email">{{ __('E-mail') }}</x-admin.th>
+            <x-admin.th query="name">{{ __('Name') }}</x-admin.th>
+            <x-admin.th query="role">{{ __('Role') }}</x-admin.th>
             <th class="px-6 py-4">{{ __('Actions') }}</th>
           </tr>
         </thead>
@@ -52,7 +80,7 @@
                 </a>
                 @if($user->role != 'admin')
                   <div class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-red-500 group" title="{{ __('Ban user') }}" data-trigger="{{ $user->id }}">
-                    <x-lucide-ban class="group-hover:scale-75 transition-all" />
+                    <x-lucide-gavel class="group-hover:scale-75 transition-all group-hover:rotate-45" />
                   </div>
 								@endif
               </td>

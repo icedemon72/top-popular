@@ -2,7 +2,7 @@
 
 namespace App\Http\Filters;
 
-class CategoryFilter extends Filter
+class TagFilter extends Filter
 {
 	protected array $filterable = [
 		'search',
@@ -11,7 +11,7 @@ class CategoryFilter extends Filter
 
 	protected array $sortable = [
 		'name',
-		'posts',
+		'category',
 		'id'
 	];
 
@@ -24,7 +24,7 @@ class CategoryFilter extends Filter
 	}
 
 	public function sort($value = null): void 
-	{	
+	{
 		if($value) {
 			if (str_contains($value, '_')) {
 				$exploded = explode("_", $value);
@@ -32,8 +32,9 @@ class CategoryFilter extends Filter
 				$order = $exploded[1];
 				
 				if(in_array($sort, $this->sortable) && in_array($order, ['asc', 'desc'])) {
-					 if($sort == 'posts') {
-						$this->builder->orderBy('posts_count', $order);
+					 if($sort == 'category') {
+						// $this->builder->join('categories', 'categories.id', '=', 'tags.categories_id')->orderBy('posts_count', $order);
+						// implement this later...
 					} else {
 						$this->builder->orderBy($sort, $order);
 					}
@@ -41,4 +42,5 @@ class CategoryFilter extends Filter
 			} 
 		}
 	}
+
 }

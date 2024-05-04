@@ -27,9 +27,15 @@ class MessageController extends Controller implements HasMiddleware
     public function index()
     {
         $messages = Message::with('user')->orderByDesc('created_at')->get();
-        
+        $status = DB::table('messages')
+            ->select(DB::raw('status, count(*) as count'))
+            ->groupBy('status')
+            ->orderBy('count', 'desc')
+            ->get();
+        dd($status);
         return view('admin.messages.index', [
-            'messages' => $messages
+            'messages' => $messages,
+            'status' => $status
         ]);
     }
 

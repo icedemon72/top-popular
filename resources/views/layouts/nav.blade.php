@@ -101,7 +101,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-main">
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden h-screen bg-main">
         <div class="pt-2 pb-3 space-y-1">
             <x-nav.ham-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}

@@ -49,3 +49,44 @@ export const closeModal = () => {
 	deleteModal.className = deleteModal.className.replace
 		( /(?:^|\s)flex(?!\S)/g , 'hidden' )
 }
+
+export const sortTable = (selectedClass = '.sortable_th') => {
+	document.querySelectorAll(selectedClass).forEach(function(element) {
+		element.addEventListener('click', function() {
+			const values = {
+				true: 'asc',
+				false: 'desc'
+			};
+			let query = this.dataset.sort;
+			let order = this.dataset?.order ? 'asc' : 'desc';
+			if ('URLSearchParams' in window) {
+				let searchParams = new URLSearchParams(window.location.search);
+				let searched = searchParams.get('sort');
+				if(searched?.split('_')[0] === query) {
+					order = searched.split('_')[1] === 'asc' ? 'desc' : 'asc';
+				}
+
+				searchParams.set('sort', `${query}_${order}`);
+				window.location.search = searchParams.toString();
+			}
+		});
+	});
+}
+
+export const showChevron = () => {
+	const searchParams = new URLSearchParams(window.location.search);
+	let sort = searchParams.get('sort');
+	
+	if(sort.includes('_')) {
+		sort = sort.split('_');
+		let query = sort[0];
+		let order = sort[1];
+
+		let chevrons = document.getElementById(query);
+		chevrons.className.baseVal = chevrons.className.baseVal.replace( /(?:^|\s)block(?!\S)/g , 'hidden' );
+	
+		let chevron = document.getElementById(`${query}_${order}`);
+		chevron.className.baseVal = chevron.className.baseVal.replace( /(?:^|\s)hidden(?!\S)/g , 'block' );
+
+	}
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\CommentFilter;
 use App\Http\Utils\Utils;
 use App\Models\Category;
 use App\Models\Comment;
@@ -149,7 +150,7 @@ class PostController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(string $category, string $id)
+    public function show(CommentFilter $filter, string $category, string $id)
     {
         $post = Post::where(['id' => $id, 'category_id' => $category])->get()->first();
 
@@ -162,7 +163,7 @@ class PostController extends Controller implements HasMiddleware
             ->get()
             ->first();
 
-        $comments = Comment::sort()
+        $comments = Comment::filter($filter)
             ->where(['post_id' => $id])
             ->with('replies', 'user', 'likes')
             ->get();

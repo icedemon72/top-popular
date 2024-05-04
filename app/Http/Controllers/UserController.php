@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\UserFilter;
 use App\Http\Utils\Utils;
 use App\Models\Like;
 use App\Models\User;
@@ -25,9 +26,9 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserFilter $filter)
     {
-        $users = User::where('role', '!=', 'banned')->paginate(15);
+        $users = User::filter($filter)->where('role', '!=', 'banned')->paginate(15);
             
         // dd($users);
         return view('admin.users.index', [
@@ -212,9 +213,9 @@ class UserController extends Controller implements HasMiddleware
         return redirect()->back()->with('unbanned', true);
     }
 
-    public function showBanned()
+    public function showBanned(UserFilter $filter)
     {
-        $users = User::where(['role' => 'banned'])->paginate(15);
+        $users = User::filter($filter)->where(['role' => 'banned'])->paginate(15);
 
         return view('admin.bans.index', [
             'users' => $users

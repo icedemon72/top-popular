@@ -3,6 +3,8 @@
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
 		handleModal("{{ route('post.destroy', ':id') }}");
+		sortTable();
+		showChevron();
 	});
 </script>
 
@@ -23,7 +25,7 @@
 				<x-lucide-filter />
 				{{ __('Filters') }}
 			</div>
-			<form class="flex" method="GET">
+			<form class="flex items-center" method="GET">
 				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" value="{{ request()->input('search') }}" />
 			</form>
 		</div>
@@ -34,14 +36,21 @@
 					<div class="col-span-1">
 						<p class="text-muted">{{ __('Category') }}</p>
 						@foreach($categories as $category)
-							<x-form.checkbox field="category $eq" value="{{ $category->id }}" text="{{ $category->name }} ({{ $category->posts_count }})" />
+							<x-form.checkbox  field="category[]" value="{{ $category->id }}" text="{{ $category->name }} ({{ $category->posts_count }})" />
 						@endforeach
 					</div>
 					<div class="col-span-1">
 						<p class="text-muted">{{ __('Status') }}</p>
-							<x-form.checkbox type="radio" value="1" field="archived $eq" text="{{ __('Archived')}}" />
-							<x-form.checkbox type="radio" value="0" field="archived $eq" text="{{ __('Not archived')}}" />
+							<x-form.checkbox type="radio" value="1" field="archived" text="{{ __('Archived')}}" />
+							<x-form.checkbox type="radio" value="false" field="archived" text="{{ __('Not archived')}}" />
 					</div>
+					<div class="col-span-1">
+						<p class="text-muted">{{ __('Date') }}</p>
+							<x-form.checkbox type="radio" value="today" field="time" text="{{ __('Last 24h')}}" />
+							<x-form.checkbox type="radio" value="week" field="time" text="{{ __('Last week')}}" />
+							<x-form.checkbox type="radio" value="month" field="time" text="{{ __('Last month')}}" />
+							<x-form.checkbox type="radio" value="year" field="time" text="{{ __('Last year')}}" />
+						</div>
 				</div>
 				
 				<x-form.submit class="mt-1">{{ __('Apply filters') }}</x-form.submit>
@@ -51,12 +60,20 @@
 		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
 			<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-					<tr>
-            <th class="px-6 py-4">{{ __('ID') }}</th>
-            <th class="px-6 py-4">{{ __('Title') }}</th>
-            <th class="px-6 py-4">{{ __('Poster') }}</th>
-            <th class="px-6 py-4">{{ __('Category') }}</th>
-            <th class="px-6 py-4">{{ __('Comments') }}</th>
+					<tr x-data="{ sort: false, field: '', asc: false }">
+            {{-- <th class="px-6 py-4 flex items-center gap-1" x-on:click="sort = true; field = 'ID'; asc = !asc;">
+							{{ __('ID') }}
+							<div x-show="sort && field === 'ID'">
+								<x-lucide-chevron-down x-show="asc" class="w-3 h-3" />
+								<x-lucide-chevron-up x-show="!asc" class="w-3 h-3" />
+							</div>
+						</th> --}}
+						<x-admin.th query="id">{{ __('ID') }}</x-admin.th>
+						<x-admin.th query="title">{{ __('Title') }}</x-admin.th>
+            {{-- <th class="px-6 py-4">{{ __('Title') }}</th> --}}
+            <x-admin.th query="poster">{{ __('Poster') }}</x-admin.th>
+            <x-admin.th query="category">{{ __('Category') }}</x-admin.th>
+            <x-admin.th query="comments">{{ __('Comments') }}</x-admin.th>
             <th class="px-6 py-4">{{ __('Actions') }}</th>
           </tr>
 				</thead>
@@ -111,7 +128,7 @@
 		</div>
 	</div>
 
-	<script>
+	{{-- <script>
 		document.getElementById("filters").addEventListener("submit", function (e) {
 			e.preventDefault();
 			getData(e.target);
@@ -160,6 +177,6 @@
 
 		}
 	
-	</script>
+	</script> --}}
 
 </x-admin-layout>

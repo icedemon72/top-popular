@@ -11,6 +11,8 @@
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
 		handleModal("{{ route('tag.destroy', ':id') }}");
+		sortTable();
+		showChevron();
 	});
 </script>
 
@@ -43,9 +45,9 @@
 		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
 			<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-					<tr>
-            <th class="px-6 py-4">{{ __('ID') }}</th>
-            <th class="px-6 py-4">{{ __('Name') }}</th>
+					<tr x-data="{ sort: false, field: '', asc: false }">
+            <x-admin.th query="id">{{ __('ID') }}</x-admin.th>
+						<x-admin.th query="name">{{ __('Name') }}</x-admin.th>
             <th class="px-6 py-4">{{ __('Category') }}</th>
             <th class="px-6 py-4">{{ __('Actions') }}</th>
           </tr>
