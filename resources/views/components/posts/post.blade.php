@@ -12,7 +12,7 @@
 
  {{-- onClick="window.location.href='{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}'" --}}
 
-<div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer shadow-sm"]) }} >
+<div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg cursor-pointer shadow-sm border border-main"]) }} >
 	<div>
 		<div class="flex items-center gap-1">
 			@if($profile)

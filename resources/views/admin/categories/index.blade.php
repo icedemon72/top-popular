@@ -30,7 +30,7 @@
 			<div class="grid grid-cols-1 lg:grid-cols-3 flex-grow gap-2">
 				<x-admin.card title="{{ __('Latest category') }}" :data="$latestCategory" />
 				<x-admin.card title="{{ __('Top Popular category') }}" :data="$latestCategory" />
-				<x-admin.card title="{{ __('Tags') }}"></x-admin.card>
+				<x-admin.card title="{{ __('Add a category goes here') }}"></x-admin.card>
 			</div>
 		</div>
 		<div class="w-full md:w-4/5 lg:w-3/5 mt-5 p-8 cursor-pointer bg-green-200 rounded-lg">
@@ -40,17 +40,17 @@
 			</a>
 		</div>
 
-		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
-			<div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
+		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-end items-center">
+			{{-- <div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
 				<x-lucide-filter />
 				{{ __('Filters') }}
-			</div>
+			</div> --}}
 			<form class="flex" method="GET">
-				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" value="{{ request()->input('search') }}" />
+				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search categories...') }}" value="{{ request()->input('search') }}" />
 			</form>
 		</div>
 
-		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
+		<div class="relative w-full md:w-4/5 lg:w-4/5 overflow-x-auto shadow-md sm:rounded-lg">
 			<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 					<tr x-data="{ sort: false, field: '', asc: false }">

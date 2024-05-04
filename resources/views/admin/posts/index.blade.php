@@ -46,11 +46,11 @@
 					</div>
 					<div class="col-span-1">
 						<p class="text-muted">{{ __('Date') }}</p>
-							<x-form.checkbox type="radio" value="today" field="time" text="{{ __('Last 24h')}}" />
-							<x-form.checkbox type="radio" value="week" field="time" text="{{ __('Last week')}}" />
-							<x-form.checkbox type="radio" value="month" field="time" text="{{ __('Last month')}}" />
-							<x-form.checkbox type="radio" value="year" field="time" text="{{ __('Last year')}}" />
-						</div>
+						<x-form.checkbox type="radio" value="today" field="time" text="{{ __('Last 24h')}}" />
+						<x-form.checkbox type="radio" value="week" field="time" text="{{ __('Last week')}}" />
+						<x-form.checkbox type="radio" value="month" field="time" text="{{ __('Last month')}}" />
+						<x-form.checkbox type="radio" value="year" field="time" text="{{ __('Last year')}}" />
+					</div>
 				</div>
 				
 				<x-form.submit class="mt-1">{{ __('Apply filters') }}</x-form.submit>

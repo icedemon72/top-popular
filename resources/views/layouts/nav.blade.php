@@ -2,102 +2,103 @@
     class="fixed h-16 top-0 left-0 w-full z-50 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            {{-- Left side --}}
-            <div class="flex">
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
-                        <p class="flex h-9 w-auto fill-current text-gray-800 dark:text-gray-200 items-center">Top Popular
-                        </p>
-                    </a>
-                </div>
+			<div class="flex justify-between h-16">
+				{{-- Left side --}}
+				<div class="flex">
+						<div class="shrink-0 flex items-center">
+								<a href="{{ route('home') }}">
+										<p class="flex h-9 w-auto fill-current text-gray-800 dark:text-gray-200 items-center">Top Popular
+										</p>
+								</a>
+						</div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav.link :href="route('home')" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
-                    </x-nav.link>
-                    <x-nav.link :href="route('contact')" :active="request()->routeIs('contact')">
-                        {{ __('Contact') }}
-                    </x-nav.link>
-                    <x-nav.link :href="route('about')" :active="request()->routeIs('about')">
-                        {{ __('About') }}
-                    </x-nav.link>
-                </div>
-            </div>
+						<div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+								<x-nav.link :href="route('home')" :active="request()->routeIs('home')">
+										{{ __('Home') }}
+								</x-nav.link>
+								<x-nav.link :href="route('contact')" :active="request()->routeIs('contact')">
+										{{ __('Contact') }}
+								</x-nav.link>
+								<x-nav.link :href="route('about')" :active="request()->routeIs('about')">
+										{{ __('About') }}
+								</x-nav.link>
+						</div>
+				</div>
 
-            <div class="flex items-center gap-2 align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
-                <form  class="w-full rounded-xl my-3" method="GET" action="@yield('search', route('home'))">
-                    <x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular" value="{{ request()->input('search') }}"/>
-                </form>
-                <x-lucide-settings title="{{ __('Advanced search') }}" class="cursor-pointer text-muted hover:bg-main rounded-full hover:rotate-90 transition-all" />
-            </div>
+				<div class="flex items-center gap-2 align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
+						<form class="w-full rounded-xl my-3" method="GET" action="@yield('search', route('home'))">
+								<x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular"
+										value="{{ request()->input('search') }}" />
+						</form>
+						<x-lucide-settings title="{{ __('Advanced search') }}"
+								class="cursor-pointer text-muted hover:bg-main rounded-full hover:rotate-90 transition-all" />
+				</div>
 
-            {{-- Right side --}}
-            @if (Auth::check())
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-nav.dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
+					{{-- Right side --}}
+				@if (Auth::check())
+					<div class="hidden sm:flex sm:items-center sm:ms-6">
+						<x-nav.dropdown align="right" width="48">
+							<x-slot name="trigger">
+								<button 
+									class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+									<div>{{ Auth::user()->name }}</div>
 
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-                        <x-slot name="content">
-                            <x-nav.dropdown-link class="flex items-center gap-2" :href="route('user.show', Auth::user()->username)" >
-                                <x-lucide-user /> {{ __('Profile') }}
-                            </x-nav.dropdown-link>
+									<div class="ms-1">
+										<svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 20 20">
+											<path fill-rule="evenodd"
+												d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+												clip-rule="evenodd" />
+										</svg>
+									</div>
+								</button>
+							</x-slot>
+							<x-slot name="content">
+									<x-nav.dropdown-link class="flex items-center gap-2" :href="route('user.show', Auth::user()->username)">
+											<x-lucide-user /> {{ __('Profile') }}
+									</x-nav.dropdown-link>
 
-                            <!-- Authentication -->
-                            @if (Auth::user()->role == 'admin')
-                                <x-nav.dropdown-link class="flex items-center gap-2 text-green-500" :href="route('admin.index')">
-                                    <x-lucide-layout-dashboard /> {{ __('Admin Dashboard') }}
-                                </x-nav.dropdown-link>
-                            @endif
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
+									<!-- Authentication -->
+									@if (Auth::user()->role == 'admin')
+											<x-nav.dropdown-link class="flex items-center gap-2 text-green-500" :href="route('admin.index')">
+													<x-lucide-layout-dashboard /> {{ __('Admin Dashboard') }}
+											</x-nav.dropdown-link>
+									@endif
+									<form method="POST" action="{{ route('logout') }}">
+											@csrf
+											<x-nav.dropdown-link class="flex items-center gap-2" :href="route('logout')"
+													onclick="event.preventDefault(); this.closest('form').submit();">
+													<x-lucide-log-out /> {{ __('Log Out') }}
+											</x-nav.dropdown-link>
+									</form>
+							</x-slot>
+						</x-nav.dropdown>
+					</div>
+				@else
+					<div class="hidden sm:flex align-middle gap-3">
+						<x-nav.link :href="route('login')" :active="request()->routeIs('auth.login')">
+							{{ __('Login') }}
+						</x-nav.link>
+						<x-nav.link :href="route('register')" :active="request()->routeIs('auth.register')">
+							{{ __('Register') }}
+						</x-nav.link>
+					</div>
+				@endif
 
-                                <x-nav.dropdown-link class="flex items-center gap-2" :href="route('logout')"
-                                    onclick="event.preventDefault(); this.closest('form').submit();">
-                                    <x-lucide-log-out /> {{ __('Log Out') }}
-                                </x-nav.dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-nav.dropdown>
-                </div>
-            @else
-                <div class="hidden sm:flex align-middle gap-3">
-                    <x-nav.link :href="route('login')" :active="request()->routeIs('auth.login')">
-                        {{ __('Login') }}
-                    </x-nav.link>
-                    <x-nav.link :href="route('register')" :active="request()->routeIs('auth.register')">
-                        {{ __('Register') }}
-                    </x-nav.link>
-                </div>
-            @endif
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+				<!-- Hamburger -->
+				<div class="-me-2 flex items-center sm:hidden">
+					<button x-on:click="open = !open" aria-label="Hamburger button"
+						class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
+						<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+							<path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
+								stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M4 6h16M4 12h16M4 18h16" />
+							<path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+								stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+			</div>
     </div>
 
     <!-- Responsive Navigation Menu -->

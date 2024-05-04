@@ -28,7 +28,7 @@
         <x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search users...') }}" value="{{ request()->input('search') }}" />
       </form>
     </div>
-    <div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="relative w-full md:w-4/5 lg:w-4/5 overflow-x-auto shadow-md sm:rounded-lg">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr x-data="{ sort: false, field: '', asc: false }">

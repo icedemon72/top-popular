@@ -27,7 +27,7 @@
 		</div>
 	</x-slot>
 
-	<div class="w-full flex flex-col items-center justify-center mt-5">
+	<div class="w-full flex flex-col items-center justify-center mt-7">
 		<div class="w-full md:w-4/5 lg:w-3/5">
 			<div class="grid grid-cols-1 lg:grid-cols-3 flex-grow gap-2">
 				<x-admin.card title="{{ __('Latest tag') }}" :data="$latestCategory" />
@@ -42,7 +42,29 @@
 			</a>
 		</div>
 
-		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-2 overflow-x-auto shadow-md sm:rounded-lg">
+		<div x-data="{ open: false }" class="w-full flex flex-col items-center justify-center mt-7">
+			<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
+				<div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
+					<x-lucide-filter />
+					{{ __('Filters') }}
+				</div>
+				<form class="flex items-center" method="GET">
+					<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" value="{{ request()->input('search') }}" />
+				</form>
+			</div>
+	
+			<div x-collapse x-cloak x-show="open" class="w-full flex md:w-4/5 lg:w-4/5">
+				<form id="filters" class="w-full">
+					<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+						
+					</div>
+					<x-form.submit class="mt-1">{{ __('Apply filters') }}</x-form.submit>
+				</form>
+			</div>
+		</div>
+
+
+		<div class="relative w-full md:w-4/5 lg:w-4/5 mt-1 overflow-x-auto shadow-md sm:rounded-lg">
 			<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 					<tr x-data="{ sort: false, field: '', asc: false }">

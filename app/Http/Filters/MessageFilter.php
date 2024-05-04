@@ -9,7 +9,7 @@ class MessageFilter extends Filter
 	protected array $filterable = [
 		'search',
 		'status',
-		'date',
+		'time',
 		'category'
 	];
 
@@ -34,7 +34,10 @@ class MessageFilter extends Filter
 	{
 		if($value) {
 			if(is_array($value)) {
-				$this->builder->whereIn('status', $value);
+				$index = in_array('na', $value);
+				$this->builder->whereIn('status', $value)->when($index, function ($query) {
+					return $query->orWhereNull('status');
+				});
 			} else {
 				$this->builder->where('status', '=', $value);
 			}

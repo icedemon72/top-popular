@@ -17,15 +17,19 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     </head>
-    <body class="font-sans text-gray-900 antialiased h-[calc(screen - 64px)] bg-main">
+    <body class="font-sans text-gray-900 antialiased h-[calc(100vh_-_64px)] bg-main">
         <x-nav-layout />
         <x-sidebar />
 
-        <div class="mt-16 sm:ml-64 p-4">
-            @if (isset($header))
-                {{ $header }}
-            @endif
-            {{ $slot }}
+        {{-- OVDE SAM STAO --}}
+        <div class="flex flex-col justify-between min-h-full mt-16 sm:ml-64 ">
+            <div class="p-4">
+                @if (isset($header))
+                    {{ $header }}
+                @endif
+                {{ $slot }}
+            </div>
+            <x-footer />
         </div>
     </body>
 </html>

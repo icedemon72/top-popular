@@ -18,7 +18,7 @@
 				{{ __('Filters') }}
 			</div>
 			<form class="flex" method="GET">
-				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search users...') }}" value="{{ request()->input('search') }}" />
+				<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search messages...') }}" value="{{ request()->input('search') }}" />
 			</form>
     </div>
     <div x-collapse x-cloak x-show="open" class="w-full flex md:w-4/5 lg:w-4/5 mt-2">
@@ -26,11 +26,25 @@
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
           <div class="col-span-1">
             <p class="text-muted">{{ __('Status') }}</p>
-
-            <x-form.checkbox  field="status[]" value="admin" text="{{ __('Admin') }}" />
-            <x-form.checkbox  field="status[]" value="moderator" text="{{ __('Moderator') }}" />
-            <x-form.checkbox  field="role[]" value="user" text="{{ __('User') }}" />
+						@foreach($status as $value)
+            	<x-form.checkbox  field="status[]" value="{{ $value->status }}" text="{{ $value->status ? $value->status : 'Not assigned' }} ({{ $value->count }})" />
+						@endforeach
           </div>
+
+					<div class="col-span-1">
+            <p class="text-muted">{{ __('Status') }}</p>
+						@foreach($categories as $value)
+            	<x-form.checkbox  field="category[]" value="{{ $value->category }}" text="{{ $value->category }} ({{ $value->count }})" />
+						@endforeach
+          </div>
+
+					<div class="col-span-1">
+						<p class="text-muted">{{ __('Date') }}</p>
+						<x-form.checkbox type="radio" value="today" field="time" text="{{ __('Last 24h')}}" />
+						<x-form.checkbox type="radio" value="week" field="time" text="{{ __('Last week')}}" />
+						<x-form.checkbox type="radio" value="month" field="time" text="{{ __('Last month')}}" />
+						<x-form.checkbox type="radio" value="year" field="time" text="{{ __('Last year')}}" />
+					</div>
         </div>
         
         <x-form.submit class="mt-1">{{ __('Apply filters') }}</x-form.submit>
@@ -38,7 +52,7 @@
     </div>
   </div>
 
-	<div class="w-full flex flex-col items-center justify-center mt-7">
+	<div class="w-full flex flex-col items-center justify-center mt-1">
 		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
 			<div class="flex flex-grow flex-col bg-card p-2 rounded-lg">
 				@if (count($messages) > 0)

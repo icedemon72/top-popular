@@ -17,7 +17,7 @@
 
 <x-master-layout>
 	<x-modals.delete text="{{ __('Are you sure you want to delete the post?') }}" />
-	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-cente items-center">
+	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-center items-center">
 		{{-- POST --}}
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4">
 			@if(session('edited'))
@@ -177,7 +177,7 @@
 		</div>
 
 		{{-- COMMENTS --}}
-		<div class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-3 bg-card rounded-lg p-4 mt-5 font-bold text-main">
+		<div class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-3 bg-card rounded-lg p-4 mt-5 font-bold text-main b">
 			COMMENTS ({{ count($comments) }})
 			@if(!$data->archived)
 				@if(Auth::check())

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\MessageFilter;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -24,18 +25,30 @@ class MessageController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(MessageFilter $filter)
     {
-        $messages = Message::with('user')->orderByDesc('created_at')->get();
+        $messages = Message::filter($filter)
+            ->with('user')
+            ->orderByDesc('created_at')
+            ->get();
+            
         $status = DB::table('messages')
-            ->select(DB::raw('status, count(*) as count'))
+            ->select(DB::raw('status, COUNT(*) as count'))
             ->groupBy('status')
             ->orderBy('count', 'desc')
             ->get();
-        dd($status);
+
+        $categories = DB::table('messages')
+            ->select(DB::raw('category, COUNT(*) as count'))
+            ->groupBy('category')
+            ->orderBy('count', 'desc')
+            ->get();
+        
+        // TODO: FIX NULL STATUS!!!!
         return view('admin.messages.index', [
             'messages' => $messages,
-            'status' => $status
+            'status' => $status,
+            'categories' => $categories
         ]);
     }
 
