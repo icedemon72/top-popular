@@ -20,13 +20,20 @@
 	<x-modals.delete text="{{ __('Are you sure you want to delete this tag?') }}"  />
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
-				<x-lucide-tag />
-				{{ __('Tags') }}
-			</h2>
+			<div class="w-full flex gap-2 items-center justify-between md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+				<h2 class="flex items-center gap-2">
+					<x-lucide-tag />
+					{{ __('Tags') }}
+				</h2>
+				<div>
+					<a href="{{ route('tag.create') }}" class="flex items-center gap-2 bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-600 p-2 text-xs uppercase font-bold rounded-lg border dark:border-gray-700 cursor-pointer transition-all">
+						<x-lucide-circle-plus />
+						{{ __('Add a tag') }}
+					</a>
+				</div>
+			</div>
 		</div>
 	</x-slot>
-
 	<div class="w-full flex flex-col items-center justify-center mt-7">
 		<div class="w-full md:w-4/5 lg:w-3/5">
 			<div class="grid grid-cols-1 lg:grid-cols-3 flex-grow gap-2">
@@ -35,12 +42,7 @@
 				<x-admin.card title="{{ __('Categories') }}"></x-admin.card>
 			</div>
 		</div>
-		<div class="w-full md:w-4/5 lg:w-3/5 mt-5 p-8 cursor-pointer bg-green-200 rounded-lg">
-			<a href="{{ route('tag.create') }}" class="w-full h-full flex flex-col gap-1 justify-center items-center">
-				<x-lucide-circle-plus />
-				<p>{{ __('Add tag') }}</p>
-			</a>
-		</div>
+		
 
 		<div x-data="{ open: false }" class="w-full flex flex-col items-center justify-center mt-7">
 			<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
@@ -49,7 +51,7 @@
 					{{ __('Filters') }}
 				</div>
 				<form class="flex items-center" method="GET">
-					<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search posts...') }}" value="{{ request()->input('search') }}" />
+					<x-form.search-input class="bg-card" field="search" placeholder="{{ __('Search tags...') }}" value="{{ request()->input('search') }}" />
 				</form>
 			</div>
 	

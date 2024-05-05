@@ -34,12 +34,12 @@ class ResourceOwner
 
             $post = $request->route('post');
             $created = Post::where([
-                    'id' => $post, 
-                    'user_id' => Auth::user()->id
-                ])
-                ->get()
-                ->first()
-                ->exists();
+                'id' => $post, 
+                'user_id' => Auth::user()->id
+            ])
+            ->get()
+            ->first()
+            ->exists();
             
             if ($created) {
                 return $next($request);
@@ -47,6 +47,10 @@ class ResourceOwner
         }
 
         if($resource == 'comment') {
+            if(Auth::user()->role == 'moderator') {
+                return $next($request);
+            }
+            
             $comment = $request->route('comment');
             $created = Comment::where([
                 'id' => $comment,

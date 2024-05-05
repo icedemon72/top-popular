@@ -36,15 +36,22 @@
 			<div class="flex flex-1 gap-6 mt-5 md:mx-2">
 				@if($myProfile)
 					<div class="w-64 h-64 relative group cursor-pointer bg-main">
-						<img class="rounded-lg hover:opacity-70" src="{{ asset("storage/$user->image") }}" alt="{{ __('Profile picture') }}" />
-						<div class="p-2 opacity-0 group-hover:opacity-100 duration-300 absolute inset-x-0 bottom-24 flex flex-col justify-center items-center text-xl bg-main text-main font-semibold">
-							{{ __('Edit profile picture') }}
-							<span class="text-xs text-center">{{ __('Only .jpg, .png and .svg are allowed. Max file size 2MB') }}</span>
-						</div>
+						<label for="image" aria-label="Image upload button" class="cursor-pointer">
+							<img class="rounded-lg hover:opacity-70 w-full h-full" src="{{ asset("storage/$user->image") }}" alt="{{ __('Profile picture') }}" />
+							<div class="p-2 opacity-0 group-hover:opacity-100 duration-300 absolute inset-x-0 bottom-24 flex flex-col justify-center items-center text-xl bg-main text-main font-semibold">
+								{{ __('Edit profile picture') }}
+								<span class="text-xs text-center">{{ __('Only .jpg, .png and .svg are allowed. Max file size 2MB') }}</span>
+							</div>
+						</label>
+						<form id="imageForm" method="POST" class="hidden" action="{{ route('user.pic') }}" enctype="multipart/form-data">
+							@method('PATCH')
+							@csrf
+							<input type="file" id="image" name="image" onchange="form.submit();"/>
+						</form>
 					</div>
 				@else 
 					<div class="w-64 h-64">
-						<img class="rounded-lg" src="{{ asset("storage/$user->image") }}" alt="{{ __('Profile picture') }}" />
+						<img class="rounded-lg" class="w-full h-full" src="{{ asset("storage/$user->image") }}" alt="{{ __('Profile picture') }}" />
 					</div>
 				@endif
 				<div class="flex flex-col flex-">
@@ -81,7 +88,7 @@
 			</div>
 		</section>
 
-		<section id="activity" x-data="{ open: false }"  class="w-full md:w-4/5 lg:w-3/5 flex flex-col items-center">
+		<section id="activity" x-data="{ open: true }"  class="w-full md:w-4/5 lg:w-3/5 flex flex-col items-center">
 			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg">
 				<div class="flex gap-2 items-center">
 					<x-lucide-bar-chart-3 />
@@ -95,6 +102,7 @@
 	
 			<div x-collapse x-show="open" class="w-full">
 				<x-profile.activity 
+					:categories="$user->categories_count"
 					:comments="count($user->comments)" 
 					:posts="count($user->posts)"
 					:stats="$stats"

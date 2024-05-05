@@ -8,6 +8,13 @@
 		</x-form.info>
 	@endif
 
+	@if(session('success'))
+		{{-- [open, setOpen] = false --}}
+		<x-form.success>
+			{{ __('Successfully registered! Now login with your credentials!') }}
+		</x-form.success>
+	@endif
+
 	{{-- 
 		.wrapper {
   position: relative;

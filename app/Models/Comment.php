@@ -13,7 +13,7 @@ class Comment extends Model
 {
     use HasFactory;
     use Filterable;
-
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

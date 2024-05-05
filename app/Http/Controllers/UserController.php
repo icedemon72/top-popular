@@ -51,18 +51,19 @@ class UserController extends Controller implements HasMiddleware
     {
         $user = User::where('username', $id)
             ->with([
-                'posts' => fn ($query) => $query->orderBy('posts.created_at', 'DESC')->limit(10), 
+                'posts' => fn ($query) => $query->where('deleted', '=', 0)->orderBy('posts.created_at', 'DESC')->limit(10), 
                 'posts.likes',
-                'comments' => fn ($query) => $query->orderBy('comments.created_at', 'DESC')->limit(10), 
-                'comments.likes'
+                'comments' => fn ($query) => $query->where('deleted', '=', 0)->orderBy('comments.created_at', 'DESC')->limit(10), 
+                'comments.likes',
             ])
+            ->withCount('categories')
             ->get()
             ->first();
 
         if(!$user) {
             abort(404);
         }
-
+        
         $stats = (object) [
             'likes' => 0,
             'dislikes' => 0,
@@ -220,5 +221,23 @@ class UserController extends Controller implements HasMiddleware
         return view('admin.bans.index', [
             'users' => $users
         ]);
+    }
+
+    public function changePicture(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|mimes:jpg,jpeg,png,svg|max:2048'
+        ]);
+
+        $user = User::find(Auth::user()->id);
+        $username = Auth::user()->username;
+        $img = time().'.'.$request->file('image')->extension();
+
+        $request->image->storeAs("public/images/profile/$username", $img);
+
+        $user->image = "images/profile/$username/$img";
+        $user->save();
+
+        return redirect(route('user.show', ['user' => $user->username]))->with('upload', true);
     }
 }

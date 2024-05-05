@@ -2,7 +2,13 @@
 @props(['profile' => false])
 
 @php
-   $type = $comment->likeType ?? null;
+    $type = $comment->likeType ?? null;
+    if($comment->deleted) {
+        $comment->user->username = 'DELETED';
+        $comment->user->id = 'DELETED';
+        $comment->body = '[DELETED]';
+        $comment->user_id = 0;
+    }
 @endphp
 
 <script type="text/javascript">
@@ -26,10 +32,14 @@
                 <button x-show="expanded" x-on:click="expanded = !expanded">
                     <x-lucide-chevron-down class="w-4 h-4" />
                 </button>
-                @if(!$profile)
+                @if(!$profile && !$comment->deleted)
                     <img class="w-4 h-4 rounded-full" src="{{ asset("storage/".$comment->user->image) }}" alt="{{ $comment->user->username }}'s profile picture" />
                 @endif
-                <a href="{{ route('user.show', $comment->user->username) }}" class="text-xs text-main font-bold hover:underline">{{ $comment->user->username }}</a> 
+                @if(!$comment->deleted)
+                    <a href="{{ route('user.show', $comment->user->username) }}" class="text-xs text-main font-bold hover:underline">{{ $comment->user->username }}</a> 
+                @else
+                    <p class="text-xs text-main font-bold">{{ $comment->user->username }}</p> 
+                @endif
                 @if ($op == $comment->user_id)
                    <x-lucide-pickaxe class="w-4 h-4" title="{{ __('Original poster') }}" />
                 @endif
@@ -44,58 +54,60 @@
                 {{ $comment->body }}
             </p>
         
-            <div class="flex justify-between items-center">
-                <div id="comment_{{ $comment->id }}" class="flex justify-between flex-grow  lg:justify-start gap-5 md:gap-3 lg:gap-1 items-center">
-                    <div id="comment_likes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
-                        <x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
-                    </div>
-                    <p id="comment_likes_count" class="lg:text-xs font-bold mr-1">{{ $comment->likeCount ?? 0 }}</p>
-            
-                    <div  id="comment_dislikes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
-                        <x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
-                    </div>        
-                    <p id="comment_dislikes_count" class="lg:text-xs font-bold">{{ $comment->dislikeCount ?? 0 }}</p>
-            
-                    @if(!$archived && $profile === false)
-                        <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2 gap-2">
-                            <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
-                            <p class="text-sm select-none">Reply</p>
+            @if(!$comment->deleted)
+                <div class="flex justify-between items-center">
+                    <div id="comment_{{ $comment->id }}" class="flex justify-between flex-grow  lg:justify-start gap-5 md:gap-3 lg:gap-1 items-center">
+                        <div id="comment_likes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
+                            <x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
                         </div>
-                    @endif
-                    
-                    <div class="select-none">
-
-                        <div x-on:click="commentOpen = !commentOpen" x-on:click.outside="commentOpen = false" class="flex items-center hover:bg-main p-2 rounded-xl text-main cursor-pointer">
-                            <svg x-cloak x-show="!commentOpen" class="w-4 h-4" rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
-                            <x-lucide-circle-x x-cloak x-show="commentOpen" class="w-4 h-4" />
-                        </div>
+                        <p id="comment_likes_count" class="lg:text-xs font-bold mr-1">{{ $comment->likeCount ?? 0 }}</p>
+                
+                        <div  id="comment_dislikes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
+                            <x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
+                        </div>        
+                        <p id="comment_dislikes_count" class="lg:text-xs font-bold">{{ $comment->dislikeCount ?? 0 }}</p>
+                
+                        @if(!$archived && $profile === false)
+                            <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2 gap-2">
+                                <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
+                                <p class="text-sm select-none">Reply</p>
+                            </div>
+                        @endif
                         
-                        <x-animation.pop-in class="relative" open="commentOpen">
-                            <x-posts.dropdown>
-                                @if(Auth::check())
-                                    @if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $comment->user_id)
-                                        <x-nav.dropdown-link class="flex items-center gap-2" href="#">
-                                            <x-lucide-pencil />
-                                            {{ __('Edit') }}
-                                        </x-nav.dropdown-link>
-                                        <x-nav.dropdown-link class="commentModalTrigger flex items-center gap-2 text-red-500" data-trigger="{{ $comment->id }}">
-                                            <x-lucide-trash-2 />
-                                            {{ __('Delete') }}
-                                        </x-nav.dropdown-link>
-                                    @endif
-                                    @if(Auth::user()->id != $comment->user_id)
-                                        <x-nav.dropdown-link class="flex items-center gap-2" href="#">
-                                            <x-lucide-flag />
-                                            {{ __('Report') }}
-                                        </x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
-                                    @endif
-                                @endif
-                            </x-posts.dropdown>		
-                        </x-animation.pop-in>
+                        <div class="select-none">
 
-                    </div>
-                </div>    
-            </div>
+                            <div x-on:click="commentOpen = !commentOpen" x-on:click.outside="commentOpen = false" class="flex items-center hover:bg-main p-2 rounded-xl text-main cursor-pointer">
+                                <svg x-cloak x-show="!commentOpen" class="w-4 h-4" rpl="" fill="currentColor" height="12" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="12" xmlns="http://www.w3.org/2000/svg"> <!--?lit$164882748$--><!--?lit$164882748$--><path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><!--?--> </svg>
+                                <x-lucide-circle-x x-cloak x-show="commentOpen" class="w-4 h-4" />
+                            </div>
+                            
+                            <x-animation.pop-in class="relative" open="commentOpen">
+                                <x-posts.dropdown>
+                                    @if(Auth::check())
+                                        @if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $comment->user_id)
+                                            <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                                <x-lucide-pencil />
+                                                {{ __('Edit') }}
+                                            </x-nav.dropdown-link>
+                                            <x-nav.dropdown-link class="commentModalTrigger flex items-center gap-2 text-red-500" data-trigger="{{ $comment->id }}">
+                                                <x-lucide-trash-2 />
+                                                {{ __('Delete') }}
+                                            </x-nav.dropdown-link>
+                                        @endif
+                                        @if(Auth::user()->id != $comment->user_id)
+                                            <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                                <x-lucide-flag />
+                                                {{ __('Report') }}
+                                            </x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
+                                        @endif
+                                    @endif
+                                </x-posts.dropdown>		
+                            </x-animation.pop-in>
+
+                        </div>
+                    </div>    
+                </div>
+            @endif
         
             <div :class="{ 'block': open, 'hidden': !open }" class="hidden">
                 <form method="POST" action="{{ route('comment.store', ['post' => $comment->post_id]) }}">

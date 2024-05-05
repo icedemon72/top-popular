@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller 
 {
@@ -36,7 +37,7 @@ class CategoryController extends Controller
         $request->only(['name', 'tags', 'icon']);
         $request->validate([
             'name' => 'required|string|unique:categories',
-            'icon' => 'sometimes|mimes:svg|max:1024',
+            'icon' => 'required|mimes:svg|max:1024',
             'tags' => 'sometimes'
         ]);
 
@@ -127,5 +128,17 @@ class CategoryController extends Controller
     {
         $category->deleteOrFail();
         return redirect(route('category.index'))->with('deleted', true);
+    }
+
+    public function join(string $id) 
+    {
+        $category = Category::find($id);
+        
+        if(!$category) {
+            abort(404);
+        }
+
+        $category->users()->toggle(Auth::user()->id); 
+        return redirect(route('post.index', $id));       
     }
 }

@@ -22,13 +22,21 @@
 	</x-slot>
 	<div class="w-full flex justify-center mt-2">
 		<div class="w-full md:w-4/5 lg:w-3/5 flex justify-end gap-3">
-			<a class="p-1 px-3 border-2 rounded-xl dark:border-slate-200 border-slate-800 flex items-center justify-center hover:shadow-md hover:bg-card transition-all group" href="{{ route('post.create', $category->id) }}" class="flex items-center cursor-pointer p-2">
+			<a class="p-1 px-3 border rounded-xl dark:border-slate-200 border-slate-800 bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-600 flex items-center justify-center hover:shadow-md transition-all group" href="{{ route('post.create', $category->id) }}" class="flex items-center cursor-pointer p-2">
 				<x-lucide-plus class="w-5 h-5 group-hover:animate-pulse transition-all" />
 				<p class="font-bold text-main text-xs group-hover:animate-pulse">{{ __('Create a post') }}</p>
 			</a>
-			<div class="flex items-center p-2 gap-1">
-				<x-lucide-star class="w-5 h-5" />
-				<p class="font-bold text-main text-xs">{{ __('To favs') }}</p>
+			<div class="flex items-center p-2 gap-1 cursor-pointer rounded-xl border-2 border-transparent hover:dark:border-slate-200 hover:border-slate-800 transition-all group" onClick="document.getElementById('join').submit()">
+				@if($fav)
+					<x-lucide-star-off class="w-5 h-5 fill-red-500" />
+					<p class="font-bold text-main text-xs">{{ __('Remove') }}</p>
+				@else
+					<x-lucide-star class="w-5 h-5 fill-yellow-500" />
+					<p class="font-bold text-main text-xs">{{ __('To favs') }}</p>
+				@endif
+				<form class="hidden" id="join" action="{{ route('category.join', $category->id) }}" method="POST">
+					@csrf
+				</form>
 			</div>
 		</div>
 	</div>

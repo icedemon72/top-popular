@@ -105,9 +105,14 @@ class CommentController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        dd($id);
-    }
+        $comment = Comment::find($id);
+        $comment->timestamps = false;
+        $comment->deleted = true;
+        $comment->save();
 
+        return redirect()->back()->with('comment_deleted', true);
+    }
+    
     public function like(Request $request, string $comment)
     {
         $type = $request->type ?? 'like';

@@ -9,7 +9,7 @@
           <a class="text-muted hover:text-main hover:underline cursor-pointer" href="{{ route('user.edit', Auth::user()->id) }}">{{ __('Create a post') }}</a>
           <a class="text-muted hover:text-main hover:underline cursor-pointer">{{ __('Random Post') }}</a>
         @else
-          <a class="text-muted hover:text-main hover:underline cursor-pointer">{{ __('Login to See What We Offer!') }}</a>
+          <a class="text-muted hover:text-main hover:underline cursor-pointer" href="{{ route('login') }}">{{ __('Login to See What We Offer!') }}</a>
         @endif
       </div>
     </div>
@@ -43,7 +43,7 @@
       </div>
     </div>
   </nav>
-  <div class="footer px-10 text-center py-4 border-t">
+  <div class="footer px-10 text-center py-4 border-t dark:border-gray-700">
     <aside class="flex flex-col items-center text-muted">
       <p>Jovan Isailovic 101/2020</p>
       <p>&copy;Top Popular, 2024</p>

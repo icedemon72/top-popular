@@ -18,10 +18,18 @@
 	<x-modals.delete text="{{ __('Are you sure you want to delete this category?') }}"  />
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
-				<x-lucide-box />
-				{{ __('Categories') }}
-			</h2>
+			<div class="w-full flex gap-2 items-center justify-between md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+				<h2 class="flex items-center gap-2">
+					<x-lucide-box />
+					{{ __('Categories') }}
+				</h2>
+				<div>
+					<a href="{{ route('category.create') }}" class="flex items-center gap-2 bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-600 p-2 text-xs uppercase font-bold rounded-lg border dark:border-gray-700 cursor-pointer transition-all">
+						<x-lucide-circle-plus />
+						{{ __('Add a category') }}
+					</a>
+				</div>
+			</div>
 		</div>
 	</x-slot>
 
@@ -32,12 +40,6 @@
 				<x-admin.card title="{{ __('Top Popular category') }}" :data="$latestCategory" />
 				<x-admin.card title="{{ __('Add a category goes here') }}"></x-admin.card>
 			</div>
-		</div>
-		<div class="w-full md:w-4/5 lg:w-3/5 mt-5 p-8 cursor-pointer bg-green-200 rounded-lg">
-			<a href="{{ route('category.create') }}" class="w-full h-full flex flex-col gap-1 justify-center items-center">
-				<x-lucide-circle-plus />
-				<p>{{ __('Add category') }}</p>
-			</a>
 		</div>
 
 		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-end items-center">

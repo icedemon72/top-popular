@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/post/{post}', [PostController::class,'update'])->name('post.update');
     Route::post('/post/{post}/like', [PostController::class, 'like'])->name('post.like');
     Route::post('/comment/{comment}/like', [CommentController::class, 'like'])->name('comment.like');
+    Route::post('/category/{id}/join', [CategoryController::class, 'join'])->name('category.join');
+    Route::patch('/user/picture/update', [UserController::class, 'changePicture'])->name('user.pic');
     
     Route::resource('message', MessageController::class)->except(['create']);
     
@@ -57,24 +59,23 @@ Route::middleware('auth')->group(function () {
         Route::delete('/post/{id}', [PostController::class, 'destroy'])->middleware('owner:post')->name('post.destroy');
         Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('owner:comment')->name('comment.destroy');
         
-        Route::post('/user/{id}/ban', [UserController::class, 'ban'])->name('user.ban');
-        Route::post('/user/{id}/unban', [UserController::class, 'unban'])->name('user.unban');
-        Route::get('/admin/bans', [UserController::class, 'showBanned'])->name('admin.user.ban');
-    });
-
-    /* Only admins */
-    Route::middleware('role:admin')->group(function () {
+        Route::resource('admin/tag', TagController::class);
         Route::get('/admin', function () {
             return view('admin.index');
         })->name('admin.index');
         
-        Route::resource('admin/category', CategoryController::class);
-        Route::resource('admin/tag', TagController::class);
+        Route::get('/admin/bans', [UserController::class, 'showBanned'])->name('admin.user.ban');
         Route::get('admin/post', [PostController::class, 'getAll'])->name('admin.post.index');
-        
         Route::resource('admin/user', UserController::class)->only('index');
-        Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
 
+        Route::post('/user/{id}/ban', [UserController::class, 'ban'])->name('user.ban');
+        Route::post('/user/{id}/unban', [UserController::class, 'unban'])->name('user.unban');
+    });
+
+    /* Only admins */
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('admin/category', CategoryController::class);
+        Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
         Route::patch('/message/{message}', [MessageController::class, 'updateStatus'])->name('message.updateStatus');
     }); 
 });

@@ -45,48 +45,27 @@ class PostController extends Controller implements HasMiddleware
     public function index($category, PostFilter $filter)
     {   
         $categoryData = Category::where('id', $category)->first();
-        $sort = request()->query('sort') ?? 'popular';
-        $time = request()->query('time') ?? 'today';
 
         if(!$categoryData) {
             abort(404);
         }
         
-        // if(!request()->query('sort')) {
-        //     request()->query('sort') = ['comments' => ['']]
-        // }
-
-        $posts = Post::filter($filter)->where('category_id', $category)
+        $posts = Post::filter($filter)->where([
+            'category_id' => $category,
+            'deleted' => false
+            ])
             ->with('poster')
             ->withCount('comments');
-            
-        // if($time == 'month') {
-        //     $posts = $posts->whereMonth('created_at', Carbon::now()->month);
-        // } else if($time == 'week') {
-        //     $posts = $posts->whereBetween('created_at', [
-        //         Carbon::now()->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
-        //         Carbon::now()->endOfWeek()->format('Y-m-d')
-        //     ]);
-        // } else if ($time == 'year') {
-        //     $posts = $posts->whereYear('created_at', Carbon::now()->year);
-        // } else if ($time != 'all') {
-        //     $posts = $posts->whereDate('created_at', Carbon::today());
-        // }
-
-        // if($sort == 'new') {
-        //     $posts = $posts->orderBy('created_at', 'DESC');
-        // } else if ($sort == 'top') {
-        //     $posts = $posts->orderBy('likes_count', 'DESC');
-        // } else {
-        //     $posts = $posts->orderBy('comments_count');
-        // }
-        
+                
         $posts = $posts->simplePaginate(10);
         $posts = Utils::GetLikes($posts);
-        
+
+        $fav = Category::find($categoryData->id)->users()->where('user_id', '=', Auth::user()->id ?? 0)->exists();
+
         return view('posts.index', [
             'posts' => $posts,
-            'category' => $categoryData
+            'category' => $categoryData,
+            'fav' => $fav
         ]);
     }
 
@@ -159,7 +138,7 @@ class PostController extends Controller implements HasMiddleware
         }
 
         $data = Post::where('id', $id)
-            ->with('tags:id,name', 'category:id,name', 'poster:id,username,role')
+            ->with('tags:id,name', 'category:id,name', 'poster:id,username,role,image')
             ->get()
             ->first();
 
@@ -288,7 +267,7 @@ class PostController extends Controller implements HasMiddleware
 
         $postObj = Post::findOrFail($post);
 
-        if($postObj->archived) {
+        if($postObj->archived || $postObj->deleted) {
             abort(403, 'Cannot like archived post...');
         }
 
@@ -338,7 +317,25 @@ class PostController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        dd($id);
+        $post = Post::find($id);
+        $category = $post->category_id;
+
+        $post->timestamps = false;
+        $post->deleted = true;
+        $post->save();
+
+
+        $commentCount = Comment::where([
+            'post_id' => $post->id,
+            'deleted' => false
+        ])->count();
+
+        if($commentCount == 0) {
+            $post->delete();
+            return redirect(route('post.index', ['category' => $category]))->with('deleted', true);
+        }
+
+        return redirect()->back()->with('post_deleted', true);
     }
 
     public function getAll(PostFilter $filter)

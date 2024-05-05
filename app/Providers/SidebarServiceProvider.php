@@ -21,8 +21,8 @@ class SidebarServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('components.sidebar', function ($view) {
-            $categories = DB::table('categories')->get();
+        View::composer(['components.sidebar', 'layouts.nav'], function ($view) {
+            $categories = DB::table('categories')->orderBy('name')->get();
 
             $view->with(['categories' => $categories]);
         });

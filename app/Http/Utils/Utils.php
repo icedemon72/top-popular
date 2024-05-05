@@ -10,10 +10,12 @@ class Utils
 	{
 		if (Auth::check()) {
 			foreach ($posts as $post) {
-				foreach ($post->likes as $like) {
-					if ($like->user_id == Auth::user()->id) {
-						$post['likeType'] = $like->type;
-						break;
+				if(!$post->deleted) {
+					foreach ($post->likes as $like) {
+						if ($like->user_id == Auth::user()->id) {
+							$post['likeType'] = $like->type;
+							break;
+						}
 					}
 				}
 			} 
