@@ -2,6 +2,7 @@
 @props(['profile' => false])
 
 @php
+    $bannable = false;
     $type = $comment->likeType ?? null;
     if($comment->deleted) {
         $comment->user->username = 'DELETED';
@@ -9,13 +10,30 @@
         $comment->body = '[DELETED]';
         $comment->user_id = 0;
     }
+
+    if(Auth::check()) {
+		$bannable = $comment->user->role != 'admin' && (Auth::user()->role === 'admin' || ($comment->user->role != 'moderator' && Auth::user()->role == 'moderator'));
+	}
 @endphp
+
+@if($bannable)
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function() {
+			handleModal("{{ route('user.ban', ':id') }}", '.banTrigger', 'banModal', 'banForm');
+		});
+	</script>
+@endif
+
 
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
 		handleModal("{{ route('comment.destroy', ':id') }}", '.commentModalTrigger')
 	});
 </script>
+
+<x-modals.delete text="{{ __('Are you sure you want to ban the user?') }}" id="banModal" form="banForm" method="POST">
+    <x-lucide-ban class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" />
+</x-modals.delete>
 
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg", 'id' => $comment->id]) }}>
     <div x-data="{ open: false, expanded: true, commentOpen: false }">
@@ -94,12 +112,12 @@
                                                 {{ __('Delete') }}
                                             </x-nav.dropdown-link>
                                         @endif
-                                        @if(Auth::user()->id != $comment->user_id)
-                                            <x-nav.dropdown-link class="flex items-center gap-2" href="#">
-                                                <x-lucide-flag />
-                                                {{ __('Report') }}
-                                            </x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
-                                        @endif
+                                        @if($bannable)
+                                            <x-nav.dropdown-link class="banTrigger  flex items-center gap-2" href="#" data-trigger="{{ $comment->user->id }}">
+                                                <x-lucide-ban />
+                                                {{ __('Ban user') }}
+                                            </x-nav.dropdown-link>
+									    @endif
                                     @endif
                                 </x-posts.dropdown>		
                             </x-animation.pop-in>

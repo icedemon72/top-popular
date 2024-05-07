@@ -23,7 +23,6 @@ class SidebarServiceProvider extends ServiceProvider
     {
         View::composer(['components.sidebar', 'layouts.nav'], function ($view) {
             $categories = DB::table('categories')->orderBy('name')->get();
-
             $view->with(['categories' => $categories]);
         });
     }

@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }"
+<nav x-data="{ open: false, filterOpen: false }"
 	class="fixed h-16 top-0 left-0 w-full z-50 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
 	<!-- Primary Navigation Menu -->
 	<div class="px-4 sm:px-6 lg:px-8">
@@ -24,12 +24,14 @@
 				</div>
 			</div>
 			<div class="flex items-center gap-2 align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
-				<form class="w-full rounded-xl my-3" method="GET" action="@yield('search', route('home'))">
-					<x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular"
+				<form id="searchForm" class="w-full rounded-xl my-3" method="GET">
+					<x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular" 
 						value="{{ request()->input('search') }}" />
 				</form>
-				<x-lucide-settings title="{{ __('Advanced search') }}"
+				<x-lucide-settings title="{{ __('Advanced search') }}" x-on:click="filterOpen = !filterOpen"
 					class="cursor-pointer text-muted hover:bg-main rounded-full hover:rotate-90 transition-all" />
+
+				<x-nav.dropdown-search :categories="$categories" />
 			</div>
 			{{-- Right side --}}
 			@if (Auth::check())
@@ -158,3 +160,26 @@
 		@endif
 	</div>
 </nav>
+
+<script type="text/javascript">
+	const searchForm = document.getElementById('searchForm');
+	const filterForm = document.getElementById('searchFilters');
+	const allowed = ['archived', 'category', 'time'];
+	searchForm.addEventListener("submit", function (e) {
+		e.preventDefault();
+		let formData = new FormData(filterForm);
+		if ('URLSearchParams' in window) {
+			let searchParams = new URLSearchParams(window.location.search);
+			let searchVal =  document.getElementById('search').value;
+			(searchVal) 
+				? searchParams.set('search', searchVal) 
+				: searchParams.delete('search');
+			for (let pair of formData.entries()) {
+				if(allowed.indexOf(pair[0]) !== -1 && pair[1]) {
+					searchParams.set(pair[0], pair[1]);
+				}
+			}
+			window.location.search = searchParams.toString()
+		}
+	});
+</script>

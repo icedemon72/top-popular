@@ -55,10 +55,6 @@ export const closeModal = (id = 'deleteModal') => {
 export const sortTable = (selectedClass = '.sortable_th') => {
 	document.querySelectorAll(selectedClass).forEach(function(element) {
 		element.addEventListener('click', function() {
-			const values = {
-				true: 'asc',
-				false: 'desc'
-			};
 			let query = this.dataset.sort;
 			let order = this.dataset?.order ? 'asc' : 'desc';
 			if ('URLSearchParams' in window) {
@@ -79,7 +75,7 @@ export const showChevron = () => {
 	const searchParams = new URLSearchParams(window.location.search);
 	let sort = searchParams.get('sort');
 	
-	if(sort.includes('_')) {
+	if(sort && sort.includes('_')) {
 		sort = sort.split('_');
 		let query = sort[0];
 		let order = sort[1];
