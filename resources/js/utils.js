@@ -33,21 +33,23 @@ export const giveLike = async (type = 'like', id, URL, CSRF, archived = 0, postT
 	}
 }
 
-export const handleModal = (url, selectedClass = '.modalTrigger') => {
+export const handleModal = (url, selectedClass = '.modalTrigger', id = 'deleteModal', form = 'deleteForm') => {
 	document.querySelectorAll(selectedClass).forEach(function(element) {
-			element.addEventListener('click', function() {
-					let ID = this.dataset.trigger;
-					url = url.replace(':id', ID);
-					document.getElementById('deleteForm').setAttribute('action', url);
-					let deleteModal = document.getElementById('deleteModal');
-					deleteModal.className = deleteModal.className.replace( /(?:^|\s)hidden(?!\S)/g , 'flex' )
+		element.addEventListener('click', function() {
+			let ID = this.dataset.trigger;
+			url = url.replace(':id', ID);
+			document.getElementById(form).setAttribute('action', url);
+			let modal = document.getElementById(id);
+			modal.className = modal.className.replace( /(?:^|\s)hidden(?!\S)/g , 'flex' );
 		});
 	});
+	document.addEventListener('keydown', function (event) {
+		event.key === 'Escape' && closeModal(id);
+	});
 }
-
-export const closeModal = () => {
-	deleteModal.className = deleteModal.className.replace
-		( /(?:^|\s)flex(?!\S)/g , 'hidden' )
+export const closeModal = (id = 'deleteModal') => {
+	let modal = document.getElementById(id);
+	modal.className = modal.className.replace( /(?:^|\s)flex(?!\S)/g , 'hidden' );
 }
 
 export const sortTable = (selectedClass = '.sortable_th') => {

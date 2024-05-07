@@ -3,12 +3,17 @@
 	$edited = $data->created_at != $data->updated_at;
 	$type = $likeObj->type ?? null;
 	$categoryName = $data->category->name;
+	$bannable = false; 
 
 	if($data->deleted) {
 		$data->poster->username = 'DELETED';
 		$data->poster->id = 'DELETED';
 		$data->body = '[DELETED]';
 		$data->user_id = 0;
+	}
+
+	if(Auth::check()) {
+		$bannable = $data->poster->role != 'admin' && (Auth::user()->role === 'admin' || ($data->poster->role != 'moderator' && Auth::user()->role == 'moderator'));
 	}
 @endphp
 
@@ -18,10 +23,23 @@
 	document.addEventListener('DOMContentLoaded', function() {
 		handleModal("{{ route('post.destroy', ':id') }}");
 	});
+
 </script>
+
+@if($bannable)
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function() {
+			handleModal("{{ route('user.ban', ':id') }}", '.banTrigger', 'banModal', 'banForm');
+		});
+	</script>
+@endif
 
 <x-master-layout>
 	<x-modals.delete text="{{ __('Are you sure you want to delete the post?') }}" />
+	<x-modals.delete text="{{ __('Are you sure you want to ban the user?') }}" id="banModal" form="banForm" method="POST">
+		<x-lucide-ban class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" />
+	</x-modals.delete>
+	
 	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-center items-center">
 		{{-- POST --}}
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4">
@@ -97,10 +115,10 @@
 											</x-nav.dropdown-link>
 										@endif
 									@endif
-									@if(Auth::check() && Auth::user()->id != $data->id)
-										<x-nav.dropdown-link class="flex items-center gap-2" href="#">
-											<x-lucide-flag />
-											{{ __('Report') }}
+									@if($bannable)
+										<x-nav.dropdown-link class="banTrigger  flex items-center gap-2" href="#" data-trigger="{{ $data->poster->id }}">
+											<x-lucide-ban />
+											{{ __('Ban the OP') }}
 										</x-nav.dropdown-link> {{-- {{ route('post.edit', ['category' => $data->category_id, 'post' => $data->id]) }} --}}
 									@endif
 								</x-posts.dropdown>		

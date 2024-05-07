@@ -1,31 +1,71 @@
 @php
 	$myProfile = false;
 	$isAdmin = false; 
+	$bannable = false;
 	if(Auth::check()) {
 		$myProfile = Auth::user()->username == $user->username;
 		$isAdmin = Auth::user()->role == 'admin';
+		$bannable = !$myProfile && ($isAdmin || (Auth::user()->role == 'moderator' && ($user->role == 'user' || $user->role == 'banned')));
 	}
 @endphp
 
 @section('title', $myProfile ? 'My profile' : "{$user->username}")
 
+@if($bannable && $user->role != 'banned')
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function() {
+			handleModal("{{ route('user.ban', ':id') }}");
+		});
+	</script>
+@endif
+
+@if($bannable && $user->role == 'banned')
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function() {
+			handleModal("{{ route('user.unban', ':id') }}");
+		});
+	</script>
+@endif
+
 <x-master-layout>
+	@if($user->role == 'banned')
+		<x-modals.delete text="Are you sure you want to unban this user?" method="POST">
+			<x-lucide-circle-off class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" />
+		</x-modals.delete>
+	@else
+		<x-modals.delete text="Are you sure you want to ban this user?" method="POST">
+			<x-lucide-ban class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" />
+		</x-modals.delete>
+	@endif
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full md:w-4/5 lg:w-3/5 font-semibold text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg flex gap-2 items-center">
-				<div class="text-xl">
-					@if($myProfile)
-						{{ __('My profile') }}
-					@else
-						{{$user->username }}{{ __('\'s profile') }}
+			<h2 class="w-full md:w-4/5 lg:w-3/5 font-semibold text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg flex justify-between gap-2 items-center">
+				<div class="flex items-center gap-2">
+					<div class="text-xl">
+						@if($myProfile)
+							{{ __('My profile') }}
+						@else
+							{{$user->username }}{{ __('\'s profile') }}
+						@endif
+					</div>
+	
+					<x-profile.badge :role="$user->role"/>
+					@if ($myProfile || $isAdmin)
+						<div class="flex-grow-0">
+							<a href="{{ route('user.edit', $user->username) }}">Edit</a>
+						</div>
 					@endif
 				</div>
-
-				<x-profile.badge :role="$user->role"/>
-				@if ($myProfile || $isAdmin)
-					<div class="flex-grow-0">
-						<a href="{{ route('user.edit', $user->username) }}">Edit</a>
-					</div>
+				@if($bannable)
+					@if($user->role != 'banned')
+						<div class="modalTrigger flex gap-2 cursor-pointer rounded-full p-1 transition-all text-main-gray-light dark:text-main-gray-dark bg-red-500 hover:bg-red-700 group" title="{{ __('Ban user') }}" data-trigger="{{ $user->id }}">
+							<x-lucide-gavel class="group-hover:scale-75 transition-all group-hover:rotate-45 text-main-gray-light dark:text-main-gray-dark dark:hover:text-main-gray-light hover:text-main-gray-dark" />
+						</div>
+					@else
+						<div class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-green-500 group" title="{{ __('Unban user') }}" data-trigger="{{ $user->id }}">
+							<x-lucide-circle-off class="group-hover:scale-75 transition-all" />
+						</div>
+					@endif
 				@endif
 			</h2>
 		</div>

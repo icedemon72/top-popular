@@ -240,4 +240,19 @@ class UserController extends Controller implements HasMiddleware
 
         return redirect(route('user.show', ['user' => $user->username]))->with('upload', true);
     }
+
+    public function changeRole(Request $request, string $user)
+    {
+        $request->only('role');
+
+        $request->validate([
+            'role' => 'required|in:moderator,user'
+        ]);
+
+        $user = User::find($user);
+        $user->role = $request->role;
+        $user->save();
+        
+        return redirect()->back()->with('role_changed', true);
+    }
 }

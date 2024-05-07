@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::resource('admin/category', CategoryController::class);
         Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
+        Route::patch('/user/{user}/role', [UserController::class, 'changeRole'])->name('user.role');
         Route::patch('/message/{message}', [MessageController::class, 'updateStatus'])->name('message.updateStatus');
     }); 
 });

@@ -36,7 +36,7 @@
 
 			<span class="block text-sm text-label font-bold mb-1">Icon</span>
 			{{-- TODO: add --}}
-			<x-form.image-input field="icon" accept=".svg" text="Maximum file size: 1KB .svg" />
+			<x-form.image-input field="icon" accept=".svg" text="Maximum file size: 1KB .svg" icon="{{ asset('storage/'.$category->icon) }}" />
 
 			@if(count($tags) > 0) 
 				<x-form.label class="mt-5 mb-1" :text="__('Tags')" for="tags" />
