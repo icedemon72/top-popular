@@ -1,3 +1,5 @@
+@props(['search' => true])
+
 <nav x-data="{ open: false, filterOpen: false }"
 	class="fixed h-16 top-0 left-0 w-full z-50 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
 	<!-- Primary Navigation Menu -->
@@ -23,16 +25,18 @@
 					</x-nav.link>
 				</div>
 			</div>
-			<div class="flex items-center gap-2 align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
-				<form id="searchForm" class="w-full rounded-xl my-3" method="GET">
-					<x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular" 
-						value="{{ request()->input('search') }}" />
-				</form>
-				<x-lucide-settings title="{{ __('Advanced search') }}" x-on:click="filterOpen = !filterOpen"
-					class="cursor-pointer text-muted hover:bg-main rounded-full hover:rotate-90 transition-all" />
+			@if($search)
+				<div class="flex items-center gap-2 align-middle h-full sm:w-2/3 md:w-1/4 lg:w-1/3">
+					<form id="searchForm" class="w-full rounded-xl my-3" method="GET">
+						<x-form.search-input class="w-auto" field="search" placeholder="Search Top Popular" 
+							value="{{ request()->input('search') }}" />
+					</form>
+					<x-lucide-settings title="{{ __('Advanced search') }}" x-on:click="filterOpen = !filterOpen"
+						class="cursor-pointer text-muted hover:bg-main rounded-full hover:rotate-90 transition-all" />
 
-				<x-nav.dropdown-search :categories="$categories" />
-			</div>
+					<x-nav.dropdown-search :categories="$categories" />
+				</div>
+			@endif
 			{{-- Right side --}}
 			@if (Auth::check())
 			<div class="hidden sm:flex sm:items-center sm:ms-6">

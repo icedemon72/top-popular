@@ -9,7 +9,8 @@
           <a class="text-muted hover:text-main hover:underline cursor-pointer" href="{{ route('user.edit', Auth::user()->id) }}">{{ __('Create a post') }}</a>
           <a class="text-muted hover:text-main hover:underline cursor-pointer">{{ __('Random Post') }}</a>
         @else
-          <a class="text-muted hover:text-main hover:underline cursor-pointer" href="{{ route('login') }}">{{ __('Login to See What We Offer!') }}</a>
+          <a class="text-muted hover:text-main hover:underline cursor-pointer" href="{{ route('login') }}">{{ __('Login') }}</a>
+          <a class="text-muted hover:text-main hover:underline cursor-pointer" href="{{ route('register') }}">{{ __('Register') }}</a>
         @endif
       </div>
     </div>

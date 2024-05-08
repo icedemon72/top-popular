@@ -19,7 +19,7 @@
         {{-- Yields --}}
     </head>
     <body class="font-sans text-gray-900 antialiased h-[calc(screen - 64px)] bg-main">
-        <x-nav-layout />
+        <x-nav-layout :search="false" />
         <x-admin.sidebar />
 
         <div class="mt-16 sm:ml-64 p-4">

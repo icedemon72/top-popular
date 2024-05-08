@@ -81,15 +81,24 @@ class CommentController extends Controller implements HasMiddleware
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $post, string $id)
     {
-        //
+        $comment = Comment::where([
+            'id' => $id,
+            'post_id' => $post
+        ])
+        ->with('post.poster', 'parent')
+        ->firstOrFail();
+
+        return view('comments.edit')->with([
+            'comment' => $comment
+        ]);
     }
 
     /**

@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\ModeratorController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -19,10 +19,7 @@ Route::get('/contact', function () {
     return view('pages.contact');
 })->name('contact');
 
-Route::get('/about', function () {
-    return view('pages.about');
-})->name('about');
-
+Route::get('/about', [PageController::class, 'about'])->name('about');
 
 Route::resource('user', UserController::class)->except(['create', 'index']);
 

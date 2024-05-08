@@ -54,9 +54,9 @@ class PostController extends Controller implements HasMiddleware
             'category_id' => $category,
             'deleted' => false
             ])
-            ->with('poster')
+            ->with('poster:id,image,username')
             ->withCount('comments');
-                
+        
         $posts = $posts->simplePaginate(10);
         $posts = Utils::GetLikes($posts);
 
