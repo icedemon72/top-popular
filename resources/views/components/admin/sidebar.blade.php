@@ -49,10 +49,10 @@
                <x-lucide-mails />
                {{ __('Messages') }}
             </x-admin.sidebar-item>
-            <x-admin.sidebar-item>
+            {{-- <x-admin.sidebar-item>
                <x-lucide-scroll-text />
                {{ __('Logs') }}
-            </x-admin.sidebar-item>
+            </x-admin.sidebar-item> --}}
          @endif
        </div>
     </div>

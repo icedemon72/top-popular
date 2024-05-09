@@ -3,6 +3,8 @@
 	$edited = $comment->post->created_at != $comment->post->updated_at;
 @endphp
 
+@section('title', 'Edit comment')
+
 <x-master-layout>
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
@@ -125,5 +127,7 @@
 			
 		</div>
 	</div>
+
+	
 
 </x-master-layout>

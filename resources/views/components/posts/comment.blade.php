@@ -103,7 +103,7 @@
                                 <x-posts.dropdown>
                                     @if(Auth::check())
                                         @if(in_array(Auth::user()->role, ['admin', 'moderator']) || Auth::user()->id == $comment->user_id)
-                                            <x-nav.dropdown-link class="flex items-center gap-2" href="#">
+                                            <x-nav.dropdown-link class="flex items-center gap-2" href="{{ route('comment.edit', ['comment' => $comment->id, 'post' => $comment->post_id]) }}">
                                                 <x-lucide-pencil />
                                                 {{ __('Edit') }}
                                             </x-nav.dropdown-link>

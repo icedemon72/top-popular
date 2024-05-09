@@ -96,6 +96,8 @@ class CommentController extends Controller implements HasMiddleware
         ->with('post.poster', 'parent')
         ->firstOrFail();
 
+        // TODO: add comment likes here...
+
         return view('comments.edit')->with([
             'comment' => $comment
         ]);
