@@ -106,9 +106,23 @@ class CommentController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $post, string $id)
     {
-        //
+        $request->validate([
+            'body' => 'required|string'
+        ]);
+
+        $category = Post::find($post)->category;
+
+        $comment = Comment::where([
+            'id' => $id,
+            'post_id' => $post
+        ])->update([
+            'body' => $request->body
+        ]);
+
+        return redirect(route('post.show', ['category' => $category, 'post' => $post]))
+            ->with('edited', __('Comment has been successfully edited!'));
     }
 
     /**

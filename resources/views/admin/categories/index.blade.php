@@ -42,7 +42,7 @@
 			</div>
 		</div>
 
-		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-end items-center">
+		<div class="flex w-full md:w-4/5 lg:w-4/5 justify-end items-center mt-5">
 			{{-- <div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
 				<x-lucide-filter />
 				{{ __('Filters') }}

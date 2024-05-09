@@ -1,9 +1,7 @@
 @section('title', __('Create a post'))
 
 @section('head')
-	<link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
 	<link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" />
-	<script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 @endsection
 
 <x-master-layout>
@@ -53,7 +51,9 @@
 							:placeholder="__('Select tags')"
 							:data="$tags" />
 					@endif
-				<x-form.submit>{{ __('Create a post') }}</x-form.submit>
+				<div class="flex justify-end">
+					<x-form.submit>{{ __('Create a post') }}</x-form.submit>
+				</div>
 			</form>
 		</div>
 	</div>

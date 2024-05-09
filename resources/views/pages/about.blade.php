@@ -11,7 +11,7 @@
 
 	<div class="bg-card mt-5 rounded-lg">
 		<section id="section_1" class="h-screen max-h-screen mt-5 flex flex-col justify-center items-center">
-			<img class="w-36 h-36" src="{{ asset('storage/images/icon/main.png') }}" />
+			<img class="w-36 h-36" src="{{ asset('storage/images/icon/main.png') }}" alt="Top Popular logo" />
 			<h1 class="text-main text-3xl font-bold">Top Popular</h1>
 			<p class="text-muted text-xl">{{ __('Become part of the story') }}</p>
 			<div class="w-full lg:w-96 text-justify mt-1">

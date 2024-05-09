@@ -124,10 +124,19 @@
 					</div>
 				</div>
 			</div>
-			
+		</div>
+
+		<div class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-3 bg-card rounded-lg p-4 mt-5 text-main">
+			<form class="w-full" method="POST" action="{{ route('comment.update', ['comment' => $comment->id, 'post' => $comment->post_id]) }}">
+				@method('PATCH')
+				@csrf
+				<x-form.label text="{{__('Comment body')}}" for="body" />
+				<x-form.text-area class="w-full" field="body" placeholder="{{__('Your comment goes here...')}}">{{ $comment->body }}</x-form.text-area>
+				<div class="w-full flex justify-end">
+					<x-form.submit>{{ __('Edit comment') }}</x-form.submit>
+				</div>
+			</form>
 		</div>
 	</div>
-
-	
 
 </x-master-layout>

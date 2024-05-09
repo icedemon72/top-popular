@@ -43,7 +43,7 @@
 			<x-form.image-input field="icon" accept=".svg" text="Maximum file size: 1KB .svg" />
 
 			@if(count($tags) > 0) 
-				<x-form.label class="mt-5 mb-1" :text="__('Tags')" for="tags" />
+				<x-form.label class="mt-5" :text="__('Tags')" for="tags" />
 				<x-bladewind::select
 					id="tags"
 					name="tags"
@@ -56,7 +56,7 @@
 					:data="$tags" /> 
 				@endif
 
-				<div class="flex justify-end gap-2">
+				<div class="flex justify-end gap-2 mt-2">
 				<x-form.cancel>
 					<a href="{{ route('category.index') }}">
 						{{ __('Go back') }}

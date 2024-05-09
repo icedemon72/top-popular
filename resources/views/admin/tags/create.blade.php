@@ -52,7 +52,7 @@
 				:data="$categories" /> 
 			<div class="flex justify-end gap-2">
 				<a href="{{ route('tag.index') }}">
-					<button type="button">{{ __('Go back') }}</button>
+					<x-form.cancel>{{ __('Go back') }}</x-form.cancel>
 				</a>
 				<x-form.submit>{{ __('Create new tag') }}</x-form.submit>
 			</div>

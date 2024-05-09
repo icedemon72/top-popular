@@ -143,8 +143,6 @@
 			<div x-collapse x-show="open" class="w-full">
 				<x-profile.activity 
 					:categories="$user->categories_count"
-					:comments="count($user->comments)" 
-					:posts="count($user->posts)"
 					:stats="$stats"
 				/>
 			</div>

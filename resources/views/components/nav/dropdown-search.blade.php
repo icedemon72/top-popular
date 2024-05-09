@@ -30,9 +30,9 @@
                     </div>
                 </div>
                 <x-bladewind::select 
-                    id="category"
-                    name="category"
-                    searchable="true"
+                    id="cat"
+                    name="cat"
+                    searchable="false"
                     selected_value="{{ request('category') ?? null }}"
                     label_key="name"
                     value_key="id"

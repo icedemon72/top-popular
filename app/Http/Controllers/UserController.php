@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Filters\UserFilter;
 use App\Http\Utils\Utils;
+use App\Models\Comment;
 use App\Models\Like;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -71,7 +73,9 @@ class UserController extends Controller implements HasMiddleware
             'disliked' => 0,
             'replies' => 0,
             'posts' => 0,
-            'comments' => 0
+            'comments' => 0,
+            'posts_count' => 0,
+            'comments_count' => 0
         ];
 
         $likes = Like::where('user_id', $user->id)->get();
@@ -92,6 +96,18 @@ class UserController extends Controller implements HasMiddleware
             $stats->likes += $comment->likeCount;
             $stats->dislikes += $comment->dislikeCount;
         }
+
+        $stats->posts_count = Post::where([
+            'user_id' => $user->id,
+            'deleted' => false
+        ])
+        ->count();
+
+        $stats->comments_count = Comment::where([
+            'user_id' => $user->id,
+            'deleted' => false
+        ])
+        ->count();      
 
         return view('profile.index', [
             'user' => $user,
