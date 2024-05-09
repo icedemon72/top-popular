@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 /* Pages */
 /* Anyone can access these */
-Route::get('/', [PostController::class, 'home'])->name('home');
+Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/contact', function () {
     return view('pages.contact');
@@ -57,9 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('owner:comment')->name('comment.destroy');
         
         Route::resource('admin/tag', TagController::class);
-        Route::get('/admin', function () {
-            return view('admin.index');
-        })->name('admin.index');
+        Route::get('/admin', [PageController::class, 'admin'])->name('admin.index');
         
         Route::get('/admin/bans', [UserController::class, 'showBanned'])->name('admin.user.ban');
         Route::get('admin/post', [PostController::class, 'getAll'])->name('admin.post.index');

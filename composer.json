@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "icehouse-ventures/laravel-chartjs": "^1.0",
         "laravel/framework": "^11.0",
         "league/html-to-markdown": "^5.1",
         "mallardduck/blade-lucide-icons": "^1.21",

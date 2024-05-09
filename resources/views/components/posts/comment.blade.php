@@ -134,7 +134,7 @@
                     <x-form.label class="mb-1" for="body" text="{{ __('Reply to '.$comment->user->username) }}" />
                     <x-form.textarea required class="w-full shadow-sm" placeholder="I agree!" field="body"></x-form.textarea>
                     <div class="flex justify-end items-center gap-2 mt-2">
-                        <div x-on:click="open = false" class="cursor-pointer p-2">{{ __('Cancel') }}</div>
+                        <x-form.cancel x-on:click="open = false" class="cursor-pointer p-2">{{ __('Cancel') }}</x-form.cancel>
                         <x-form.submit>{{ __('Post a reply') }}</x-form.submit>
                     </div>
                 </form>
@@ -142,7 +142,7 @@
         
             @if ($comment->replies->count() > 0 && $profile === false)
                 @foreach ($comment->replies as $reply)
-                    <div x-data="{open: false}" class="ml-1 lg:ml-5 border-l-gray-400 border-l-2 p-2" >
+                    <div x-data="{open: false}" class="ml-[2px] lg:ml-1 border-l-gray-400 border-l-2 p-2" >
                         <x-posts.comment :comment="$reply" :op="$op" :archived="$archived"/>
                     </div>
                 @endforeach

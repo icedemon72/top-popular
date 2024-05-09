@@ -4,8 +4,8 @@ import collapse from '@alpinejs/collapse'
 import Alpine from 'alpinejs';
 import Clipboard from '@ryangjchandler/alpine-clipboard' // Import it
 import qs from 'qs';
-
 import { giveLike, handleModal, closeModal, sortTable, showChevron } from './utils';
+import Chart from 'chart.js/auto';
 
 window.giveLike = giveLike;
 window.handleModal = handleModal;

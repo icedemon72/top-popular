@@ -17,6 +17,8 @@
         "@alpinejs/collapse": "^3.13.9",
         "@ryangjchandler/alpine-clipboard": "^2.3.0",
         "alpinejs": "^3.13.8",
+        "chart.js": "^4.4.2",
+        "countup.js": "^2.8.0",
         "qs": "^6.12.1",
         "quill-markup": "^0.0.38"
     }

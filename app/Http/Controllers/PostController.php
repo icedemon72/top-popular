@@ -30,14 +30,6 @@ class PostController extends Controller implements HasMiddleware
             new Middleware(['auth', 'owner:post'], only: ['edit', 'update', 'destroy'])
         ];
     }
-    public function home(PostFilter $filter)
-    {
-        $posts = Post::orderBy('created_at', 'asc')->filter($filter)->paginate(15);
-        $categories = Category::get();
-        $users = User::count();
-
-        return view('home', compact('posts', 'categories'));
-    }
 
     /**
      * Display a listing of the resource.

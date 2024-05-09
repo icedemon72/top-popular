@@ -42,36 +42,36 @@
 	</div>
 	<div class="w-full flex flex-col items-center justify-center mt-3">
 		<div class="w-full md:w-4/5 lg:w-2/3 lg:grid grid-cols-1 md:grid-cols-10 gap-3">
-				<section class="col-span-1 md:col-span-7">
-					<div class="flex items-center border-b-2 border-b-gray-500 mb-2 p-1 gap-2">
-						<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />
-						<div class="flex items-center cursor-pointer bg-main rounded-xl">
-							<select aria-label="{{ __('Sort posts') }}" id="select1" onChange="changeSort('sort', 'select1')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
-								<option value="popular">{{ __('Popular') }}</option>
-								<option value="new">{{ __('New') }}</option>
-								<option value="top">{{ __('Top') }}</option>
-							</select>
-						</div>	
-						<div class="flex items-center cursor-pointer bg-main rounded-xl">
-							<select aria-label="{{ __('Filter posts based on date') }}" id="select2" onChange="changeSort('time', 'select2')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
-								<option value="today">{{ __('Today') }}</option>
-								<option value="week">{{ __('This week') }}</option>
-								<option value="month">{{ __('This month') }}</option>
-								<option value="year">{{ __('This year') }}</option>
-								<option value="all">{{ __('All') }}</option>
-							</select>
-						</div>
+			<section class="col-span-1 md:col-span-7">
+				<div class="flex items-center border-b-2 border-b-gray-500 mb-2 p-1 gap-2">
+					<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />
+					<div class="flex items-center cursor-pointer bg-main rounded-xl">
+						<select aria-label="{{ __('Sort posts') }}" id="select1" onChange="changeSort('sort', 'select1')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
+							<option value="popular">{{ __('Popular') }}</option>
+							<option value="new">{{ __('New') }}</option>
+							<option value="top">{{ __('Top') }}</option>
+						</select>
+					</div>	
+					<div class="flex items-center cursor-pointer bg-main rounded-xl">
+						<select aria-label="{{ __('Filter posts based on date') }}" id="select2" onChange="changeSort('time', 'select2')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
+							<option value="today">{{ __('Today') }}</option>
+							<option value="week">{{ __('This week') }}</option>
+							<option value="month">{{ __('This month') }}</option>
+							<option value="year">{{ __('This year') }}</option>
+							<option value="all">{{ __('All') }}</option>
+						</select>
 					</div>
-					@foreach ($posts as $post)
-						<x-posts.post class="mb-3" 
-							:post="$post"
-						/>
-					@endforeach
-					<div class="mt-2">
-						{{ $posts->withQueryString()->links() }}
-					</div>
-				</section>
-				@if(count($posts) == 0)
+				</div>
+				@foreach ($posts as $post)
+					<x-posts.post class="mb-3" 
+						:post="$post"
+					/>
+				@endforeach
+				<div class="mt-2">
+					{{ $posts->withQueryString()->links() }}
+				</div>
+			</section>
+			@if(count($posts) == 0)
 				<div class="col-span-1 md:col-span-7 w-full flex p-2 text-muted">
 					<span class="bg-card flex items-center w-full h-12 p-2 rounded-lg text-muted gap-1">
 						{{ __('Huh, there seems to be no posts...') }} 
