@@ -90,11 +90,24 @@ class PageController extends Controller
 
     public function home(Request $request, PostFilter $filter)
     {
-        $favCategories = Category::whereHas('users', fn ($query) => $query->where('user_id', Auth::user()->id))->get();
-
-        $ids = $favCategories->pluck('id');
+        $favCategories = [];
+        $ids = [];
         $favPosts = null;
 
+        if(Auth::check()) {
+            $favCategories = Category::whereHas('users', fn ($query) => $query->where('user_id', Auth::user()->id))->get();
+            $ids = $favCategories->pluck('id');
+
+            if($request->input('page') == null || $request->input('page') == 1) {
+                $favPosts = Post::filter($filter)
+                    ->whereIn('category_id', $ids)
+                    ->where('deleted', false)
+                    ->with('likes')
+                    ->withCount('comments')
+                    ->limit(20)
+                    ->get(); 
+            }
+        }
 
         $posts = Post::filter($filter)
             ->whereNotIn('category_id', $ids)
@@ -103,15 +116,6 @@ class PageController extends Controller
             ->withCount('comments')
             ->simplePaginate(15);
 
-        if($request->input('page') == null || $request->input('page') == 1) {
-            $favPosts = Post::filter($filter)
-                ->whereIn('category_id', $ids)
-                ->where('deleted', false)
-                ->with('likes')
-                ->withCount('comments')
-                ->limit(20)
-                ->get(); 
-        }
 
         $categories = Category::whereNotIn('id', $ids)
             ->orderBy('name', 'asc')
