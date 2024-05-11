@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Filters\PostFilter;
+use App\Http\Utils\Utils;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
@@ -26,14 +27,12 @@ class PageController extends Controller
                 $days = 365;
             }
         }
+
         $users = User::whereDate('created_at', '>=', now()->subDays($days))
             ->select(DB::raw('DATE(created_at) AS date'), DB::raw('COUNT(*) as data'))
             ->groupBy('date')
             ->get();
-
-        // $data = $users->pluck("data")->toArray();
-        // $labels = $users->pluck("date")->toArray();
-
+        
         $posts = Post::whereDate('created_at', '>=', now()->subDays($days))
             ->select(DB::raw('DATE(created_at) AS date'), DB::raw('COUNT(*) as data'))
             ->groupBy('date')
@@ -44,32 +43,55 @@ class PageController extends Controller
             ->groupBy('date')
             ->get();
                     
-        $categoryPosts = Post::select(DB::raw('COUNT(*) as data'))
+        $categoryPosts = Post::select(DB::raw('COUNT(*) as data'), 'category_id')
+            ->whereDate('created_at', '>=', now()->subDays($days))
+            ->where('deleted', false)
             ->groupBy('category_id')
             ->with('category:id,name')
             ->get();
 
+        $charts = (object) [
+            'users' => Utils::GetChart($users, $days, 'line', 'Registered users'),
+            'posts' => Utils::GetChart($posts, $days, 'line', 'Submitted posts'),
+            'comments' => Utils::GetChart($comments, $days, 'line', 'Submitted comments'),
+            'categoryPosts' => Utils::GetChart($categoryPosts, $days, 'pie', 'Posts by category'),
+        ];
 
-        // $chart = app()
-        //     ->chartjs->name("UserRegistrationsChart")
-        //     ->type("line")
-        //     ->size(["width" => 400, "height" => 200])
-        //     ->labels($labels)
-        //     ->datasets([
-        //         [
-        //             "label" => "User Registrations",
-        //             "backgroundColor" => "rgba(38, 185, 154, 0.31)",
-        //             "borderColor" => "rgba(38, 185, 154, 0.7)",
-        //             "data" => $data
-        //         ]
-        //     ]);
+        $stats = (object) [
+            'categories' => Category::count(),
+            'users' => User::count(),
+            'mods' => User::where('role', 'moderator')->count(),
+            'banned' => User::where('role', 'banned')->count(),
+            'posts' => Post::count(),
+            'comments' => Comment::count()
+        ];
+
+        $db = env('DB_DATABASE');
+        $size = DB::select("SELECT mb FROM (
+            SELECT
+                table_schema as name, 
+                ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) as mb 
+            FROM information_schema.tables 
+            GROUP BY table_schema) alias_one
+            WHERE name = '$db'");
+        $envData = null;
+
+        if(Auth::user()->role == 'admin') {
+            $envData = (object) [
+                'storage' => $size[0]->mb,
+                'db' => env('DB_CONNECTION'),
+                'host' => env('DB_HOST')
+            ];
+        }
 
         return view('admin.index', [
             'users' => $users,
             'posts' => $posts,
             'comments' => $comments,
             'categoryPosts' => $categoryPosts,
-            // 'chart' => $chart
+            'data' => $envData,
+            'charts' => $charts,
+            'stats' => $stats
         ]);
 
     }
