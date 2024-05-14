@@ -241,25 +241,47 @@
 		</div>
 
 		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-3">
-			<div class="flex items-center mb-2 p-1 gap-2">
-				<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />
-				<div class="flex items-center cursor-pointer bg-main rounded-xl">
-					<select aria-label="{{ __('Sort comments') }}" id="select1" onChange="changePopularity()" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
-						<option value="popular">{{ __('Popular') }}</option>
-						<option value="new">{{ __('New') }}</option>
-						<option value="top">{{ __('Top') }}</option>
-					</select>
+			<form method="GET">
+				<div class="flex items-center mb-2 p-1 gap-2">
+					<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />
+					<div class="flex items-center cursor-pointer">
+						<x-bladewind.select  
+							aria-label="Time select"
+							id="sort"
+							name="sort"
+							placeholder="{{ __('Sort by...') }}"
+							multiple="false"
+							searchable="false" 
+							data="manual" 
+							selected_value="{{ request()->input('sort') ?? 'popular' }}"
+						>
+							<x-bladewind::select-item label="{{ __('Popular') }}" value="popular"  />
+							<x-bladewind::select-item label="{{ __('New') }}" value="date_desc"  />
+							<x-bladewind::select-item label="{{ __('Top') }}" value="top"  />
+						</x-bladewind.select>
+					</div>
+					<div class="flex items-center cursor-pointer" id="comments">
+						<x-bladewind.select  
+							aria-label="Time select"
+							id="time"
+							name="time"
+							placeholder="{{ __('Select time...') }}"
+							multiple="false"
+							searchable="false" 
+							data="manual" 
+							selected_value="{{ request()->input('time') ?? 'month' }}"
+						>
+							<x-bladewind::select-item label="{{ __('Last week') }}" value="week"  />
+							<x-bladewind::select-item label="{{ __('Last month') }}" value="month"  />
+							<x-bladewind::select-item label="{{ __('Last year') }}" value="year"  />
+							<x-bladewind::select-item label="{{ __('All time') }}" value="all"  />
+						</x-bladewind.select>
+					</div>
+					<button type="submit flex items-center" aria-label="{{ __('Apply filters') }}" title="{{ __('Apply') }}">
+						<x-lucide-send-horizontal class="w-9 h-9 mb-3 rounded-full bg-card p-2 transition-all hover:bg-main" />
+					</button>
 				</div>
-				<div class="flex items-center cursor-pointer bg-main rounded-xl" id="comments">
-					<select aria-label="{{ __('Filter comments based on date') }}" id="select2" onChange="changePopularity()" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
-						<option value="today">{{ __('Today') }}</option>
-						<option value="week">{{ __('This week') }}</option>
-						<option value="month">{{ __('This month') }}</option>
-						<option value="year">{{ __('This year') }}</option>
-						<option value="all">{{ __('All') }}</option>
-					</select>
-				</div>
-			</div>
+			</form>
 			@foreach($comments as $comment) 
 				@if($comment->parent === null)
 					<div x-data="{ open: false }" class="{{ count($comment->replies) > 0 ? 'border-l-gray-400 border-l-2 p-2' : '' }}">

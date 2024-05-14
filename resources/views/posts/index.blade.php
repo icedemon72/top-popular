@@ -47,11 +47,6 @@
 					<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />
 					<div class="flex gap-2 items-center">
 						<div class="flex items-center cursor-pointer bg-main rounded-xl">
-							{{-- <select aria-label="{{ __('Sort posts') }}" id="select1" onChange="changeSort('sort', 'select1')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
-								<option value="popular">{{ __('Popular') }}</option>
-								<option value="new">{{ __('New') }}</option>
-								<option value="top">{{ __('Top') }}</option>
-							</select> --}}
 							<x-bladewind.select  
 								aria-label="Time select"
 								id="sort"
@@ -63,7 +58,7 @@
 								selected_value="{{ request()->input('sort') ?? 'popular' }}"
 							>
 								<x-bladewind::select-item label="{{ __('Popular') }}" value="popular"  />
-								<x-bladewind::select-item label="{{ __('New') }}" value="new"  />
+								<x-bladewind::select-item label="{{ __('New') }}" value="date_desc"  />
 								<x-bladewind::select-item label="{{ __('Top') }}" value="top"  />
 							</x-bladewind.select>
 						</div>	
@@ -83,13 +78,6 @@
 								<x-bladewind::select-item label="{{ __('Last year') }}" value="year"  />
 								<x-bladewind::select-item label="{{ __('All time') }}" value="all"  />
 							</x-bladewind.select>
-							{{-- <select aria-label="{{ __('Filter posts based on date') }}" id="select2" onChange="changeSort('time', 'select2')" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
-								<option value="today">{{ __('Today') }}</option>
-								<option value="week">{{ __('This week') }}</option>
-								<option value="month">{{ __('This month') }}</option>
-								<option value="year">{{ __('This year') }}</option>
-								<option value="all">{{ __('All') }}</option>
-							</select> --}}
 						</div>
 						<button type="submit flex items-center" aria-label="{{ __('Apply filters') }}" title="{{ __('Apply') }}">
 							<x-lucide-send-horizontal class="w-9 h-9 mb-3 rounded-full bg-card p-2 transition-all hover:bg-main" />
