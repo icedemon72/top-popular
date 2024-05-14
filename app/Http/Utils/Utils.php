@@ -4,15 +4,15 @@ namespace App\Http\Utils;
 
 use Illuminate\Support\Facades\Auth;
 
-function getRandomColor()
-    {
-        $letters = '0123456789ABCDEF';
-        $color = '#';
-        for ($i = 0; $i < 6; $i++) {
-            $color .= $letters[rand(0, 15)];
-        }
-        return $color;
-    }
+function getRandomColor(): string
+{
+		$letters = '0123456789ABCDEF';
+		$color = '#';
+		for ($i = 0; $i < 6; $i++) {
+				$color .= $letters[rand(0, 15)];
+		}
+		return $color;
+}
 
 class Utils
 {

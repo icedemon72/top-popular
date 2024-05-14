@@ -4,7 +4,8 @@
 /public/hot
 /public/storage
 /public/vendor/bladewind
-/resources/views/components/bladewind
+/resources/views/components/bladewind/*
+!resources/views/components/bladewind/select.blade.php
 /storage/*.key
 /vendor
 .env

@@ -66,17 +66,17 @@ class PageController extends Controller
             'comments' => Comment::count()
         ];
 
-        $db = env('DB_DATABASE');
-        $size = DB::select("SELECT mb FROM (
-            SELECT
-                table_schema as name, 
-                ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) as mb 
-            FROM information_schema.tables 
-            GROUP BY table_schema) alias_one
-            WHERE name = '$db'");
-        $envData = null;
-
+        
         if(Auth::user()->role == 'admin') {
+            $db = env('DB_DATABASE');
+            $size = DB::select("SELECT mb FROM (
+                SELECT
+                    table_schema as name, 
+                    ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) as mb 
+                FROM information_schema.tables 
+                GROUP BY table_schema) alias_one
+                WHERE name = '$db'");
+            $envData = null;
             $envData = (object) [
                 'storage' => $size[0]->mb,
                 'db' => env('DB_CONNECTION'),

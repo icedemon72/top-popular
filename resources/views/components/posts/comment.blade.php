@@ -38,7 +38,7 @@
 <div {{ $attributes->merge(["class" => "w-full bg-card pt-2 pb-1 px-4 text-main rounded-lg", 'id' => $comment->id]) }}>
     <div x-data="{ open: false, expanded: true, commentOpen: false }">
         <div x-cloak x-show="!expanded" class="flex text-muted text-xs gap-2 items-center">
-            <button x-on:click="expanded = !expanded">
+            <button x-on:click="expanded = !expanded" aria-label="Expand comment">
                 <x-lucide-chevron-right class="w-4 h-4" />
             </button>
             <p class="font-bold"><a>{{ $comment->user->username }}</a></p>
@@ -47,7 +47,7 @@
         </div>
         <div x-cloak x-show="expanded" x-collapse>
             <div class="flex items-center gap-1">
-                <button x-show="expanded" x-on:click="expanded = !expanded">
+                <button x-show="expanded" x-on:click="expanded = !expanded" aria-label="Collapse comment">
                     <x-lucide-chevron-down class="w-4 h-4" />
                 </button>
                 @if(!$profile && !$comment->deleted)

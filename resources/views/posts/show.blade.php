@@ -19,6 +19,10 @@
 
 @section('title', "$data->title: $categoryName")
 
+@section('head')
+	<meta name="description" content="{{ $data->title }}">
+	<meta name="keywords" content="{{ $data->body }}">
+@endsection
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function() {
 		handleModal("{{ route('post.destroy', ':id') }}");
@@ -92,23 +96,23 @@
 									@endif
 									@if(in_array(Auth::user()->role, ['admin', 'moderator']))
 										@if($data->archived)
-										<form method="POST" action="{{ route('post.archive', ['post' => $data->id, 'status' => 0]) }}">
-											@method('PATCH')
-											@csrf
-											<x-nav.dropdown-link class="flex items-center gap-2 cursor-pointer">
+										<x-nav.dropdown-link class="cursor-pointer">
+											<form class="flex items-center gap-2" method="POST" action="{{ route('post.archive', ['post' => $data->id, 'status' => 0]) }}" onclick="this.submit()">
+												@method('PATCH')
+												@csrf
 												<x-lucide-archive-x />
-												<button type="submit">
+												<button type="submit" aria-label="{{ __('Re-publish the post') }}" aria-label="{{ __('Re-publish button') }}">
 													{{ __('Re-publish') }}
 												</button>
-											</x-nav.dropdown-link>
-										</form>
+											</form>
+										</x-nav.dropdown-link>
 										@else
 											<x-nav.dropdown-link class="cursor-pointer">
-												<form class="flex items-center gap-2" method="POST" action="{{ route('post.archive', ['post' => $data->id, 'status' => 1]) }}">
+												<form class="flex items-center gap-2" method="POST" action="{{ route('post.archive', ['post' => $data->id, 'status' => 1]) }}" onclick="this.submit()">
 													@method('PATCH')
 													@csrf
 													<x-lucide-archive-restore />
-													<button type="submit">
+													<button type="submit" aria-label="{{ __('Archive the post') }}">
 														{{ __('Archive') }}
 													</button>
 												</form>
@@ -211,7 +215,7 @@
 			COMMENTS ({{ count($comments) }})
 			@if(!$data->archived && !$data->deleted)
 				@if(Auth::check())
-					<button x-on:click="commentOpen = !commentOpen" class="text-xs uppercase bg-main rounded-lg p-2 text-main hover:bg-card">
+					<button x-on:click="commentOpen = !commentOpen" class="text-xs uppercase bg-main rounded-lg p-2 text-main hover:bg-card" aria-label="{{ __('Add a comment') }}">
 						{{ __('Add a comment') }}
 					</button>
 				@else
@@ -247,7 +251,7 @@
 					</select>
 				</div>
 				<div class="flex items-center cursor-pointer bg-main rounded-xl" id="comments">
-					<select aria-label="{{ __('Filter comments based on date') }}" id="select1" onChange="changePopularity()" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
+					<select aria-label="{{ __('Filter comments based on date') }}" id="select2" onChange="changePopularity()" class="appearance-none bg-main text-xs text-muted p-2 cursor-pointer hover:bg-card rounded-xl">
 						<option value="today">{{ __('Today') }}</option>
 						<option value="week">{{ __('This week') }}</option>
 						<option value="month">{{ __('This month') }}</option>

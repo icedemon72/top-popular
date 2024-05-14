@@ -102,6 +102,6 @@ class PostFilter extends Filter
 			else if($value == 'top') {
 				$this->builder->withCount('likes')->orderBy('likes_count', 'desc');
 			}
-		}
+ 		}
 	}
 }
