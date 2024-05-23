@@ -40,7 +40,11 @@
 		<div class="mt-2 h-auto">
 			<p class="font-bold">{{ $post->title }}</p>
 			<div class="text-muted text-sm">
-				<p class="text-wrap break-words">{{ $post->body }}</p>
+				<p class="text-wrap break-words">
+					<x-markdown class="markdown">
+						{!! $post->body !!}
+					</x-markdown>
+				</p>
 			</div>
 		</div>
 	</div>

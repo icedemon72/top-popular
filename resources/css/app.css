@@ -46,24 +46,20 @@
 	/* Change this later */
 }
 
+.markdown > h1 {
+	@apply text-xl font-bold;
+}
+
+.markdown > h2 {
+	@apply text-lg font-semibold;
+}
+
+.markdown > p > a {
+	@apply underline underline-offset-2 hover:no-underline;
+}
+
 .icon {
 	filter: invert(87%) sepia(6%) saturate(111%) hue-rotate(182deg) brightness(110%) contrast(87%);
-}
-
-.ql-toolbar span {
-	@apply text-muted;
-}
-
-.ql-toolbar .ql-stroke {
-	@apply  stroke-[#f3f4f6] dark:stroke-[#111827];
-}
-
-.ql-editor.ql-blank::before {
-	@apply text-main;
-}
-
-#ql-picker-options-0.ql-picker-options {
-	@apply bg-main text-main;
 }
 
 [x-cloak] {

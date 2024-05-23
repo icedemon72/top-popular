@@ -20,6 +20,7 @@
         "chart.js": "^4.4.2",
         "countup.js": "^2.8.0",
         "qs": "^6.12.1",
-        "quill-markup": "^0.0.38"
+        "quill-markup": "^0.0.38",
+        "shiki": "^1.6.0"
     }
 }

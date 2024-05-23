@@ -68,9 +68,9 @@
                 @endif
             </div>
             
-            <p class="text-main">
-                {{ $comment->body }}
-            </p>
+            <x-markdown class="markdown">
+                {!! $comment->body !!}
+            </x-markdown>
         
             @if(!$comment->deleted)
                 <div class="flex justify-between items-center">

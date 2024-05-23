@@ -141,7 +141,11 @@
 						</a>
 					@endforeach
 				</div>
-				<div class="text-main break-words">{{ $data->body }}</div>
+				<div class="text-main break-words">
+					<x-markdown class="markdown">
+						{!! $data->body !!}
+					</x-markdown>
+				</div>
 			</div>
 
 			<div class="mt-2 flex justify-between lg:justify-start items-center gap-8 text-main">
