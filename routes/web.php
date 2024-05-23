@@ -21,7 +21,7 @@ Route::get('/contact', function () {
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
-Route::resource('user', UserController::class)->except(['create', 'index']);
+Route::resource('user', UserController::class)->except(['create', 'index', 'store', 'destroy']);
 
 Route::get('post/filter', [PostController::class, 'search'])->name('post.search');
 Route::resource('category/{category}/post', PostController::class)->except(['store', 'update', 'destroy']);
@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/category/{id}/join', [CategoryController::class, 'join'])->name('category.join');
     Route::patch('/user/picture/update', [UserController::class, 'changePicture'])->name('user.pic');
     
-    Route::resource('message', MessageController::class)->except(['create']);
+    Route::resource('message', MessageController::class)->except(['create', 'edit', 'update', 'destroy']);
     
     /* Moderators */
     Route::middleware('role:moderator')->group(function() {
@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/post/{id}', [PostController::class, 'destroy'])->middleware('owner:post')->name('post.destroy');
         Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('owner:comment')->name('comment.destroy');
         
-        Route::resource('admin/tag', TagController::class);
+        Route::resource('admin/tag', TagController::class)->except(['show']);
         Route::get('/admin', [PageController::class, 'admin'])->name('admin.index');
         
         Route::get('/admin/bans', [UserController::class, 'showBanned'])->name('admin.user.ban');
@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
 
     /* Only admins */
     Route::middleware('role:admin')->group(function () {
-        Route::resource('admin/category', CategoryController::class);
+        Route::resource('admin/category', CategoryController::class)->except(['show']);
         Route::get('admin/mod', [UserController::class, 'modIndex'])->name('mod.index');
         Route::patch('/user/{user}/role', [UserController::class, 'changeRole'])->name('user.role');
         Route::patch('/message/{message}', [MessageController::class, 'updateStatus'])->name('message.updateStatus');

@@ -48,19 +48,19 @@
 	<div class="mt-2 flex justify-between lg:justify-start items-center gap-8">
 		<div id="post_{{ $post->id }}" class="flex gap-5 md:gap-3 lg:gap-1 items-center">
 			<div id="post_likes" class="p-1 hover:bg-main rounded-lg {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}',  {{ $post->archived }})">
-				<x-lucide-arrow-big-up-dash class="w-6 h-6 lg:w-5 lg:h-5 text-green-500" />
+				<x-lucide-arrow-big-up-dash class="w-5 h-5 text-green-500" />
 			</div>
 			<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $post->likeCount }}</p>
 
 			<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}', {{ $post->archived }})">
-				<x-lucide-arrow-big-down-dash class=" w-6 h-6 lg:w-5 lg:h-5 text-red-500 " />
+				<x-lucide-arrow-big-down-dash class=" w-5 h-5 text-red-500 " />
 			</div>
 			
 			<p id="post_dislikes_count" class="lg:text-xs font-bold">{{ $post->dislikeCount }}</p>
 		</div>
 
 		<a href="{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}" class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
-			<x-lucide-message-square-text class=" w-6 h-6 lg:w-5 lg:h-5" />
+			<x-lucide-message-square-text class=" w-5 h-5" />
 			<p class="text-xs font-bold">{{ $post->comments_count }}</p>
 		</a>
 
@@ -80,7 +80,7 @@
 			}
 		}" x-on:click.outside="open = false" >
 			<div x-on:click="open = !open" class="flex items-center gap-1 hover:bg-main rounded-lg p-2">
-				<x-lucide-square-arrow-out-up-right class=" w-6 h-6 lg:w-5 lg:h-5" />
+				<x-lucide-square-arrow-out-up-right class=" w-5 h-5" />
 				<p class="lg:text-xs">{{ __('Share') }}</p>
 			</div>
 

@@ -84,7 +84,7 @@
 			@else
 			<div class="hidden sm:flex align-middle gap-3">
 				<x-nav.link :href="route('login')" :active="request()->routeIs('auth.login')">
-					{{ __('Login') }}
+					{{ __('Log in') }}
 				</x-nav.link>
 				<x-nav.link :href="route('register')" :active="request()->routeIs('auth.register')">
 					{{ __('Register') }}

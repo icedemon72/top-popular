@@ -75,7 +75,7 @@
 		<div class="flex w-full md:w-4/5 lg:w-3/5 justify-center">
 			<div class="flex flex-1 gap-6 mt-5 md:mx-2">
 				@if($myProfile)
-					<div class="w-64 h-64 relative group cursor-pointer bg-main">
+					<div class="w-full md:w-64 h-64 relative group cursor-pointer bg-main ">
 						<label for="image" aria-label="Image upload button" class="cursor-pointer">
 							<img class="rounded-lg hover:opacity-70 w-full h-full" src="{{ asset("storage/$user->image") }}" alt="{{ __('Profile picture') }}" />
 							<div class="p-2 opacity-0 group-hover:opacity-100 duration-300 absolute inset-x-0 bottom-24 flex flex-col justify-center items-center text-xl bg-main text-main font-semibold">

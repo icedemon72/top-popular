@@ -19,7 +19,7 @@
         @yield('head')
     </head>
     <body class="font-sans text-gray-900 antialiased h-screen">
-        <x-nav-layout />
+        <x-nav-layout :search="false" />
         <x-card-container>
             {{ $slot }}
         </x-card-container>

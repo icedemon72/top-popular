@@ -1,4 +1,4 @@
-@section('title', __('Login'))
+@section('title', __('Log in'))
 
 <x-guest-layout>
 	@if(session('destroyed'))
@@ -11,7 +11,7 @@
 	@if(session('success'))
 		{{-- [open, setOpen] = false --}}
 		<x-form.success>
-			{{ __('Successfully registered! Now login with your credentials!') }}
+			{{ __('Successfully registered! Now log in with your credentials!') }}
 		</x-form.success>
 	@endif
 
@@ -57,7 +57,6 @@
 		</div>
 
 		{{-- Password --}}
-		{{-- TODO: add remember me --}}
 		<div class="mt-5">
 			<div class="flex justify-between">
 				<x-form.label for="login" :text="__('Password')" />

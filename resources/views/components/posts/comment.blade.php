@@ -76,18 +76,18 @@
                 <div class="flex justify-between items-center">
                     <div id="comment_{{ $comment->id }}" class="flex justify-between flex-grow  lg:justify-start gap-5 md:gap-3 lg:gap-1 items-center">
                         <div id="comment_likes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
-                            <x-lucide-arrow-big-up-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-green-500" />
+                            <x-lucide-arrow-big-up-dash class="w-5 h-5 text-green-500" />
                         </div>
                         <p id="comment_likes_count" class="lg:text-xs font-bold mr-1">{{ $comment->likeCount ?? 0 }}</p>
                 
                         <div  id="comment_dislikes" class="flex items-center p-1 hover:bg-main rounded-lg cursor-pointer {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $comment->id }}', '{{ route('comment.like', ['comment' => $comment->id]) }}', '{{ csrf_token() }}', {{ $archived }}, 'comment')">
-                            <x-lucide-arrow-big-down-dash class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-red-500 " />
+                            <x-lucide-arrow-big-down-dash class="w-5 h-5 text-red-500 " />
                         </div>        
                         <p id="comment_dislikes_count" class="lg:text-xs font-bold">{{ $comment->dislikeCount ?? 0 }}</p>
                 
                         @if(!$archived && $profile === false)
                             <div x-on:click="open = !open" class="flex items-center p-2 hover:bg-main rounded-lg cursor-pointer ml-2 gap-2">
-                                <x-lucide-message-square-reply class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5 text-muted" />
+                                <x-lucide-message-square-reply class="w-5 h-5 text-muted" />
                                 <p class="text-sm select-none">Reply</p>
                             </div>
                         @endif
