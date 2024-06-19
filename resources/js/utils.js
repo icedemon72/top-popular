@@ -11,7 +11,7 @@ export const giveLike = async (type = 'like', id, URL, CSRF, archived = 0, postT
 		if (response.redirected) {
 			window.location.href = response.url;
 	}
-	
+
 		const likesObj = await response.json();
 	
 		let likes = document.querySelector(`div#${postType}_${id} > div#${postType}_likes`);

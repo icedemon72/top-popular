@@ -51,12 +51,12 @@
 
 	<div class="mt-2 flex justify-between lg:justify-start items-center gap-8">
 		<div id="post_{{ $post->id }}" class="flex gap-5 md:gap-3 lg:gap-1 items-center">
-			<div id="post_likes" class="p-1 hover:bg-main rounded-lg {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}',  {{ $post->archived }})">
+			<div id="post_likes" class="p-1 hover:bg-main rounded-lg {{ $type == 'like' ? 'bg-main' : '' }}" onClick="giveLike('like', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}',  {{ $post->archived ? 1 : 0 }})">
 				<x-lucide-arrow-big-up-dash class="w-5 h-5 text-green-500" />
 			</div>
 			<p id="post_likes_count" class="lg:text-xs font-bold mr-1">{{ $post->likeCount }}</p>
 
-			<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}', {{ $post->archived }})">
+			<div id="post_dislikes" class="p-1 hover:bg-main rounded-lg {{ $type == 'dislike' ? 'bg-main' : '' }}" onClick="giveLike('dislike', '{{ $post->id }}', '{{ route('post.like', ['post' => $post->id]) }}', '{{ csrf_token() }}', {{ $post->archived ? 1 : 0 }})">
 				<x-lucide-arrow-big-down-dash class=" w-5 h-5 text-red-500 " />
 			</div>
 			

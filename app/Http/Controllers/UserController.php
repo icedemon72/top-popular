@@ -145,8 +145,8 @@ class UserController extends Controller implements HasMiddleware
 
         $request->validate([
             'email' => 'sometimes|email',
-            'password' => 'min:4|nullable',
-            'new_password' => 'min:4|nullable'
+            'password' => 'sometimes|min:4|nullable',
+            'new_password' => 'sometimes|min:4|nullable'
         ]);
         
         $user = User::where('username', $id);
