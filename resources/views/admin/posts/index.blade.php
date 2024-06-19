@@ -12,7 +12,7 @@
 	<x-modals.delete text="{{ __('Are you sure you want to delete this post?') }}" />
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<x-lucide-dock />
 				{{ __('Posts') }}
 			</h2>
@@ -97,14 +97,14 @@
               <td class="px-6 py-4">{{ $post->category->name }}</td>
               <td class="px-6 py-4">{{ $post->comments_count }}</td>
 							<td class="px-6 py-4 flex items-center gap-2">
-								<a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('post.edit', ['category' => $post->category_id, 'post' => $post->id]) }}" title="{{ __('Edit') }}">
+								<a class="cursor-pointer rounded-full p-1 transition-all bg-main group" href="{{ route('post.edit', ['category' => $post->category_id, 'post' => $post->id]) }}" title="{{ __('Edit') }}">
                   <x-lucide-pencil class="group-hover:scale-75 group-hover:-rotate-45 transition-all" />
                 </a>
-								<div class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-red-500 group" title="{{ __('Delete the post') }}" data-trigger="{{ $post->id }}">
+								<div class="modalTrigger cursor-pointer rounded-full p-1 transition-all bg-red-500 group" title="{{ __('Delete the post') }}" data-trigger="{{ $post->id }}">
                   <x-lucide-trash-2 class="group-hover:scale-75 transition-all" />
                 </div>
-								<a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}" title="{{ __('See the post') }}">
-									<x-lucide-circle-arrow-right class="group-hover:scale-75 transition-all group-hover:translate-x-1" />
+								<a class="cursor-pointer rounded-full p-1 transition-all bg-main group" href="{{ route('post.show', ['category' => $post->category_id, 'post' => $post->id]) }}" title="{{ __('See the post') }}">
+									<x-lucide-circle-arrow-right class="group-hover:scale-75 transition-all " />
 								</a>
 							</td>
               {{-- <td class="px-6 py-4 flex items-center gap-2">

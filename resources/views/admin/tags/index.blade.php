@@ -20,7 +20,7 @@
 	<x-modals.delete text="{{ __('Are you sure you want to delete this tag?') }}"  />
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<div class="w-full flex gap-2 items-center justify-between md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<div class="w-full flex gap-2 items-center justify-between md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<h2 class="flex items-center gap-2">
 					<x-lucide-tag />
 					{{ __('Tags') }}
@@ -34,17 +34,8 @@
 			</div>
 		</div>
 	</x-slot>
-	<div class="w-full flex flex-col items-center justify-center mt-7">
-		<div class="w-full md:w-4/5 lg:w-3/5">
-			<div class="grid grid-cols-1 lg:grid-cols-3 flex-grow gap-2">
-				<x-admin.card title="{{ __('Latest tag') }}" :data="$latestCategory" />
-				<x-admin.card title="{{ __('Top Popular tag') }}" :data="$latestCategory" />
-				<x-admin.card title="{{ __('Categories') }}"></x-admin.card>
-			</div>
-		</div>
-		
-
-		<div x-data="{ open: false }" class="w-full flex flex-col items-center justify-center mt-7">
+	<div class="w-full flex flex-col items-center justify-center">
+		<div x-data="{ open: false }" class="w-full flex flex-col items-center justify-center mt-5">
 			<div class="flex w-full md:w-4/5 lg:w-4/5 justify-between items-center">
 				<div x-on:click="open = !open" x-bind:class="open ? 'bg-card shadow-sm' : ''" class="flex gap-2 rounded-lg shadow-sm text-main	hover:bg-card p-2 cursor-pointer">
 					<x-lucide-filter />
@@ -97,10 +88,10 @@
 								@endif
 							</td>
 							<td class="px-6 py-4 flex items-center gap-2">
-								<a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('tag.edit', ['tag' => $tag->id]) }}" title="{{ __('Edit') }}">
+								<a class="cursor-pointer rounded-full p-1 transition-all bg-main group" href="{{ route('tag.edit', ['tag' => $tag->id]) }}" title="{{ __('Edit') }}">
                   <x-lucide-pencil class="group-hover:scale-75 group-hover:-rotate-45 transition-all" />
                 </a>
-								<a class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-red-500 group" href="#" title="{{ __('Delete the post') }}" data-trigger="{{ $tag->id }}">
+								<a class="modalTrigger cursor-pointer rounded-full p-1 transition-all bg-red-500 group" href="#" title="{{ __('Delete the post') }}" data-trigger="{{ $tag->id }}">
                   <x-lucide-trash-2 class="group-hover:scale-75 transition-all" />
                 </a>
 							</td>

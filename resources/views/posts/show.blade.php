@@ -46,7 +46,7 @@
 	
 	<div x-data="{commentOpen: false}" class="w-full flex flex-col justify-center items-center">
 		{{-- POST --}}
-		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4">
+		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 border border-main">
 			@if(session('edited'))
 				<x-form.success>
 					{{ __('Post edited successfully') }}
@@ -215,7 +215,7 @@
 		</div>
 
 		{{-- COMMENTS --}}
-		<div class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-3 bg-card rounded-lg p-4 mt-5 font-bold text-main b">
+		<div class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-3 bg-card rounded-lg p-4 mt-5 font-bold text-main border border-main">
 			COMMENTS ({{ count($comments) }})
 			@if(!$data->archived && !$data->deleted)
 				@if(Auth::check())
@@ -232,7 +232,7 @@
 			@endif
 		</div>
 
-		<div :class="{'block': commentOpen, 'hidden': !commentOpen}" class="hidden w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-1">
+		<div :class="{'block': commentOpen, 'hidden': !commentOpen}" class="hidden w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-1 border border-main">
 			<form class="w-full" method="POST" action="{{ route('comment.store', ['post' => $data->id]) }}">
 				@csrf
 
@@ -244,7 +244,7 @@
 			</form>
 		</div>
 
-		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-3">
+		<div class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-3 border border-main">
 			<form method="GET">
 				<div class="flex items-center mb-2 p-1 gap-2">
 					<x-lucide-arrow-down-narrow-wide class="w-5 h-5 text-muted" />

@@ -14,7 +14,7 @@
 <x-master-layout>
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-2 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full md:w-4/5 lg:w-3/5 flex items-center gap-2 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<img class="w-5 h-5 dark:bg-slate-200 rounded-full" src="{{ asset("/storage/{$category->icon}") }}" alt="Selected category icon" />
 				{{ $category->name }}
 			</h2>
@@ -80,7 +80,7 @@
 							</x-bladewind.select>
 						</div>
 						<button type="submit flex items-center" aria-label="{{ __('Apply filters') }}" title="{{ __('Apply') }}">
-							<x-lucide-send-horizontal class="w-9 h-9 mb-3 rounded-full bg-card p-2 transition-all hover:bg-main" />
+							<x-lucide-send-horizontal class="w-9 h-9 mb-3 rounded-full bg-card p-2 transition-all hover:bg-main border border-main" />
 						</button>
 					</div>
 				</form>
@@ -101,7 +101,7 @@
 					</span>
 				</div>
 			@endif
-			<div class="w-full h-[600px] overflow-y-auto relative hidden lg:flex lg:col-span-3 bg-card rounded-lg shadow-sm">
+			<div class="w-full h-[600px] overflow-y-auto relative hidden lg:flex lg:col-span-3 bg-card rounded-lg shadow-sm border border-main">
 				<div class="flex-grow">
 					<div class="flex flex-col mx-6 pb-2 items-center flex-grow justify-center mt-4 border-b-2 border-b-gray-800 dark:border-b-gray-400">
 						<div class="dark:bg-slate-300 p-6 rounded-full">

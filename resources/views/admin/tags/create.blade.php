@@ -9,7 +9,7 @@
 <x-admin-layout>
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<x-lucide-tag />
 				{{ __('Create a tag') }}
 			</h2>
@@ -17,7 +17,7 @@
 	</x-slot>
 
 	<div class="w-full flex justify-center">
-		<form class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-5" method="POST" action="{{ route('tag.store') }}">
+		<form class="w-full md:w-4/5 lg:w-3/5 bg-card rounded-lg p-4 mt-5 border border-main" method="POST" action="{{ route('tag.store') }}">
 			@csrf
 			
 			@if(session('success'))

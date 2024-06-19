@@ -8,7 +8,7 @@
 <x-admin-layout>
   <x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<a class="p-1 hover:bg-main rounded-lg cursor-pointer" href="{{ route('message.index') }}">
           <x-lucide-arrow-left class="w-8 h-8 md:w-6 md:h-6 lg:w-5 lg:h-5" />
         </a>
@@ -19,7 +19,7 @@
 	</x-slot>
 
   <div class="w-full flex flex-col items-center justify-center mt-7">
-		<div class="flex flex-col w-full md:w-4/5 lg:w-4/5 justify-center items-start bg-card p-2 px-4 rounded-lg">
+		<div class="flex flex-col w-full md:w-4/5 lg:w-4/5 justify-center items-start bg-card p-2 px-4 rounded-lg border border-main">
       <h1 class="flex items-center gap-3 text-3xl text-main">
         {{ $message->title }}
         <span class="bg-main px-2 py-1 rounded-lg text-sm cursor-pointer">{{ $message->category }}</span>

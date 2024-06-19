@@ -9,7 +9,7 @@
     <div class="blur-lg bg-black opacity-60 z-40 h-screen w-screen absolute top-0 right-0" onclick="closeModal('{{ $id }}')"></div>
     <div class="relative z-50  p-4 w-full max-w-md h-full md:h-auto" x-on:click.outside="open = false">
         <!-- Modal content -->
-        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 border border-main">
             <form id="{{ $form }}" action="" method="POST">
                 @method($method)
                 @csrf

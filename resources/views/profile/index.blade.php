@@ -39,7 +39,7 @@
 	@endif
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full md:w-4/5 lg:w-3/5 font-semibold text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg flex justify-between gap-2 items-center">
+			<h2 class="w-full md:w-4/5 lg:w-3/5 font-semibold text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg flex justify-between gap-2 items-center border border-main">
 				<div class="flex items-center gap-2">
 					<div class="text-xl">
 						@if($myProfile)
@@ -51,8 +51,8 @@
 	
 					<x-profile.badge :role="$user->role"/>
 					@if ($myProfile || $isAdmin)
-						<div class="flex-grow-0">
-							<a href="{{ route('user.edit', $user->username) }}">Edit</a>
+						<div class="flex">
+							<a class="cursor-pointer p-1 transition-all hover:scale-75" href="{{ route('user.edit', $user->username) }}"><x-lucide-pencil /></a>
 						</div>
 					@endif
 				</div>
@@ -113,7 +113,7 @@
 		</div>
 
 		<section id="information" x-data="{ open: true }" class="w-full md:w-4/5 lg:w-3/5 flex flex-col items-center">
-			<div x-on:click="open = !open" class="w-full flex justify-between items-center gap-2 mt-3 mb-1 p-2 bg-card rounded-lg">
+			<div x-on:click="open = !open" class="w-full flex justify-between items-center gap-2 mt-3 mb-1 p-2 bg-card rounded-lg border border-main">
 				<div class="flex items-center gap-2">
 					<x-lucide-info/>
 					<h1 class="text-xl text-main">{{ __('Information') }}</h1>
@@ -129,7 +129,7 @@
 		</section>
 
 		<section id="activity" x-data="{ open: true }"  class="w-full md:w-4/5 lg:w-3/5 flex flex-col items-center">
-			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg">
+			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg border border-main">
 				<div class="flex gap-2 items-center">
 					<x-lucide-bar-chart-3 />
 					<h1 class="text-xl text-main">{{ __('Activity') }}</h1>
@@ -149,7 +149,7 @@
 		</section>
 
 		<section id="posts" x-data="{ open: false }"  class="w-full md:w-4/5 lg:w-3/5 flex flex-col items-center">
-			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg">
+			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg border border-main">
 				<div class="flex gap-2 items-center">
 					<x-lucide-rotate-ccw />
 					<h1 class="text-xl text-main">{{ __('Last 10 posts') }}</h1>
@@ -168,7 +168,7 @@
 		</section>
 
 		<section id="comments" x-data="{ open: false }"  class="w-full md:w-4/5 lg:w-3/5 flex flex-col items-center">
-			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg">
+			<div x-on:click="open = !open" class="w-full flex items-center justify-between gap-2 mt-3 mb-1 p-2 bg-card rounded-lg border border-main">
 				<div class="flex gap-2 items-center">
 					<x-lucide-rotate-ccw />
 					<h1 class="text-xl text-main">{{ __('Last 10 comments') }}</h1>

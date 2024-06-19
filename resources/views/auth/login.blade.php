@@ -15,22 +15,6 @@
 		</x-form.success>
 	@endif
 
-	{{-- 
-		.wrapper {
-  position: relative;
-  display: inline-block;
-}
-.close:before {
-  content: '✕';
-}
-.close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-}
-		--}}
-
 	<form method="POST" class="p-1">
 		@csrf
 		{{-- Info --}}

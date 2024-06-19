@@ -14,7 +14,7 @@
   </x-modals.delete>
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<x-lucide-ban />
 				{{ __('Banned Users') }}
 			</h2>
@@ -57,13 +57,13 @@
                 <x-profile.badge role="{{ $user->role }}" />
               </td>
               <td class="px-6 py-4 flex items-center gap-2">
-                <a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('user.edit', $user->username) }}" title="{{ __('Edit') }}">
+                <a class="cursor-pointer rounded-full p-1 transition-all bg-main group" href="{{ route('user.edit', $user->username) }}" title="{{ __('Edit') }}">
                   <x-lucide-pencil class="group-hover:scale-75 group-hover:-rotate-45 transition-all" />
                 </a>
-                <a class="cursor-pointer rounded-full p-1 transition-all hover:bg-main group" href="{{ route('user.show', $user->username) }}" title="{{ __('Profile') }}">
+                <a class="cursor-pointer rounded-full p-1 transition-all bg-main group" href="{{ route('user.show', $user->username) }}" title="{{ __('Profile') }}">
                   <x-lucide-user class="group-hover:scale-75 transition-all" />
                 </a>
-                <div class="modalTrigger cursor-pointer rounded-full p-1 transition-all hover:bg-green-500 group" title="{{ __('Unban user') }}" data-trigger="{{ $user->id }}">
+                <div class="modalTrigger cursor-pointer rounded-full p-1 transition-all bg-green-500 group" title="{{ __('Unban user') }}" data-trigger="{{ $user->id }}">
                   <x-lucide-circle-off class="group-hover:scale-75 transition-all" />
                 </div>
               </td>

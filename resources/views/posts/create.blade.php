@@ -24,7 +24,9 @@
 					<x-form.label class="mt-5 mb-1" for="body" text="{{ __('Post body') }}" />
 					{{-- <x-form.quill-editor field="body"/> --}}
 					<x-form.textarea class="w-full"  field="body" placeholder="Say what's on your mind..."/>
-		
+					<div class="w-full text-end text-muted underline hover:no-underline hover:text-main">
+						<a target="_blank" href="https://www.markdownguide.org/cheat-sheet/">Need help with markdown?</a>
+					</div>
 					<x-form.label class="mt-5 mb-1" for="category" text="{{ __('Category') }}" />
 					<x-bladewind::select 
 						id="category"

@@ -159,19 +159,21 @@ class UserController extends Controller implements HasMiddleware
             $request->validate(['email' => 'unique:users']);
         }
 
-        if($fields['password'] != null && $fields['new_password'] != null) {
-            if($request->password != $request->new_password) {
-                return redirect("/user/{$userData->username}/edit")->withErrors([
-                    'password' => '',
-                    'new_password' => 'Passwords do not match' 
-                ]);
-            }
-            if(Hash::make($request->password) != $user->password) {
-                return redirect("/user/{$userData->username}/edit")->withErrors([
-                    'password' => 'Password is not correct'
-                ]);
-            }
-        }
+				if($userData->id == Auth::user()->id) {
+					if($fields['password'] != null && $fields['new_password'] != null) {
+							if($request->password != $request->new_password) {
+									return redirect("/user/{$userData->username}/edit")->withErrors([
+											'password' => '',
+											'new_password' => 'Passwords do not match' 
+									]);
+							}
+							if(Hash::make($request->password) != $user->password) {
+									return redirect("/user/{$userData->username}/edit")->withErrors([
+											'password' => 'Password is not correct'
+									]);
+							}
+					}
+				}
         
         $body = array_filter($fields);
 

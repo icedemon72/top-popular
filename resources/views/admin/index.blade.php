@@ -3,7 +3,7 @@
 <x-admin-layout>
 	<x-slot name="header">
 		<div class="flex w-full justify-center">
-			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg">
+			<h2 class="w-full flex gap-2 items-center md:w-4/5 lg:w-3/5 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight bg-white dark:bg-gray-800 p-4 rounded-lg border border-main">
 				<x-lucide-layout-dashboard />
 				{{ __('Dashboard') }}
 			</h2>
@@ -37,7 +37,7 @@
 			</form>
 		</div>
 		<div class="w-full lg:w-3/4 grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4 ">
-			<div class="col-span-2 bg-card rounded-lg p-4 text-main">
+			<div class="col-span-2 bg-card rounded-lg p-4 text-main border border-main">
 				<div class="w-full flex items-center justify-between px-5 pt-2">
 					<h1 class="text-xl flex items-center gap-2 uppercase font-bold">
 						<x-lucide-box />
@@ -52,7 +52,7 @@
 				</div>
 			</div>
 			@if(Auth::user()->role == 'admin')
-				<div class="col-span-1 bg-card rounded-lg p-4 text-main w-full">
+				<div class="col-span-1 bg-card rounded-lg p-4 text-main w-full border border-main">
 					<p class="text-xl font-bold mb-1 pt-2">{{ __('Website status') }}</p>
 					<ul>
 						<li class="flex items-center justify-between mb-2">
@@ -134,7 +134,7 @@
 			@endif
 		</div>
 
-		<div class="w-full lg:w-3/4 text-main bg-card rounded-lg p-2 transition-all shadow-md hover:shadow-lg mb-4">
+		<div class="w-full lg:w-3/4 text-main bg-card rounded-lg p-2 transition-all shadow-md hover:shadow-lg mb-4 border border-main">
 			<div class="w-full flex items-center justify-between px-5 pt-2">
 				<h1 class="text-xl flex items-center gap-2 uppercase font-bold">
 					<x-lucide-users />
@@ -149,7 +149,7 @@
 			</div>
 		</div>
 
-		<div class="w-full lg:w-3/4 text-main bg-card rounded-lg p-2 transition-all shadow-md hover:shadow-lg mb-4">
+		<div class="w-full lg:w-3/4 text-main bg-card rounded-lg p-2 transition-all shadow-md hover:shadow-lg mb-4 border border-main">
 			<div class="w-full flex items-center justify-between px-5 pt-2">
 				<h1 class="text-xl flex items-center gap-2 uppercase font-bold">
 					<x-lucide-dock />
@@ -164,7 +164,7 @@
 			</div>
 		</div>
 
-		<div class="w-full lg:w-3/4 text-main bg-card rounded-lg p-2 transition-all shadow-md hover:shadow-lg mb-4">
+		<div class="w-full lg:w-3/4 text-main bg-card rounded-lg p-2 transition-all shadow-md hover:shadow-lg mb-4 border border-main">
 			<div class="w-full flex items-center justify-between px-5 pt-2">
 				<h1 class="text-xl flex items-center gap-2 uppercase font-bold">
 					<x-lucide-message-square-text />
